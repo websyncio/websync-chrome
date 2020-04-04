@@ -1,0 +1,43 @@
+.components-tree
+    margin: 10px 5px
+    overflow: auto
+    font-size: 11px
+    font-family: Menlo, monospace
+
+    ul
+        margin: 0
+        padding: 0
+        list-style-type: none
+
+        >li
+            color: rgb(0, 0, 102)
+            font-size: 12px
+            
+
+    .type-name
+        margin-right: 10px
+        cursor: pointer
+
+    .field-name
+        color: rgb(150, 127, 127)
+
+    .init-attribute
+        margin-left: 10px
+
+    .parameter-value
+        color: rgb(57,127,0)
+        border-radius: 3px
+        cursor: pointer
+        &:hover
+            font-weight: bold
+
+        // &.single
+        //     background: rgb(50, 205, 50)
+
+        // &.several
+        //     background: rgb(256,256,0)
+
+        >span.invalid
+            text-decoration: underline
+            text-decoration-style: dotted
+            text-decoration-color: red
