@@ -69,7 +69,7 @@
 	chrome.devtools.panels.create('WebSync', 'icons/icon64.png', 'devtools-panel.html');
 	chrome.devtools.panels.elements.createSidebarPane("WebSync",
 		function(sidebar) {
-		  sidebar.setPage("devtools-panel.html");
+		  sidebar.setPage("selector-editor.html");
 		  sidebar.onHidden.addListener(handleHidden)
 		});
 // };

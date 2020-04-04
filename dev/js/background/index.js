@@ -87,7 +87,7 @@ chrome.runtime.onInstalled.addListener(function(details){
         let previousMajorVersion = details.previousVersion.split('.')[0];
         console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
         if(previousMajorVersion==0 && thisMajorVersion==1){
-          chrome.tabs.create({url:"update.html"});
+          chrome.tabs.create({url:"updated.html"});
         }
     }
 });

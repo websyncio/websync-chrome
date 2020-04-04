@@ -8,7 +8,6 @@ let CopyWebpackPlugin = require('copy-webpack-plugin');
 
 let EXTENSION_ID = NODE_ENV=='development' ? 'jcafkaiepnfcdahhgndhjohjdbadigoj':'aohpgnblncapofbobbilnlfliihianac';
 
-
 module.exports = {
   context: path.resolve(__dirname, "./dev"),
   entry: {
@@ -45,16 +44,10 @@ module.exports = {
     new ExtractTextPlugin('[name].css'),
     new CopyWebpackPlugin([
         { from: 'js/content/index.js', to:'content.js' },
-        { from: '../devtools-panel/dist/index.html', to:'../devtools-panel.html' },
-        { from: '../devtools-panel/dist/assets/devtools-panel.js', to:'devtools-panel.js' },
-        { from: '../devtools-panel/dist/assets/devtools-panel.css', to:'devtools-panel.css' },
-        { from: '../devtools-panel/dist/assets/vendor.js', to:'vendor.js' },
-        { from: '../devtools-panel/dist/assets/vendor.css', to:'vendor.css' },
-        { from: '../devtools-panel/dist/assets/32px.png', to:'32px.png' },
-        { from: '../devtools-panel/dist/assets/treeoutlineTriangles.svg', to:'treeoutlineTriangles.svg' },
-        { from: '../devtools-panel/dist/assets/triangle-up.svg', to:'triangle-up.svg' },
-        { from: '../devtools-panel/dist/assets/triangle-right.svg', to:'triangle-right.svg' },
-        { from: '../devtools-panel/dist/assets/cancel.png', to:'cancel.png' }
+        { from: '../devtools-panel/dist/index.html', to:'../selector-editor.html' },
+        { from: '../devtools-panel/dist/assets', to:'./' },
+        { from: '../page-editor/build/index.html', to:'../page-editor.html' },
+        { from: '../page-editor/build/static', to:'../static' }
     ],{
       copyUnmodified:true
     })

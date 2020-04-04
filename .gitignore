@@ -1,4 +1,8 @@
-public/assets
+public
+
+!/public/selector-editor.html
+!/public/page-editor.html
+
 
 # Archives
 *.zip
