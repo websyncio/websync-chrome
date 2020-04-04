@@ -1,0 +1,101 @@
+{{context-menu}}
+<div id="root" class="container-fluid">
+	{{!-- CONVERTER --}}
+	<div id="selectorsConverter" class="{{if isEditMode "edit-mode"}}" {{action "onSelectorConverterFocus"}}>
+		<iframe name="resizeHandlerFrame" width=100% height=100% style="position:absolute;z-index:-1;border:0"></iframe>
+		{{!-- <div class="status {{if vsclient.isConnected 'connected'}}"></div> --}}
+		<div class="source-wrap {{if inputValue "active"}}">
+			
+			{{#unless isEditMode}}
+				<i class="trash-icon"
+					onclick={{action "onRemoveSelector"}} 
+					title="Remove selector"/>
+			{{else}}
+				<i class="cancel-update-icon"
+					onclick={{action "onCancelSelectorUpdate"}}
+					title="Cancel Selector Update"/>
+			{{/unless}}
+			{{#if isEditMode}}
+				<span id="inputPrefix">{{selectorToUpdate.name}}</span>
+			{{/if}}
+			{{#if rootScss}}
+				<span id="inputPrefix" title="{{rootScss}}" {{action "onRootMouseEnter" on="mouseEnter"}} {{action "onRootMouseLeave" on="mouseLeave"}}>
+					<i class="remove-root" onclick={{action "onRemoveRoot"}}></i>
+					<span class="root-label">root:</span>
+				</span>
+			{{/if}}
+			<div class="input-wrap">
+				<div id="partHighlighter"></div>
+				{{input id="source" value=inputValue type="text" placeholder="Type selector here..." key-down="onInputKeyDown" }}
+			</div>
+			<i class="copy-icon"
+				onclick={{action "onCopySelector"}}
+				{{action "onCopyButtonEnter" element on="mouseEnter"}}
+				{{action "onCopyButtonLeave" on="mouseLeave"}}
+				title="Copy Selector"/>
+
+			{{#unless isEditMode}}
+				<i class="addtolist-icon"
+					onclick={{action "onAddToList"}}
+					{{action "onCopyButtonEnter" element on="mouseEnter"}}
+					{{action "onCopyButtonLeave" on="mouseLeave"}}
+					title="Add to Selectors List"/>
+			{{else}}
+				<i class="update-selector-icon"
+					onclick={{action "onUpdateSelector"}}
+					{{action "onCopyButtonEnter" element on="mouseEnter"}}
+					{{action "onCopyButtonLeave" on="mouseLeave"}}
+					title="Update Selector"/>
+			{{/unless}}
+
+{{!-- 			<span class="selector-status {{if isExist "exist"}} {{if isSeveral "several"}}"/> --}}
+		</div>
+		<ul id="target">
+			{{!-- <li id="targetScss">
+				<label id="targetScssLabel"
+					{{action "copySelectorStart" 0 on="mouseDown"}} 
+					{{action "copySelectorEnd" 0 on="mouseUp"}} 
+					{{action "copySelectorEnd" 0 on="mouseLeave"}}>Scss: </label>
+				{{bs-tooltip triggerElement="#targetScssLabel" title="Copy SCSS selector" placement="bottom" delayShow=300}}
+				{{targetScss}}
+			</li>
+			--}}
+			<li id="targetCss" >
+				<label id="targetCssLabel"
+					{{action "copySelectorStart" false on="mouseDown"}}
+					{{action "copySelectorEnd" false on="mouseUp"}}
+					{{action "copySelectorEnd" false on="mouseLeave"}}
+					title="Copy Css selector">Css</label>
+				{{!-- {{bs-tooltip triggerElement="#targetCssLabel" title="Copy CSS selector" placement="bottom" delayShow=300}} --}}
+				{{selector-validator parts=parts onPartSelected=(action "onPartSelected") onRemovePart=(action "onRemovePart") }}
+			</li>
+			
+			<li id="targetXPath" >
+				<label id="targetXPathLabel"
+					{{action "copySelectorStart" true on="mouseDown"}}
+					{{action "copySelectorEnd" true on="mouseUp"}}
+					{{action "copySelectorEnd" true on="mouseLeave"}}
+					title="Copy XPath selector">XPath</label>
+				{{!-- {{bs-tooltip triggerElement="#targetXPathLabel" title="Copy XPath selector" placement="bottom" delayShow=300}} --}}
+				{{selector-validator isXpath=true parts=parts onPartSelected=(action "onPartSelected") onRemovePart=(action "onRemovePart") }}
+			</li>
+		</ul>
+	</div>
+
+	<div id="bottomPanel">
+		<div id="elementsList" class="{{if isEditable "editable"}}">
+			<ul>
+			{{#each elementsSlice as |element|}}
+				{{selector-part-element partElement=element onAttributeToggle=(action "onPartAttributeToggle" element.part) onSelected=(action "onPartElementSelected")}}
+				{{selector-part-element-childrens partElement=element onAttributeToggle=(action "onPartAttributeToggle" element.part) onSelected=(action "onPartElementSelected")}}
+			{{/each}}
+			</ul>
+		</div>
+		{{component-selectors-list selectors=selectors isExpanded=selectorsListIsExpanded editedSelector=editedSelector onEdit=(action "onEdtiComponentSelector")}}
+	</div>
+	{{#if notification}}
+		{{notification-toast notification=notification}}
+	{{/if}}
+	{{!-- NAVIGATION --}}
+	{{!-- {{outlet}} --}}
+</div>

@@ -1,0 +1,29 @@
+{{#if model}}
+    {{#bs-button type="primary" onClick=(action "onExpandAllTreeNodes")}}Expand All{{/bs-button}}
+    {{#bs-button type="primary" onClick=(action "onCollapseAllTreeNodes")}}Collapse All{{/bs-button}}
+    {{#bs-button type="primary" onClick=(action "onRevalidateTreeSelector")}}Revalidate Selectors{{/bs-button}}
+    <label class="checkbox" style="display: inline-block; margin-left: 20px;">
+        {{#if highlightInner}}
+            <input id="highlightInnerComponents" type="checkbox" checked {{action "onHighlightInnerComponents"}}/>
+        {{else}}
+            <input id="highlightInnerComponents" type="checkbox" {{action "onHighlightInnerComponents"}}/>
+        {{/if}}
+        <span>Highlight Inner Components</span>
+    </label>
+    <div id="pageTree">
+        {{ember-jstree
+            treeObject=jstreeObject
+            actionReceiver=jstreeActionReceiver
+            data=data
+            plugins=plugins
+            themes=themes
+            eventDidSelectNode="onComponentNodeSelected"
+            eventDidHoverNode="onComponentNodeHovered"
+            eventDidDehoverNode="onComponentNodeDehovered"
+            typesOptions=typesOptions
+            stateOptions=stateOptions
+            skipLoading=skipLoading
+            eventDidOpen="onOpenComponentNode"
+        }}
+    </div>
+{{/if}}
