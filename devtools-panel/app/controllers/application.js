@@ -17,7 +17,7 @@ export default Ember.Controller.extend({
 	parts: A([]),
 	selectors: A([]),
 	elements: A([]),
-	isInlineMode: false,
+	withPageEditor: false,
 	elementsSlice: Ember.computed('elements', function(){
 		return this.get('elements');	//.slice(0, 50);
 	}),
@@ -32,7 +32,7 @@ export default Ember.Controller.extend({
     	});
 
     	chrome.devtools.panels.elements.onSelectionChanged.addListener(this.locateInspectedElement.bind(this));
-    	this.set('isInlineMode', this.getParamValue('inlinemode')==='true');
+    	this.set('withPageEditor', this.getParamValue('withpageeditor')==='true');
 	},
 	bindSourceInputEvents(){
 		let element = this.getInputElement();

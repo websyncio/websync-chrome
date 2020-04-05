@@ -40,8 +40,22 @@ html{
 	align-items: center;
 }
 
+body.ember-application>.ember-view{
+	display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
 #root{
 	padding: 0;
+	position: relative;
+	height: 200px;
+	width: 100%;
 }
 
 #selectorsConverter{
@@ -426,10 +440,6 @@ i.remove-root:hover{
 	animation: collapse-selectors-list 200ms steps(1) forwards;
 }
 
-.inline-mode #selectorsList{
-	display: none;
-}
-
 @keyframes collapse-selectors-list {
   0%   { z-index: 20; }	/* we do not need this when element is displayed for the first time but I do not know how to get rid of it*/
   100% { z-index: 0; }
@@ -686,7 +696,7 @@ i.remove-root:hover{
 	transition: all 100ms;
 }
 
-.inline-mode #elementsList{
+.with-page-editor #elementsList{
 	bottom: 0;
 }
 
@@ -910,4 +920,9 @@ i.remove-root:hover{
 
 .empty-list-wrap .addtolist-icon{
 	vertical-align: bottom;
+}
+
+#pageEditor{
+	flex-grow: 1;
+	border-width: 0;
 }

@@ -44,7 +44,7 @@ module.exports = {
     new ExtractTextPlugin('[name].css'),
     new CopyWebpackPlugin([
         { from: 'js/content/index.js', to:'content.js' },
-        { from: '../devtools-panel/dist/index.html', to:'../selector-editor.html' },
+        { from: '../devtools-panel/dist/index.html', to:'../devtools-panel.html' },
         { from: '../devtools-panel/dist/assets', to:'./' },
         { from: '../page-editor/build/index.html', to:'../page-editor.html' },
         { from: '../page-editor/build/static', to:'../static' }

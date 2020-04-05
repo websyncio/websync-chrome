@@ -66,10 +66,10 @@
 // 	}, onScriptsInjected);
 
 // function onScriptsInjected(){
-	chrome.devtools.panels.create('WebSync', 'icons/icon64.png', 'devtools-panel.html');
+	chrome.devtools.panels.create('WebSync', 'icons/icon64.png', 'devtools-panel.html?withpageeditor=true');
 	chrome.devtools.panels.elements.createSidebarPane("WebSync",
 		function(sidebar) {
-		  sidebar.setPage("selector-editor.html");
+		  sidebar.setPage("devtools-panel.html");
 		  sidebar.onHidden.addListener(handleHidden)
 		});
 // };
