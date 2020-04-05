@@ -10,6 +10,8 @@ export default Service.extend({
 		return this._callEval('locateInspectedElement('+cssArrayString+','+xpathArrayString+')', onLocated);
 	},
 	_callEval(script, onLocated){
-		chrome.devtools.inspectedWindow.eval(script, {useContentScriptContext: true }, onLocated);
+		chrome.devtools.inspectedWindow.eval(script, {useContentScriptContext: true }, function(a,b){
+			onLocated(a);
+		});
 	}
 });

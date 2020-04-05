@@ -1,5 +1,5 @@
 {{context-menu}}
-<div id="root" class="container-fluid">
+<div id="root" class="container-fluid {{if isInlineMode "inline-mode"}}">
 	{{!-- CONVERTER --}}
 	<div id="selectorsConverter" class="{{if isEditMode "edit-mode"}}" {{action "onSelectorConverterFocus"}}>
 		<iframe name="resizeHandlerFrame" width=100% height=100% style="position:absolute;z-index:-1;border:0"></iframe>
@@ -91,7 +91,9 @@
 			{{/each}}
 			</ul>
 		</div>
-		{{component-selectors-list selectors=selectors isExpanded=selectorsListIsExpanded editedSelector=editedSelector onEdit=(action "onEdtiComponentSelector")}}
+		{{#unless isInlineMode}}
+			{{component-selectors-list selectors=selectors isExpanded=selectorsListIsExpanded editedSelector=editedSelector onEdit=(action "onEdtiComponentSelector")}}
+		{{/unless}}
 	</div>
 	{{#if notification}}
 		{{notification-toast notification=notification}}

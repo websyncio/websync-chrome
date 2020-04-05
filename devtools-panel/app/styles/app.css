@@ -426,6 +426,10 @@ i.remove-root:hover{
 	animation: collapse-selectors-list 200ms steps(1) forwards;
 }
 
+.inline-mode #selectorsList{
+	display: none;
+}
+
 @keyframes collapse-selectors-list {
   0%   { z-index: 20; }	/* we do not need this when element is displayed for the first time but I do not know how to get rid of it*/
   100% { z-index: 0; }
@@ -680,6 +684,10 @@ i.remove-root:hover{
 	width: 100%;
 	overflow: auto;
 	transition: all 100ms;
+}
+
+.inline-mode #elementsList{
+	bottom: 0;
 }
 
 #elementsList ul{

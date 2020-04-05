@@ -17,6 +17,7 @@ export default Ember.Controller.extend({
 	parts: A([]),
 	selectors: A([]),
 	elements: A([]),
+	isInlineMode: false,
 	elementsSlice: Ember.computed('elements', function(){
 		return this.get('elements');	//.slice(0, 50);
 	}),
@@ -31,6 +32,7 @@ export default Ember.Controller.extend({
     	});
 
     	chrome.devtools.panels.elements.onSelectionChanged.addListener(this.locateInspectedElement.bind(this));
+    	this.set('isInlineMode', this.getParamValue('inlinemode')==='true');
 	},
 	bindSourceInputEvents(){
 		let element = this.getInputElement();
@@ -51,6 +53,17 @@ export default Ember.Controller.extend({
 				//console.log('caret position changed: '+position);
 			}
 		}
+	},
+	getParamValue(paramName)
+	{
+	    var url = window.location.search.substring(1); //get rid of "?" in querystring
+	    var qArray = url.split('&'); //get key-value pairs
+	    for (var i = 0; i < qArray.length; i++) 
+	    {
+	        var pArr = qArray[i].split('='); //split key and value
+	        if (pArr[0] == paramName) 
+	            return pArr[1]; //return value
+	    }
 	},
 	getPartForCaretPosition(position){
 		let parts = this.get('parts');
