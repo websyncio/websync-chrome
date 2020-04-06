@@ -58,6 +58,10 @@ body.ember-application>.ember-view{
 	width: 100%;
 }
 
+#root.with-page-editor{
+	border-bottom: 1px solid #eee;
+}
+
 #selectorsConverter{
 	padding: 5px;
 	/*background: ghostwhite;*/
