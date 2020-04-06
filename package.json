@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "cd devtools-panel && ember build && cd ../page-editor && npm run build && cd .. && npx webpack"
+    "deploy": "cd devtools-panel && ember build && cd ../page-editor && npm run build && cd .. && npx webpack",
+    "prepare": "npm i && cd devtools-panel && npm i && cd ../page-editor && npm i && cd .."
   },
   "repository": {
     "type": "git",
