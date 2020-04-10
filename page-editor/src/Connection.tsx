@@ -10,7 +10,6 @@ type State = {
     isConnected: boolean;
     projects: [];
     selected: string;
-    dataToSend: string;
 };
 
 type ConnectionProps = {
@@ -27,7 +26,6 @@ class Connection extends Component<ConnectionProps, State> {
             isConnected: false,
             projects: [],
             selected: '',
-            dataToSend: '',
         };
     }
 
@@ -124,8 +122,6 @@ class Connection extends Component<ConnectionProps, State> {
                 ) : (
                     <DisconnectedState />
                 )}
-
-                {this.state.dataToSend ? this.sendHandler(this.state.dataToSend) : ''}
             </div>
         );
     }
