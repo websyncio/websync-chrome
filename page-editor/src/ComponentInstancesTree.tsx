@@ -55,7 +55,10 @@ class ComponentInstancesList extends Component<{ componentInstancesList: Compone
             return;
         }
         component.name = newName;
-        const json = JSON.stringify(component);
+        const data = {};
+        data['command'] = 'update-component-instance';
+        data['data'] = component;
+        const json = JSON.stringify(data);
         console.log('sent ' + json);
         this.props.onSend(json);
     }
