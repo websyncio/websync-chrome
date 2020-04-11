@@ -1,17 +1,4 @@
-export class Parameter {
-    name: string | undefined;
-    values: string[];
-
-    constructor(name: string, values: string[]) {
-        this.name = name;
-        this.values = values;
-    }
-
-    static fromJSON(json: any): Parameter {
-        const parameter = Object.create(Parameter.prototype);
-        return Object.assign(parameter, json);
-    }
-}
+import Parameter from './Parameter';
 
 export default class Attribute {
     name: string;

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
-import WebSession from './models/WebSession';
-import ConnectedState from './components/ConnectedState';
-import DisconnectedState from './components/DisconnectedState';
+import WebSession from '../models/WebSession';
+import ConnectedState from './ConnectedState';
+import DisconnectedState from './DisconnectedState';
 
-import './styles/Connection.sass';
+import 'styles/Connection.sass';
 
 type State = {
     isConnected: boolean;

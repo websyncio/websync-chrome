@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import './styles/App.sass';
-import Connection from './Connection';
+import Connection from './components/Connection';
 import PageType from './models/PageType';
-import PageList from './PageList';
-import ComponentInstancesList from './ComponentInstancesTree';
-// import { testdata } from './data/testdata/testdata1';
+import PageList from './components/PageList';
+import ComponentInstancesList from './components/ComponentInstancesTree';
 
 import 'semantic-ui-css/semantic.min.css';
 import WebSession from './models/WebSession';

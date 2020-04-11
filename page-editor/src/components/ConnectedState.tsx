@@ -5,10 +5,6 @@ type ConnState = {
 };
 
 class ConnectedState extends Component<any, ConnState> {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <form>

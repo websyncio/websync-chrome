@@ -1,19 +1,12 @@
 import React, { Component } from 'react';
-import ComponentInstance from './models/ComponentInstance';
-import './styles/ComponentInstancesTree.sass';
-import Attribute from './components/Attribute';
+import ComponentInstance from '../models/ComponentInstance';
+import 'styles/ComponentInstancesTree.sass';
+import Attribute from './Attribute';
 
 class ComponentInstancesList extends Component<{ componentInstancesList: ComponentInstance[]; onSend: any }> {
-    constructor(props) {
-        super(props);
-        this.state = {
-            componentInstancesList: [],
-        };
-    }
-
     onRename(event, component) {
         console.log('rename');
-        if (event.target.contentEditable == true) {
+        if (event.target.contentEditable === true) {
             event.target.contentEditable = false;
         } else {
             event.target.contentEditable = true;
@@ -34,7 +27,7 @@ class ComponentInstancesList extends Component<{ componentInstancesList: Compone
             event.preventDefault();
         } else if (event.key === 'Escape') {
             this.submitRename(event, component, null);
-        } else if (newName.length == 100) {
+        } else if (newName.length === 100) {
             event.preventDefault();
         }
     }

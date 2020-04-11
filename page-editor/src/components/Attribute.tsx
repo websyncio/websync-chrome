@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
 import AttributeModel from '../models/Attribute';
+import Selector from './Selector';
+import SelectorModel from 'models/Selector';
 
 class Attribute extends Component<{ attribute: AttributeModel }> {
     getStatus() {
         return Math.floor(Math.random() * 3);
     }
 
-    valuesList = (values: string[]) => {
+    valuesList = (values: SelectorModel[]) => {
         return (
             <span className="parameter-values">
                 {values.length > 1 && '{'}
-                {values.map((v, index) => {
+                {values.map((s, index) => {
                     return (
-                        <span className="parameter-value" key={index}>
-                            `<span className={` ${this.getStatus() < 1 && 'invalid'}`}>{v}</span>`
+                        <span key={index}>
+                            <Selector selector={s} />
                             {index !== values.length - 1 && ', '}
                         </span>
                     );

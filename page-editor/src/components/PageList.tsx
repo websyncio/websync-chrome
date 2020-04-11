@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PageType from './models/PageType';
+import PageType from '../models/PageType';
 import { Dropdown } from 'semantic-ui-react';
 
 type PageListProps = {

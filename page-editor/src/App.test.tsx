@@ -1,7 +1,8 @@
 import { testdata } from './data/testdata/testdata1';
 // import PageType from './models/PageType';
 import ComponentType from './models/ComponentType';
-import Attribute, { Parameter } from './models/Attribute';
+import Attribute from './models/Attribute';
+import Parameter from './models/Parameter';
 import ComponentInstance from './models/ComponentInstance';
 
 test('attribute parameters contain correct values', () => {
