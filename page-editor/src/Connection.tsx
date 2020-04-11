@@ -88,6 +88,7 @@ class Connection extends Component<ConnectionProps, State> {
         };
 
         return (message) => {
+            console.log('dfsafs');
             client.send(message);
         };
     };

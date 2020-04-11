@@ -20,6 +20,7 @@ class App extends Component<any, AppState> {
         super(props);
         this.onSelectedPageChange = this.onSelectedPageChange.bind(this);
         this.onWebSessionUpdated = this.onWebSessionUpdated.bind(this);
+        this.connection = React.createRef();
 
         //let webSession = JSON.parse(testdata, WebSession.reviver);
         this.state = {
@@ -28,6 +29,8 @@ class App extends Component<any, AppState> {
             selectedPageType: undefined,
         };
     }
+
+    connection;
 
     onSelectedPageChange = (e, data) => {
         this.setState({ selectedPageType: this.state.pageTypes.find((p) => p.id === data.value) });
@@ -38,10 +41,14 @@ class App extends Component<any, AppState> {
         this.setState({ pageTypes: webSession.pages });
     };
 
+    onSend = (json: string) => {
+        this.connection.current.sendHandler(json);
+    };
+
     render() {
         return (
             <div className="App">
-                <Connection onWebSessionUpdated={this.onWebSessionUpdated} />
+                <Connection ref={this.connection} onWebSessionUpdated={this.onWebSessionUpdated} />
                 <div>
                     <p>Current IDEA project: {this.state.project}</p>
                 </div>
@@ -50,9 +57,11 @@ class App extends Component<any, AppState> {
                     selected={this.state.selectedPageType}
                     onSelectedPageChanged={this.onSelectedPageChange}
                 />
-
                 {this.state.selectedPageType && (
-                    <ComponentInstancesList componentInstancesList={this.state.selectedPageType.componentsInstances} />
+                    <ComponentInstancesList
+                        componentInstancesList={this.state.selectedPageType.componentsInstances}
+                        onSend={this.onSend}
+                    />
                 )}
             </div>
         );
