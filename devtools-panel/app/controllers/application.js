@@ -12,6 +12,7 @@ export default Ember.Controller.extend({
 	selectorHighlighter: Ember.inject.service(),
 	clipboard: Ember.inject.service(),
 	pluralizer: Ember.inject.service(),
+	pageEditorProxy: Ember.inject.service(),
 	inputValue: '',
 	rootParts: A([]),
 	parts: A([]),
@@ -24,6 +25,8 @@ export default Ember.Controller.extend({
 	init(){
 		this._super(...arguments);
 		console.log("Init ConvertController...");
+		this.get('pageEditorProxy').start();
+		
 		Ember.run.schedule("afterRender", this, function() {
       		this.focusInput();
       		this.locateInspectedElement();

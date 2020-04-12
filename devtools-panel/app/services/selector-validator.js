@@ -2,14 +2,26 @@ import Ember from 'ember';
 import RSVP from 'rsvp';
 
 export default Ember.Service.extend({
-	validate(selector){
-		if( !selector || (!selector.css && !selector.xpath)){
-			return Promise.resolve(null);
+	validate(selector, onValidated){
+		// if( !selector || (!selector.css && !selector.xpath)){
+		// 	return Promise.resolve(null);
+		// }
+		// return RSVP.hash({
+		// 	css: selector.css ? this.validateCss(selector.css) : { isValid:false },
+		// 	xpath: selector.xpath ? this.validateXpath(selector.xpath) : { isValid:false }
+		// });
+
+		if(!selector){
+			return;
 		}
-		return RSVP.hash({
-			css: selector.css ? this.validateCss(selector.css) : { isValid:false },
-			xpath: selector.xpath ? this.validateXpath(selector.xpath) : { isValid:false }
-		});
+		if(selector.css){
+			this.validateCss(selector.css, onValidated);
+		}
+		else if(selector.xpath){
+			this.validateXpath(selector.xpath, onValidated);
+		}else{
+			throw Error('invalid selector');
+		}
 	},
 	validateCss(css, onValidated){
 		return this._callEval('evaluateCss(`' + css + '`)', onValidated);

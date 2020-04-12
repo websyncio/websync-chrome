@@ -1,6 +1,5 @@
 export default class Selector {
     value: string;
-    status: number | undefined;
 
     constructor(value: string) {
         this.value = value;

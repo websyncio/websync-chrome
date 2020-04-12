@@ -54,12 +54,13 @@ body.ember-application>.ember-view{
 #root{
 	padding: 0;
 	position: relative;
-	height: 200px;
 	width: 100%;
+	height: 100%;
 }
 
 #root.with-page-editor{
 	border-bottom: 1px solid #eee;
+	height: 200px;
 }
 
 #selectorsConverter{
