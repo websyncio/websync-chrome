@@ -3,20 +3,19 @@ import SelectorModel from 'models/Selector';
 import SelectorValidator from 'services/SelectorValidator';
 
 export default class Selector extends Component<{ selector: SelectorModel }, { status: number | undefined }> {
-    selectorValidator: SelectorValidator;
     constructor(props) {
         super(props);
         this.state = {
             status: undefined,
         };
-        this.selectorValidator = new SelectorValidator(this.onValidated.bind(this));
     }
 
     componentDidMount() {
-        this.selectorValidator.validate(this.props.selector.value);
+        SelectorValidator.instance().validate(this.props.selector.value, this.onValidated.bind(this));
     }
 
     onValidated(validationResult: any) {
+        console.log(this.props.selector.value + ': ' + validationResult.count);
         this.setState({ status: validationResult.count });
     }
 

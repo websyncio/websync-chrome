@@ -28,20 +28,21 @@ export default Service.extend({
 		try{
 			var selector = this.get('scssParser').parse(event.data.selector);
 			this.get('selectorValidator').validate(selector, function(result, isException){
-				this.postResult(event, MSG_VALIDATE_SELECTOR, result, isException);
+				this.postResult(event, result, isException);
 			}.bind(this));
 		}
 		catch(e){
-			this.postResult(event, MSG_VALIDATE_SELECTOR, null, true);
+			this.postResult(event, null, true);
 		}
 	},
-	postResult(event, messageType, result, isException){
+	postResult(event, result, isException){
 		// Assuming you've verified the origin of the received message (which
 		// you must do in any case), a convenient idiom for replying to a
 		// message is to call postMessage on event.source and provide
 		// event.origin as the targetOrigin.
 		event.source.postMessage({
-			type: messageType,
+			acknowledgment: event.data.acknowledgment,
+			type: event.data.type,
 			result: result,
 			isException: isException
 		}, event.origin);
