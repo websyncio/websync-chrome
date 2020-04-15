@@ -5,19 +5,15 @@ import Attribute from './Attribute';
 
 class ComponentInstancesList extends Component<{ componentInstancesList: ComponentInstance[]; onSend: any }> {
     onRename(event, component) {
-        console.log('rename');
         if (event.target.contentEditable === true) {
             event.target.contentEditable = false;
         } else {
             event.target.contentEditable = true;
         }
-        console.log('editable=' + event.target.contentEditable);
     }
 
     onNameKeyDown(event, component) {
-        console.log('nameKeyDown');
         const newName = event.target.innerText.trim();
-        console.log(event.key + ':' + event.keyCode);
         if (!event.key.match(/[A-Za-z0-9_$]+/g)) {
             event.preventDefault();
             return;
@@ -33,13 +29,11 @@ class ComponentInstancesList extends Component<{ componentInstancesList: Compone
     }
 
     onNameBlur(event, component) {
-        console.log('blur');
         const newName = event.target.innerText.trim();
         this.submitRename(event, component, newName);
     }
 
     submitRename(event, component, newName) {
-        console.log('submitRename');
         event.target.contentEditable = false;
         if (newName === null) {
             event.target.innerText = component.name;
@@ -47,13 +41,18 @@ class ComponentInstancesList extends Component<{ componentInstancesList: Compone
         } else if (component.name === newName) {
             return;
         }
+
         component.name = newName;
+
         const data = {};
         data['command'] = 'update-component-instance';
         data['data'] = component;
         const json = JSON.stringify(data);
         console.log('sent ' + json);
         this.props.onSend(json);
+
+        const lastDot = component.id.lastIndexOf('.');
+        component.id = component.id.substring(0, lastDot + 1) + newName;
     }
 
     render() {
