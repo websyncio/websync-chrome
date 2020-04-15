@@ -6,7 +6,7 @@ Developer Guide
 
 1. Install NodeJS
 2. Clone repository
-3. Run <kbd>npm run prepare</kbd> in root folder
+3. Run <kbd>npm run configure</kbd> in root folder
 4. Run <kbd>npm install -g ember-cli</kbd>
 5. Run <kbd>npm run deploy</kbd>
 6. Open Chrome and go to chrome://extensions
