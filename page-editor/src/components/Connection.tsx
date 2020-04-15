@@ -78,7 +78,8 @@ class Connection extends Component<ConnectionProps, State> {
                 }
                 const webSession = message.data;
                 console.log('WebSession received:', webSession);
-                const modules = [webSession.module];
+
+                const modules = webSession.map((item) => item.module);
                 this.setState({ modules: modules });
                 this.props.onWebSessionUpdated(webSession);
             } catch (ex) {
