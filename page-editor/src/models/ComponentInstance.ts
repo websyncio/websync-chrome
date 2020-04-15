@@ -14,7 +14,7 @@ export default class ComponentInstance {
     }
 
     getName() {
-        const arr = this.id.split(':');
+        const arr = this.id.split('.');
         return arr[arr.length - 1].trim();
     }
 

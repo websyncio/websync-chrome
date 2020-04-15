@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
-import WebSession from '../models/WebSession';
+import Message from '../models/Message';
 import ConnectedState from './ConnectedState';
 import DisconnectedState from './DisconnectedState';
 
@@ -8,7 +8,7 @@ import 'styles/Connection.sass';
 
 type State = {
     isConnected: boolean;
-    projects: [];
+    modules: Array<string>;
     selected: string;
 };
 
@@ -24,7 +24,7 @@ class Connection extends Component<ConnectionProps, State> {
         super(props);
         this.state = {
             isConnected: false,
-            projects: [],
+            modules: [],
             selected: '',
         };
     }
@@ -49,7 +49,9 @@ class Connection extends Component<ConnectionProps, State> {
                 client.send(command);
             }
 
-            sendCommand('get-projects');
+            const data = {};
+            data['command'] = 'get-modules';
+            sendCommand(JSON.stringify(data));
             // sendCommand('get-web-session');
 
             this.setState({ isConnected: isConnection });
@@ -65,30 +67,28 @@ class Connection extends Component<ConnectionProps, State> {
 
         client.onmessage = (e) => {
             try {
-                const message = JSON.parse(e.data);
-                if (message.projects) {
-                    this.setState({ projects: message.projects });
+                const message = JSON.parse(e.data, Message.reviver);
+                if (message.status !== 0) {
+                    console.log('error message ===', message.data);
                     return;
                 }
-                const webSession = JSON.parse(e.data, WebSession.reviver);
-                console.log('WebSession received', webSession);
+                if (message.data.modules) {
+                    this.setState({ modules: message.data.modules });
+                    return;
+                }
+                const webSession = message.data;
+                console.log('WebSession received:', webSession);
+
+                const modules = webSession.map((item) => item.module);
+                this.setState({ modules: modules });
                 this.props.onWebSessionUpdated(webSession);
             } catch (ex) {
-                console.log('Message received', e.data);
+                console.log('Message received "' + e.data + '"');
+                console.log(ex);
             }
-
-            // console.log("Received: '" + e.data + "'");
-            // if (e.data.charAt(0) === "{") {
-            //     let data: string = e.data;
-            //     let pageObject = JSON.parse(data);
-            //     let pages: PageType[] = pageObject.pages as PageType[];
-            //     this.setState({pageTypes: pages});
-            // }
-            // }
         };
 
         return (message) => {
-            console.log('dfsafs');
             client.send(message);
         };
     };
@@ -98,9 +98,9 @@ class Connection extends Component<ConnectionProps, State> {
         if (!isConnected) this.componentDidMount();
     };
 
-    getProjectWebSession = (project: string) => {
-        this.setState({ selected: project });
-        this.sendHandler('get-project-web-session:' + project);
+    getProjectWebSession = (module: string) => {
+        this.setState({ selected: module });
+        this.sendHandler('get-project-web-session:' + module);
     };
 
     render() {
@@ -113,8 +113,8 @@ class Connection extends Component<ConnectionProps, State> {
                 {this.state.isConnected ? (
                     this.state.selected === '' ? (
                         <ConnectedState
-                            projects={this.state.projects}
-                            getProjectWebSession={(project: string) => this.getProjectWebSession(project)}
+                            modules={this.state.modules}
+                            getProjectWebSession={(module: string) => this.getProjectWebSession(module)}
                         />
                     ) : (
                         <p />

@@ -9,7 +9,7 @@ import 'semantic-ui-css/semantic.min.css';
 import WebSession from './models/WebSession';
 
 type AppState = {
-    project: string;
+    module: string;
     pageTypes: Array<PageType>;
     selectedPageType?: PageType;
 };
@@ -23,7 +23,7 @@ class App extends Component<any, AppState> {
 
         //let webSession = JSON.parse(testdata, WebSession.reviver);
         this.state = {
-            project: '',
+            module: '',
             pageTypes: [], // webSession.pages,
             selectedPageType: undefined,
         };
@@ -36,7 +36,7 @@ class App extends Component<any, AppState> {
     };
 
     onWebSessionUpdated = (webSession: WebSession) => {
-        this.setState({ project: webSession.project });
+        this.setState({ module: webSession.module });
         this.setState({ pageTypes: webSession.pages });
     };
 
@@ -49,7 +49,7 @@ class App extends Component<any, AppState> {
             <div className="App">
                 <Connection ref={this.connection} onWebSessionUpdated={this.onWebSessionUpdated} />
                 <div>
-                    <p>Current IDEA project: {this.state.project}</p>
+                    <p>Current IDEA project: {this.state.module}</p>
                 </div>
                 <PageList
                     pageTypes={this.state.pageTypes}
