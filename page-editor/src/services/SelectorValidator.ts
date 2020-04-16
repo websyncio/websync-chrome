@@ -29,9 +29,7 @@ export default class SelectorValidator {
             if (!event.data.isException) {
                 validationData.isValid = true;
                 validationData.count = this.getNodesCount(event.data.result, false);
-                // validationData.count = 0;
                 validationData.displayedCount = this.getNodesCount(event.data.result, true);
-                // validationData.displayedCount = 0;
             }
 
             callback(validationData);
