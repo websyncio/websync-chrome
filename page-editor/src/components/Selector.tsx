@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import SelectorModel from 'models/Selector';
 import SelectorValidator from 'services/SelectorValidator';
 
-export default class Selector extends Component<{ selector: SelectorModel }, { status: number | undefined }> {
+export default class Selector extends Component<
+    { selector: SelectorModel; onEdit: any },
+    { status: number | undefined }
+> {
     selectorValidator: SelectorValidator = new SelectorValidator();
 
     constructor(props) {
@@ -11,7 +14,6 @@ export default class Selector extends Component<{ selector: SelectorModel }, { s
             status: undefined,
         };
     }
-
 
     componentDidMount() {
         this.selectorValidator.validate(this.props.selector.value, this.onValidated.bind(this));
@@ -26,7 +28,10 @@ export default class Selector extends Component<{ selector: SelectorModel }, { s
         return (
             <span className="parameter-value">
                 &apos;
-                <span className={` ${this.state.status !== undefined && this.state.status < 1 && 'invalid'}`}>
+                <span
+                    className={` ${this.state.status !== undefined && this.state.status < 1 && 'invalid'}`}
+                    onClick={this.props.onEdit}
+                >
                     {this.props.selector.value}
                 </span>
                 &apos;

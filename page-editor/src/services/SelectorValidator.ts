@@ -13,13 +13,11 @@ export default class SelectorValidator {
     }
 
     validate(selector: string, callback: Function) {
-        SelectorEditorProxy.instance().sendMessage(
-            'validate-selector',
-            selector, (event)=>{
-                this.callback(event, callback);
-            });
+        SelectorEditorProxy.instance().sendMessage('validate-selector', selector, (event) => {
+            this.callback(event, callback);
+        });
     }
-    callback(event, onValidated){
+    callback(event, onValidated) {
         const validationData = {
             isValid: false,
             count: 0,

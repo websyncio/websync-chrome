@@ -1,26 +1,26 @@
 import React, { Component } from 'react';
 import AttributeModel from '../models/Attribute';
 import Selector from './Selector';
-import SelectorModel from 'models/Selector';
+import ParmeterModel from 'models/Parameter';
 
-class Attribute extends Component<{ attribute: AttributeModel }> {
+class Attribute extends Component<{ attribute: AttributeModel; onEditSelector: any }> {
     getStatus() {
         return Math.floor(Math.random() * 3);
     }
 
-    valuesList = (values: SelectorModel[]) => {
+    valuesList = (parameter: ParmeterModel) => {
         return (
             <span className="parameter-values">
-                {values.length > 1 && '{'}
-                {values.map((s, index) => {
+                {parameter.values.length > 1 && '{'}
+                {parameter.values.map((s, index) => {
                     return (
                         <span key={index}>
-                            <Selector selector={s} />
-                            {index !== values.length - 1 && ', '}
+                            <Selector selector={s} onEdit={() => this.props.onEditSelector(parameter, index)} />
+                            {index !== parameter.values.length - 1 && ', '}
                         </span>
                     );
                 })}
-                {values.length > 1 && '}'}
+                {parameter.values.length > 1 && '}'}
             </span>
         );
     };
@@ -37,7 +37,7 @@ class Attribute extends Component<{ attribute: AttributeModel }> {
                             </span>,
                             ' = ',
                         ]}
-                        {this.valuesList(p.values)}
+                        {this.valuesList(p)}
                         {index !== this.props.attribute.parameters.length - 1 && ', '}
                     </span>
                 ))}
