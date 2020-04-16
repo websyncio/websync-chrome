@@ -26,7 +26,7 @@ export default Service.extend({
 	},
 	validateSelector(event){
 		try{
-			var selector = this.get('scssParser').parse(event.data.selector);
+			var selector = this.get('scssParser').parse(event.data.data.selector);
 			this.get('selectorValidator').validate(selector, function(result, isException){
 				this.postResult(event, result, isException);
 			}.bind(this));

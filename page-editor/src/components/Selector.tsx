@@ -3,6 +3,8 @@ import SelectorModel from 'models/Selector';
 import SelectorValidator from 'services/SelectorValidator';
 
 export default class Selector extends Component<{ selector: SelectorModel }, { status: number | undefined }> {
+    selectorValidator: SelectorValidator = new SelectorValidator();
+
     constructor(props) {
         super(props);
         this.state = {
@@ -10,8 +12,9 @@ export default class Selector extends Component<{ selector: SelectorModel }, { s
         };
     }
 
+
     componentDidMount() {
-        SelectorValidator.instance().validate(this.props.selector.value, this.onValidated.bind(this));
+        this.selectorValidator.validate(this.props.selector.value, this.onValidated.bind(this));
     }
 
     onValidated(validationResult: any) {
