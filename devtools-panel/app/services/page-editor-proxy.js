@@ -1,12 +1,15 @@
 import Service from '@ember/service';
+import Reactor from './reactor';
 
 const MSG_VALIDATE_SELECTOR = 'validate-selector';
+const MSG_EDIT_COMPONENT_SELECTOR = 'edit-component-selector';
 
 export default Service.extend({
 	scssParser: Ember.inject.service(),
 	selectorValidator: Ember.inject.service(),
 	selectorHighlighter: Ember.inject.service(),
 	selectorInspector: Ember.inject.service(),
+	reactor: Ember.inject.service(),
 	start(){
 		window.addEventListener("message", this.receiveMessage.bind(this), false);
 	},
@@ -20,9 +23,18 @@ export default Service.extend({
 			case MSG_VALIDATE_SELECTOR:
 				this.validateSelector(event);
 				break;
+			case MSG_EDIT_COMPONENT_SELECTOR:
+				this.editComponentSelector(event);
+				break
 			default:
 				console.log("Page edito proxy received message of unknown type.", event.data.type);
 		}
+	},
+	editComponentSelector(event){
+		this.get('reactor').dispatchEvent(
+			'MSG_EDIT_COMPONENT_SELECTOR',
+			event.data.data
+		);
 	},
 	validateSelector(event){
 		try{
