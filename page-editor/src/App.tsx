@@ -29,7 +29,7 @@ class App extends Component<any, AppState> {
         };
     }
 
-    connection;
+    connection: any;
 
     onSelectedPageChange = (e, data) => {
         this.setState({ selectedPageType: this.state.pageTypes.find((p) => p.id === data.value) });
@@ -38,6 +38,10 @@ class App extends Component<any, AppState> {
     onWebSessionUpdated = (webSession: WebSession) => {
         this.setState({ module: webSession.module });
         this.setState({ pageTypes: webSession.pages });
+        const page = webSession.pages.find(
+            (p) => this.state.selectedPageType !== undefined && p.id === this.state.selectedPageType.id,
+        );
+        this.setState({ selectedPageType: page });
     };
 
     onSend = (json: string) => {

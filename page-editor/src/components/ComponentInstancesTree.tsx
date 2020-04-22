@@ -14,7 +14,7 @@ class ComponentInstancesList extends Component<{ componentInstancesList: Compone
 
     onNameKeyDown(event, component) {
         const newName = event.target.innerText.trim();
-        if (!event.key.match(/[A-Za-z0-9_$]+/g)) {
+        if (!event.key.match(/[a-z_$][A-Za-z0-9_$]+/g)) {
             event.preventDefault();
             return;
         }
@@ -74,7 +74,11 @@ class ComponentInstancesList extends Component<{ componentInstancesList: Compone
                                 {component.getName()}
                             </span>
                             {component.initializationAttribute && (
-                                <Attribute attribute={component.initializationAttribute} />
+                                <Attribute
+                                    component={component}
+                                    attribute={component.initializationAttribute}
+                                    onSend={this.props.onSend}
+                                />
                             )}
                         </li>,
                         // <ComponentInstancesList componentInstancesList={component.selectedPageType.componentsInstances}/>
