@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Loader from '../../public/loader-64x64.gif';
+import AjaxLoader from '../../public/loader-64x64.gif';
 
 type ConnState = {
     modules: string[];
@@ -10,7 +10,7 @@ class ConnectedState extends Component<any, ConnState> {
         return (
             <form>
                 {this.props.modules.length === 0 ? (
-                    <img src={Loader} />
+                    <img src={AjaxLoader} />
                 ) : (
                     <div>
                         <p>Select IDEA project:</p>
