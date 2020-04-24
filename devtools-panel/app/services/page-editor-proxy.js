@@ -3,6 +3,7 @@ import Reactor from './reactor';
 
 export const MessageTypes = {
 	EditComponentSelector: 'edit-component-selector',
+	UpdateComponentSelector: 'update-component-selector',
 	ValidateSelector: 'validate-selector'
 };
 
@@ -12,6 +13,7 @@ export default Service.extend({
 	selectorHighlighter: Ember.inject.service(),
 	selectorInspector: Ember.inject.service(),
 	reactor: Ember.inject.service(),
+
 	init(){
 		this.get('reactor').registerEvent(MessageTypes.EditComponentSelector);
 	},
@@ -64,10 +66,23 @@ export default Service.extend({
 			isException: isException
 		}, event.origin);
 	},
+	postMessage(type, data){
+		pageEditor.contentWindow.postMessage({
+			type: type,
+			data: data
+		}, "*");
+	},
 	addListener(messageType, listener){
 		this.get('reactor').addEventListener(messageType, listener);
 	},
-	updateComponentSelector(componentId, parameterName, valueIndex, newSelector){
-
+	updateComponentSelector(componentId, parameterName, parameterValueIndex, newSelector){
+		this.postMessage(
+			MessageTypes.UpdateComponentSelector,
+			{
+				componentId: componentId,
+				parameterName: parameterName,
+				parameterValueIndex: parameterValueIndex,
+				selector: newSelector
+			});
 	}
 });

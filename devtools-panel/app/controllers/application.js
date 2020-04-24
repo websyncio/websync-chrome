@@ -392,12 +392,12 @@ export default Ember.Controller.extend({
 	},
 	updateComponentSelector(){
 		if(this.get('inputValue')){
-			let {componentId, parameterName, valueIndex} = this.get('componentSelectorToUpdate');
+			let {componentId, parameterName, parameterValueIndex} = this.get('componentSelectorToUpdate');
 			this.get('pageEditorProxy').updateComponentSelector(
-				componentId, 
+				componentId,
 				parameterName, 
-				valueIndex,
-				this.getSelector()
+				parameterValueIndex,
+				this.getSelector().css
 			);
 			this.set('componentSelectorToUpdate', null);
 			this.setInputValue('');

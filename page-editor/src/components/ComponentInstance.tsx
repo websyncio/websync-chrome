@@ -57,16 +57,13 @@ export default class ComponentInstance extends Component<{ component: ComponentI
     }
 
     editSelector = (component: ComponentInstanceModel, parameter: ParameterModel, valueIndex: number) => {
-        SelectorEditorProxy.instance().sendMessage(
-            'edit-component-selector',
-            {
-                componentName: component.name,
-                parameterName: parameter.name,
-                parameterValueIndex: valueIndex,
-                selector: parameter.values[valueIndex].value,
-            },
-            this.onSelectorEdited,
-        );
+        SelectorEditorProxy.instance().sendMessage('edit-component-selector', {
+            componentId: component.id,
+            componentName: component.name,
+            parameterName: parameter.name,
+            parameterValueIndex: valueIndex,
+            selector: parameter.values[valueIndex].value,
+        });
     };
 
     onSelectorEdited(parameterName, valueIndex, newValue) {
