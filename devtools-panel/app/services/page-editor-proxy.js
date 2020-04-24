@@ -1,8 +1,10 @@
 import Service from '@ember/service';
 import Reactor from './reactor';
 
-const MSG_VALIDATE_SELECTOR = 'validate-selector';
-const MSG_EDIT_COMPONENT_SELECTOR = 'edit-component-selector';
+export const MessageTypes = {
+	EditComponentSelector: 'edit-component-selector',
+	ValidateSelector: 'validate-selector'
+};
 
 export default Service.extend({
 	scssParser: Ember.inject.service(),
@@ -10,6 +12,9 @@ export default Service.extend({
 	selectorHighlighter: Ember.inject.service(),
 	selectorInspector: Ember.inject.service(),
 	reactor: Ember.inject.service(),
+	init(){
+		this.get('reactor').registerEvent(MessageTypes.EditComponentSelector);
+	},
 	start(){
 		window.addEventListener("message", this.receiveMessage.bind(this), false);
 	},
@@ -20,10 +25,10 @@ export default Service.extend({
 		}
 
 		switch(event.data.type){
-			case MSG_VALIDATE_SELECTOR:
+			case MessageTypes.ValidateSelector:
 				this.validateSelector(event);
 				break;
-			case MSG_EDIT_COMPONENT_SELECTOR:
+			case MessageTypes.EditComponentSelector:
 				this.editComponentSelector(event);
 				break
 			default:
@@ -32,7 +37,7 @@ export default Service.extend({
 	},
 	editComponentSelector(event){
 		this.get('reactor').dispatchEvent(
-			'MSG_EDIT_COMPONENT_SELECTOR',
+			MessageTypes.EditComponentSelector,
 			event.data.data
 		);
 	},
@@ -58,5 +63,8 @@ export default Service.extend({
 			result: result,
 			isException: isException
 		}, event.origin);
+	},
+	addListener(messageType, listener){
+		this.get('reactor').addEventListener(messageType, listener);
 	}
 });

@@ -3,6 +3,7 @@ import { A } from '@ember/array';
 import { once } from '@ember/runloop';
 import ComponentSelector from '../models/component-selector';
 import Notification from '../models/notification';
+import {MessageTypes} from '../services/page-editor-proxy';
 
 export default Ember.Controller.extend({
 	selectorPartFactory: Ember.inject.service(),
@@ -25,8 +26,8 @@ export default Ember.Controller.extend({
 	init(){
 		this._super(...arguments);
 		console.log("Init ConvertController...");
-		this.get('pageEditorProxy').start();
-		
+		this.configurePageEditor();
+
 		Ember.run.schedule("afterRender", this, function() {
       		this.focusInput();
       		this.locateInspectedElement();
@@ -36,6 +37,11 @@ export default Ember.Controller.extend({
 
     	chrome.devtools.panels.elements.onSelectionChanged.addListener(this.locateInspectedElement.bind(this));
     	this.set('withPageEditor', this.getParamValue('withpageeditor')==='true');
+	},
+	configurePageEditor(){
+		let pageEditor = this.get('pageEditorProxy'); 
+		pageEditor.addListener(MessageTypes.EditComponentSelector, this.editComponentSelector);
+		pageEditor.start();
 	},
 	bindSourceInputEvents(){
 		let element = this.getInputElement();
@@ -367,6 +373,9 @@ export default Ember.Controller.extend({
 			this.setInputValue('');
 			this.showNotification("Selector was added to the list.");
 		}
+	},
+	editComponentSelector(data){
+		console.log(data);
 	},
 	updateSelector(){
 		if(this.get('inputValue')){
