@@ -30,7 +30,7 @@ export default Service.extend({
 				break;
 			case MessageTypes.EditComponentSelector:
 				this.editComponentSelector(event);
-				break
+				break;
 			default:
 				console.log("Page edito proxy received message of unknown type.", event.data.type);
 		}
@@ -66,5 +66,8 @@ export default Service.extend({
 	},
 	addListener(messageType, listener){
 		this.get('reactor').addEventListener(messageType, listener);
+	},
+	updateComponentSelector(componentId, parameterName, valueIndex, newSelector){
+
 	}
 });

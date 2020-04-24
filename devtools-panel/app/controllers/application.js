@@ -40,7 +40,7 @@ export default Ember.Controller.extend({
 	},
 	configurePageEditor(){
 		let pageEditor = this.get('pageEditorProxy'); 
-		pageEditor.addListener(MessageTypes.EditComponentSelector, this.editComponentSelector);
+		pageEditor.addListener(MessageTypes.EditComponentSelector, this.onEditComponentSelector.bind(this));
 		pageEditor.start();
 	},
 	bindSourceInputEvents(){
@@ -119,13 +119,8 @@ export default Ember.Controller.extend({
 		let scss = this.get('scss');
 		return selectedPart && selectedPart.get('isEditable') && (!scss || scss.isCssStyle);
 	}),
-	isEditMode: Ember.computed('selectorToUpdate', function(){
-		if(this.get('selectorToUpdate')){
-			this.setInputValue(this.get('selectorToUpdate.selector.scss'));			
-			this.selectPartInInput(this.get('parts.lastObject'));
-			return true;
-		}
-		return false;
+	isEditMode: Ember.computed('selectorToUpdate', 'componentSelectorToUpdate', function(){
+		return this.get('selectorToUpdate') || this.get('componentSelectorToUpdate');
 	}),
 	rootScss: Ember.computed('rootParts.[]', function(){
 		return this.get('rootParts.lastObject.fullScss');
@@ -374,8 +369,11 @@ export default Ember.Controller.extend({
 			this.showNotification("Selector was added to the list.");
 		}
 	},
-	editComponentSelector(data){
-		console.log(data);
+	onEditComponentSelector(data){
+		this.removeRoot();
+		this.set('componentSelectorToUpdate', data);
+		this.setInputValue(data.selector);
+		this.collapseSelectorsList();
 	},
 	updateSelector(){
 		if(this.get('inputValue')){
@@ -392,8 +390,22 @@ export default Ember.Controller.extend({
 			this.expandSelectorsList();
 		}
 	},
-	cancelSelectorUpdate(){
+	updateComponentSelector(){
+		if(this.get('inputValue')){
+			let {componentId, parameterName, valueIndex} = this.get('componentSelectorToUpdate');
+			this.get('pageEditorProxy').updateComponentSelector(
+				componentId, 
+				parameterName, 
+				valueIndex,
+				this.getSelector()
+			);
+			this.set('componentSelectorToUpdate', null);
+			this.setInputValue('');
+		}
+	},
+	cancelEditMode(){
 		this.set('selectorToUpdate', null);
+		this.set('componentSelectorToUpdate', null);
 		this.setInputValue('');
 		this.expandSelectorsList();
 	},
@@ -526,9 +538,11 @@ export default Ember.Controller.extend({
 		onAddToList(){
 			this.addToList();
 		},
-		onEdtiComponentSelector(componentSelector){
+		onEditSelector(componentSelector){
 			this.removeRoot();
 			this.set('selectorToUpdate', componentSelector);
+			this.setInputValue(componentSelector.selector.scss);			
+			this.selectPartInInput(this.get('parts.lastObject'));
 			this.collapseSelectorsList();
 		},
 		onSelectorConverterFocus(){
@@ -537,24 +551,32 @@ export default Ember.Controller.extend({
 		onInputKeyDown(){
 			switch(event.code){
 				case "Enter":
-					if(this.get('isEditMode')){
+					if(this.get('selectorToUpdate')){
 						this.updateSelector();
+					}else if(this.get('componentSelectorToUpdate')){
+						this.updateComponentSelector();
 					}else{
 						this.addToList();
 					}
 				break;
 				case "Escape":
-					if(this.get('isEditMode')){
-						this.cancelSelectorUpdate();
+					if(this.get('selectorToUpdate') || this.get('componentSelectorToUpdate')){
+						this.cancelEditMode();
 					}
 				break;
 			}
 		},
 		onCancelSelectorUpdate(){
-			this.cancelSelectorUpdate();
+			this.cancelEditMode();
 		},
 		onUpdateSelector(){
-			this.updateSelector();
+			if(this.get('selectorToUpdate')){
+				this.updateSelector();
+			}else if(this.get('componentSelectorToUpdate')){
+				this.updateComponentSelector();
+			}else{
+				throw new Error("Invalid state.");
+			}
 		},
 		onRemoveRoot(){
 			this.removeRoot();

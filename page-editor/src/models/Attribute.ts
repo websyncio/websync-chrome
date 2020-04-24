@@ -1,9 +1,10 @@
 import Parameter from './Parameter';
+import { toDictionary } from 'utils/convert';
 
 export default class Attribute {
     name: string;
-    parameters: Array<Parameter>;
-    constructor(name: string, parameters: Array<Parameter>) {
+    parameters: Parameter[];
+    constructor(name: string, parameters: Parameter[]) {
         this.name = name;
         this.parameters = parameters;
     }

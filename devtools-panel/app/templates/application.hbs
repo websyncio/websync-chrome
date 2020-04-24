@@ -15,8 +15,11 @@
 					onclick={{action "onCancelSelectorUpdate"}}
 					title="Cancel Selector Update"/>
 			{{/unless}}
-			{{#if isEditMode}}
+			{{#if selectorToUpdate}}
 				<span id="inputPrefix">{{selectorToUpdate.name}}</span>
+			{{/if}}
+			{{#if componentSelectorToUpdate}}
+				<span id="inputPrefix">{{componentSelectorToUpdate.componentName}}</span>
 			{{/if}}
 			{{#if rootScss}}
 				<span id="inputPrefix" title="{{rootScss}}" {{action "onRootMouseEnter" on="mouseEnter"}} {{action "onRootMouseLeave" on="mouseLeave"}}>
@@ -92,7 +95,7 @@
 			</ul>
 		</div>
 		{{#unless withPageEditor}}
-			{{component-selectors-list selectors=selectors isExpanded=selectorsListIsExpanded editedSelector=editedSelector onEdit=(action "onEdtiComponentSelector")}}
+			{{component-selectors-list selectors=selectors isExpanded=selectorsListIsExpanded editedSelector=editedSelector onEdit=(action "onEditSelector")}}
 		{{/unless}}
 	</div>
 	{{#if notification}}
