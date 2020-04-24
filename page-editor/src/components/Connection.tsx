@@ -45,15 +45,11 @@ class Connection extends Component<ConnectionProps, State> {
             console.log('WebSocket Client Connected');
             isConnection = true;
 
-            function sendCommand(command: string) {
-                client.send(command);
-            }
-
             const data = {};
             data['command'] = 'get-modules';
-            sendCommand(JSON.stringify(data));
-            // sendCommand('get-web-session');
+            client.send(JSON.stringify(data));
 
+            this.setState({ modules: [] });
             this.setState({ isConnected: isConnection });
         };
 
@@ -79,7 +75,8 @@ class Connection extends Component<ConnectionProps, State> {
                 const webSession = message.data;
                 console.log('WebSession received:', webSession);
 
-                const modules = webSession.map((item) => item.module);
+                const modules = [webSession.module];
+                console.log(modules);
                 this.setState({ modules: modules });
                 this.props.onWebSessionUpdated(webSession);
             } catch (ex) {
@@ -100,7 +97,7 @@ class Connection extends Component<ConnectionProps, State> {
 
     getProjectWebSession = (module: string) => {
         this.setState({ selected: module });
-        this.sendHandler('get-project-web-session:' + module);
+        // this.sendHandler('get-project-web-session:' + module);
     };
 
     render() {

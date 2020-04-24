@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import AttributeModel from '../models/Attribute';
 import Selector from './Selector';
+import SelectorModel from 'models/Selector';
+import ComponentInstance from '../models/ComponentInstance';
 import ParmeterModel from 'models/Parameter';
 
 class Attribute extends Component<{ attribute: AttributeModel; onEditSelector: any }> {
