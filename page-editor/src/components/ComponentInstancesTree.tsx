@@ -65,8 +65,8 @@ export default class ComponentInstancesList extends Component<{
         return (
             <div className="components-tree">
                 <ul>
-                    {componentInstancesList.map((component, key) => [
-                        <li key={key}>
+                    {componentInstancesList.map((component) => [
+                        <li key={component.id}>
                             <ComponentInstance component={component} onSend={this.props.onSend} />
                         </li>,
                         // <ComponentInstancesList componentInstancesList={component.selectedPageType.componentsInstances}/>

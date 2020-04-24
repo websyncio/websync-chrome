@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import SelectorModel from 'models/Selector';
 import SelectorValidator from 'services/SelectorValidator';
+import SelectorHighlighter from 'services/SelectorHighlighter';
 import ComponentInstance from '../models/ComponentInstance';
 
 export default class Selector extends Component<
@@ -8,6 +9,7 @@ export default class Selector extends Component<
     { status: number | undefined }
 > {
     selectorValidator: SelectorValidator = new SelectorValidator();
+    selectorHighlighter: SelectorHighlighter = new SelectorHighlighter();
 
     constructor(props) {
         super(props);
@@ -17,6 +19,10 @@ export default class Selector extends Component<
     }
 
     componentDidMount() {
+        this.validate();
+    }
+
+    validate(){
         this.selectorValidator.validate(this.props.selector.value, this.onValidated.bind(this));
     }
 
@@ -82,15 +88,27 @@ export default class Selector extends Component<
         // this.props.onSend(json);
     }
 
+    highlightSelector(){
+        this.selectorHighlighter.highlight({
+            css: this.props.selector.value
+        });
+    }
+
+    removeHighlighting(){
+        this.selectorHighlighter.removeHighlighting();
+    }
+
     render() {
         return (
             <span className="parameter-value">
                 &apos;
                 <span
+                    onMouseEnter={()=>this.highlightSelector()}
+                    onMouseLeave={()=>this.removeHighlighting()}
                     onDoubleClick={(event) => this.onRename(event)}
                     onKeyDown={(event) => this.onNameKeyDown(event)}
                     onBlur={(event) => this.onNameBlur(event)}
-                    className={` ${this.state.status !== undefined && this.state.status < 1 && 'invalid'}`}
+                    className={` ${this.state.status === undefined || this.state.status < 1 && 'invalid'}`}
                     onClick={this.props.onEdit}
                 >
                     {this.props.selector.value}

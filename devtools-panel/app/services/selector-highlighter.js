@@ -9,7 +9,7 @@ export default Ember.Service.extend({
 	},
 	highlight(selector){
 		if(!selector){
-			return;
+			throw Error('invalid selector');
 		}
 		if(selector.inspected){
 			this.highlightInspectedElement(selector.childIndicesChain);

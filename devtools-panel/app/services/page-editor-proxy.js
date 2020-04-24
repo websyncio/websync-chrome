@@ -3,7 +3,10 @@ import Reactor from './reactor';
 
 export const MessageTypes = {
 	EditComponentSelector: 'edit-component-selector',
-	ValidateSelector: 'validate-selector'
+	UpdateComponentSelector: 'update-component-selector',
+	ValidateSelector: 'validate-selector',
+	HighlightSelector: 'highlight-selector',
+	RemoveHighlighting: 'remove-highlighting'
 };
 
 export default Service.extend({
@@ -12,6 +15,7 @@ export default Service.extend({
 	selectorHighlighter: Ember.inject.service(),
 	selectorInspector: Ember.inject.service(),
 	reactor: Ember.inject.service(),
+
 	init(){
 		this.get('reactor').registerEvent(MessageTypes.EditComponentSelector);
 	},
@@ -31,9 +35,21 @@ export default Service.extend({
 			case MessageTypes.EditComponentSelector:
 				this.editComponentSelector(event);
 				break;
+			case MessageTypes.HighlightSelector:
+				this.highlightSelector(event);
+				break;
+			case MessageTypes.RemoveHighlighting:
+				this.removeHighlighting();
+				break;
 			default:
 				console.log("Page edito proxy received message of unknown type.", event.data.type);
 		}
+	},
+	highlightSelector(event){
+		this.get('selectorHighlighter').highlight(event.data.data);
+	},
+	removeHighlighting(){
+		this.get('selectorHighlighter').removeHighlighting();
 	},
 	editComponentSelector(event){
 		this.get('reactor').dispatchEvent(
@@ -43,7 +59,7 @@ export default Service.extend({
 	},
 	validateSelector(event){
 		try{
-			var selector = this.get('scssParser').parse(event.data.data.selector);
+			var selector = this.get('scssParser').parse(event.data.data);
 			this.get('selectorValidator').validate(selector, function(result, isException){
 				this.postResult(event, result, isException);
 			}.bind(this));
@@ -64,10 +80,23 @@ export default Service.extend({
 			isException: isException
 		}, event.origin);
 	},
+	postMessage(type, data){
+		pageEditor.contentWindow.postMessage({
+			type: type,
+			data: data
+		}, "*");
+	},
 	addListener(messageType, listener){
 		this.get('reactor').addEventListener(messageType, listener);
 	},
-	updateComponentSelector(componentId, parameterName, valueIndex, newSelector){
-
+	updateComponentSelector(componentId, parameterName, parameterValueIndex, newSelector){
+		this.postMessage(
+			MessageTypes.UpdateComponentSelector,
+			{
+				componentId: componentId,
+				parameterName: parameterName,
+				parameterValueIndex: parameterValueIndex,
+				selector: newSelector
+			});
 	}
 });
