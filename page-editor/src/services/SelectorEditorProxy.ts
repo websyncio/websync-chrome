@@ -4,7 +4,7 @@ export const MessageTypes = {
     UpdateComponentSelector: 'update-component-selector',
     ValidateSelector: 'validate-selector',
     HighlightSelector: 'highlight-selector',
-    RemoveHighlighting: 'remove-highlighting'
+    RemoveHighlighting: 'remove-highlighting',
 };
 
 export default class SelectorEditorProxy {
@@ -45,7 +45,7 @@ export default class SelectorEditorProxy {
         }
     }
 
-    sendMessage(type, data:any = undefined, callback: Function | undefined = undefined) {
+    sendMessage(type, data: any = undefined, callback: Function | undefined = undefined) {
         let address: string | undefined = undefined;
         if (callback) {
             // this variable will be unique callback idetifier

@@ -22,7 +22,7 @@ export default class Selector extends Component<
         this.validate();
     }
 
-    validate(){
+    validate() {
         this.selectorValidator.validate(this.props.selector.value, this.onValidated.bind(this));
     }
 
@@ -88,13 +88,13 @@ export default class Selector extends Component<
         // this.props.onSend(json);
     }
 
-    highlightSelector(){
+    highlightSelector() {
         this.selectorHighlighter.highlight({
-            css: this.props.selector.value
+            css: this.props.selector.value,
         });
     }
 
-    removeHighlighting(){
+    removeHighlighting() {
         this.selectorHighlighter.removeHighlighting();
     }
 
@@ -103,12 +103,12 @@ export default class Selector extends Component<
             <span className="parameter-value">
                 &apos;
                 <span
-                    onMouseEnter={()=>this.highlightSelector()}
-                    onMouseLeave={()=>this.removeHighlighting()}
+                    onMouseEnter={() => this.highlightSelector()}
+                    onMouseLeave={() => this.removeHighlighting()}
                     onDoubleClick={(event) => this.onRename(event)}
                     onKeyDown={(event) => this.onNameKeyDown(event)}
                     onBlur={(event) => this.onNameBlur(event)}
-                    className={` ${this.state.status === undefined || this.state.status < 1 && 'invalid'}`}
+                    className={` ${this.state.status === undefined || (this.state.status < 1 && 'invalid')}`}
                     onClick={this.props.onEdit}
                 >
                     {this.props.selector.value}
