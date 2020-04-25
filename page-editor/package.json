@@ -36,7 +36,7 @@
     "lint": "eslint --config ./config/eslint.config.js --color --ext .js,.jsx,.ts,.tsx --report-unused-disable-directives ./src",
     "lint:fix": "npm run lint -- --fix",
     "check:types": "tsc -p tsconfig.json --noEmit",
-    "check:pre-commit": "npm run check:types && npm run lint"
+    "check:pre-commit": "npm run check:types && npm run lint:fix"
   },
   "prettier": "./config/prettier.config.js",
   "eslintConfig": {

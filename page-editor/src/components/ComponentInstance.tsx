@@ -3,6 +3,7 @@ import ComponentInstanceModel from 'models/ComponentInstance';
 import ParameterModel from 'models/Parameter';
 import Attribute from './Attribute';
 import SelectorEditorProxy from 'services/SelectorEditorProxy';
+import { Popup } from 'semantic-ui-react';
 
 export default class ComponentInstance extends Component<{ component: ComponentInstanceModel; onSend: any }> {
     onRename(event) {
@@ -73,7 +74,16 @@ export default class ComponentInstance extends Component<{ component: ComponentI
     render() {
         return (
             <span>
-                <span className="type-name">{this.props.component.getTypeName()}</span>
+                <Popup
+                    trigger={<span className="type-name">{this.props.component.getTypeName()}</span>}
+                    flowing
+                    pinned
+                    hoverable
+                    position="bottom left"
+                    on="click"
+                >
+                    <div>List of Component types</div>
+                </Popup>
                 <span
                     className={`field-name`}
                     title="Double Click to Edit Name"
