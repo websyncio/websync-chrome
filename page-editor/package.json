@@ -16,6 +16,7 @@
     "eslint": "6.8.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-prettier": "^3.1.2",
+    "focus-trap-react": "^6.0.0",
     "husky": "4.2.3",
     "node-sass": "^4.13.1",
     "prettier": "^2.0.2",
@@ -37,7 +38,7 @@
     "lint": "eslint --config ./config/eslint.config.js --color --ext .js,.jsx,.ts,.tsx --report-unused-disable-directives ./src",
     "lint:fix": "npm run lint -- --fix",
     "check:types": "tsc -p tsconfig.json --noEmit",
-    "check:pre-commit": "npm run check:types && npm run lint:fix"
+    "check:pre-commit": "npm run check:types && npm run lint:fix && git add ."
   },
   "prettier": "./config/prettier.config.js",
   "eslintConfig": {

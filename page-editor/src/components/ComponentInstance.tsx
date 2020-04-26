@@ -4,6 +4,7 @@ import ParameterModel from 'models/Parameter';
 import Attribute from './Attribute';
 import SelectorEditorProxy from 'services/SelectorEditorProxy';
 import { createPopper } from '@popperjs/core';
+import FocusTrap from 'focus-trap-react';
 
 export default class ComponentInstance extends Component<
     {
@@ -28,7 +29,7 @@ export default class ComponentInstance extends Component<
             isOpen: false,
         };
 
-        this.handleClick = this.handleClick.bind(this);
+        this.togglePopup = this.togglePopup.bind(this);
     }
 
     componentDidMount() {
@@ -45,7 +46,7 @@ export default class ComponentInstance extends Component<
         this.popper.destroy();
     }
 
-    handleClick() {
+    togglePopup() {
         this.setState(
             (state) => {
                 return {
@@ -126,12 +127,23 @@ export default class ComponentInstance extends Component<
     render() {
         return (
             <span>
-                <span className="trigger type-name" ref={this.triggerRef} onClick={this.handleClick}>
+                <span className="trigger type-name" ref={this.triggerRef} onClick={this.togglePopup}>
                     {this.props.component.getTypeName()}
                 </span>
 
                 <span className="popup__container" ref={this.popupRef}>
-                    {this.state.isOpen && <div className="popup">I am the popup</div>}
+                    {this.state.isOpen && (
+                        <FocusTrap
+                            focusTrapOptions={{
+                                onDeactivate: this.togglePopup,
+                                clickOutsideDeactivates: true,
+                            }}
+                        >
+                            <div className="popup">
+                                <div tabIndex={0}>I am the popup</div>
+                            </div>
+                        </FocusTrap>
+                    )}
                 </span>
 
                 <span
