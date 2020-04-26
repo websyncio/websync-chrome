@@ -5,6 +5,8 @@ import Attribute from './Attribute';
 import SelectorEditorProxy from 'services/SelectorEditorProxy';
 import { createPopper } from '@popperjs/core';
 import FocusTrap from 'focus-trap-react';
+import Portal from './Portal';
+import 'styles/Popup.sass';
 
 export default class ComponentInstance extends Component<
     {
@@ -39,6 +41,14 @@ export default class ComponentInstance extends Component<
         this.popper = createPopper(this.triggerRef.current, this.popupRef.current, {
             placement: 'bottom-start',
             strategy: 'fixed',
+            modifiers: [
+                {
+                    name: 'offset',
+                    options: {
+                        offset: [0, 2],
+                    },
+                },
+            ],
         });
     }
 
@@ -131,20 +141,22 @@ export default class ComponentInstance extends Component<
                     {this.props.component.getTypeName()}
                 </span>
 
-                <span className="popup__container" ref={this.popupRef}>
-                    {this.state.isOpen && (
-                        <FocusTrap
-                            focusTrapOptions={{
-                                onDeactivate: this.togglePopup,
-                                clickOutsideDeactivates: true,
-                            }}
-                        >
-                            <div className="popup">
-                                <div tabIndex={0}>I am the popup</div>
-                            </div>
-                        </FocusTrap>
-                    )}
-                </span>
+                <Portal>
+                    <span className="popup__container" ref={this.popupRef}>
+                        {this.state.isOpen && (
+                            <FocusTrap
+                                focusTrapOptions={{
+                                    onDeactivate: this.togglePopup,
+                                    clickOutsideDeactivates: true,
+                                }}
+                            >
+                                <div className="popup">
+                                    <div tabIndex={0}>Component Types list</div>
+                                </div>
+                            </FocusTrap>
+                        )}
+                    </span>
+                </Portal>
 
                 <span
                     className={`field-name`}

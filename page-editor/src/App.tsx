@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './styles/App.sass';
+import 'styles/App.sass';
 import Connection from './components/Connection';
 import PageType from './models/PageType';
 import PageList from './components/PageList';
