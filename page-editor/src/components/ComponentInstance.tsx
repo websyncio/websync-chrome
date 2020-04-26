@@ -3,9 +3,61 @@ import ComponentInstanceModel from 'models/ComponentInstance';
 import ParameterModel from 'models/Parameter';
 import Attribute from './Attribute';
 import SelectorEditorProxy from 'services/SelectorEditorProxy';
-import { Popup } from 'semantic-ui-react';
+import { createPopper } from '@popperjs/core';
 
-export default class ComponentInstance extends Component<{ component: ComponentInstanceModel; onSend: any }> {
+export default class ComponentInstance extends Component<
+    {
+        component: ComponentInstanceModel;
+        onSend: any;
+    },
+    {
+        isOpen: boolean;
+    }
+> {
+    triggerRef: any;
+    popupRef: any;
+    popper: any;
+
+    constructor(props) {
+        super(props);
+
+        this.triggerRef = React.createRef();
+        this.popupRef = React.createRef();
+
+        this.state = {
+            isOpen: false,
+        };
+
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    componentDidMount() {
+        console.log(this.triggerRef.current);
+        console.log(this.popupRef.current);
+
+        this.popper = createPopper(this.triggerRef.current, this.popupRef.current, {
+            placement: 'bottom-start',
+            strategy: 'fixed',
+        });
+    }
+
+    componentWillUnmount() {
+        this.popper.destroy();
+    }
+
+    handleClick() {
+        this.setState(
+            (state) => {
+                return {
+                    isOpen: !state.isOpen,
+                };
+            },
+            () => {
+                this.popper.forceUpdate();
+            },
+        );
+    }
+
     onRename(event) {
         if (event.target.contentEditable === true) {
             event.target.contentEditable = false;
@@ -74,16 +126,14 @@ export default class ComponentInstance extends Component<{ component: ComponentI
     render() {
         return (
             <span>
-                <Popup
-                    trigger={<span className="type-name">{this.props.component.getTypeName()}</span>}
-                    flowing
-                    pinned
-                    hoverable
-                    position="bottom left"
-                    on="click"
-                >
-                    <div>List of Component types</div>
-                </Popup>
+                <span className="trigger type-name" ref={this.triggerRef} onClick={this.handleClick}>
+                    {this.props.component.getTypeName()}
+                </span>
+
+                <span className="popup__container" ref={this.popupRef}>
+                    {this.state.isOpen && <div className="popup">I am the popup</div>}
+                </span>
+
                 <span
                     className={`field-name`}
                     title="Double Click to Edit Name"
