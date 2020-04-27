@@ -7,6 +7,7 @@ import { createPopper } from '@popperjs/core';
 import FocusTrap from 'focus-trap-react';
 import Portal from './Portal';
 import 'styles/Popup.sass';
+import ComponentTypeSelector from './ComponentTypeSelector';
 
 export default class ComponentInstance extends Component<
     {
@@ -130,8 +131,8 @@ export default class ComponentInstance extends Component<
         });
     };
 
-    onSelectorEdited(parameterName, valueIndex, newValue) {
-        //this.props.component.
+    editComponentType() {
+        console.log('edit component type');
     }
 
     render() {
@@ -151,7 +152,9 @@ export default class ComponentInstance extends Component<
                                 }}
                             >
                                 <div className="popup">
-                                    <div tabIndex={0}>Component Types list</div>
+                                    <div tabIndex={0}>
+                                        <ComponentTypeSelector onSelected={this.editSelector} />
+                                    </div>
                                 </div>
                             </FocusTrap>
                         )}
