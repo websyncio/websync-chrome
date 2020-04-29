@@ -14,6 +14,7 @@ type State = {
 
 type ConnectionProps = {
     onWebSessionUpdated: any;
+    onSelectedPageChange: any;
 };
 
 class Connection extends Component<ConnectionProps, State> {
@@ -72,13 +73,18 @@ class Connection extends Component<ConnectionProps, State> {
                     this.setState({ modules: message.data.modules });
                     return;
                 }
-                const webSession = message.data;
-                console.log('WebSession received:', webSession);
+                if (message.type === 'PageType') {
+                    this.props.onSelectedPageChange(message.data);
+                    console.log('New page is opened:', message.data);
+                } else {
+                    const webSession = message.data;
+                    console.log('WebSession received:', webSession);
 
-                const modules = [webSession.module];
-                console.log(modules);
-                this.setState({ modules: modules });
-                this.props.onWebSessionUpdated(webSession);
+                    const modules = [webSession.module];
+                    console.log(modules);
+                    this.setState({ modules: modules });
+                    this.props.onWebSessionUpdated(webSession);
+                }
             } catch (ex) {
                 console.log('Message received "' + e.data + '"');
                 console.log(ex);
