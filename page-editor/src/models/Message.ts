@@ -2,22 +2,36 @@ import WebSession from './WebSession';
 
 export default class Message {
     status: string;
-    data: WebSession;
+    data: any;
+    type: string;
 
-    constructor(status: string, data: WebSession) {
+    constructor(status: string, data: any, type: string) {
         this.status = status;
         this.data = data;
+        this.type = type;
     }
 
     static fromJSON(json: any): Message {
         const message = Object.create(Message.prototype);
-        return Object.assign(message, json, {
-            status: json.status,
-            data: json.data = WebSession.fromJSON(json.data),
-        });
+        return Message.getMessageforType(json, message);
     }
 
     static reviver(key: string, value: any): any {
         return key === '' ? Message.fromJSON(value) : value;
+    }
+
+    static getMessageforType(json: any, message: any): Message {
+        if (json.type != null) {
+            return Object.assign(json, {
+                status: json.status,
+                data: json.data,
+                type: json.type,
+            });
+        } else {
+            return Object.assign(message, json, {
+                status: json.status,
+                data: json.data = WebSession.fromJSON(json.data),
+            });
+        }
     }
 }

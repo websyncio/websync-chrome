@@ -66,7 +66,7 @@ class App extends Component<any, AppState> {
     }
 
     onSelectedPageChange = (e, data) => {
-        this.setState({ selectedPageType: this.state.pageTypes.find((p) => p.id === data.value) });
+        this.setState({ selectedPageType: this.state.pageTypes.find((p) => p.id === data) });
     };
 
     onWebSessionUpdated = (webSession: WebSession) => {
@@ -85,7 +85,11 @@ class App extends Component<any, AppState> {
     render() {
         return (
             <div className="App">
-                <Connection ref={this.connection} onWebSessionUpdated={this.onWebSessionUpdated} />
+                <Connection
+                    ref={this.connection}
+                    onWebSessionUpdated={this.onWebSessionUpdated}
+                    onSelectedPageChange={this.onSelectedPageChange}
+                />
                 <div>
                     <p>Current IDEA project: {this.state.module}</p>
                 </div>
