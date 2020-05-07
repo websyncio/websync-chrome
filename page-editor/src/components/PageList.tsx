@@ -14,7 +14,7 @@ class PageList extends Component<PageListProps, any> {
             return {
                 key: item.id,
                 value: item.id,
-                text: item.getName(),
+                text: item.name,
             };
         });
 

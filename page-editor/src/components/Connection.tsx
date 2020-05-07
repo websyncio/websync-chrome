@@ -15,6 +15,7 @@ type State = {
 type ConnectionProps = {
     onWebSessionUpdated: any;
     onSelectedPageChange: any;
+    onSelectedProject: any;
 };
 
 class Connection extends Component<ConnectionProps, State> {
@@ -74,19 +75,19 @@ class Connection extends Component<ConnectionProps, State> {
                             console.log('New page is opened:', message.data);
                             return this.props.onSelectedPageChange(message.data);
                         case 'modules':
-                            this.setState({ modules: message.data });
-                            return;
+                            console.log('Modules received: ', message.data);
+                            return this.setState({ modules: message.data });
                         case 'module':
+                            console.log('Module received: ', message.data);
                             this.setState({ selected: message.data });
-                            return;
+                            return this.props.onSelectedProject(message.data);
                         default:
                             const webSession = message.data;
                             console.log('WebSession received:', webSession);
-
                             const modules = [webSession.module];
                             console.log(modules);
                             this.setState({ modules: modules });
-                            this.props.onWebSessionUpdated(webSession);
+                            return this.props.onWebSessionUpdated(webSession);
                     }
             } catch (ex) {
                 console.log('Message received "' + e.data + '"');

@@ -5,7 +5,7 @@ import PageType from './models/PageType';
 import PageList from './components/PageList';
 import ComponentInstancesList from './components/ComponentInstancesTree';
 import SelectorEditorProxy, { MessageTypes } from './services/SelectorEditorProxy';
-
+import AjaxLoader from './resources/ajaxloader-64x64.gif';
 import 'semantic-ui-css/semantic.min.css';
 import WebSession from './models/WebSession';
 
@@ -78,6 +78,11 @@ class App extends Component<any, AppState> {
         this.setState({ selectedPageType: page });
     };
 
+    onSelectedProject = (message) => {
+        this.setState({ module: message.module });
+        this.setState({ pageTypes: message.pages });
+    };
+
     onSend = (json: string) => {
         this.connection.current.sendHandler(json);
     };
@@ -89,6 +94,7 @@ class App extends Component<any, AppState> {
                     ref={this.connection}
                     onWebSessionUpdated={this.onWebSessionUpdated}
                     onSelectedPageChange={this.onSelectedPageChange}
+                    onSelectedProject={this.onSelectedProject}
                 />
                 <div>
                     <p>Current IDEA project: {this.state.module}</p>

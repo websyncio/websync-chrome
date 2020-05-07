@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import AjaxLoader from '../resources/ajaxloader-64x64.gif';
 
 type ConnState = {
     modules: string[];

@@ -5,11 +5,13 @@ export default class PageType {
     basePageTypeId: string;
     url: string;
     componentsInstances: ComponentInstance[];
+    name: any;
     constructor(id: string, basePageTypeId: string, url: string, componentsInstances: ComponentInstance[]) {
         this.id = id;
         this.basePageTypeId = basePageTypeId;
         this.url = url;
         this.componentsInstances = componentsInstances;
+        this.name = this.getName.bind;
     }
 
     getName() {
