@@ -14,9 +14,14 @@ class PageList extends Component<PageListProps, any> {
             return {
                 key: item.id,
                 value: item.id,
-                text: item.name,
+                text: getName(item.id),
             };
         });
+
+        function getName(id: string) {
+            const arr = id.split('.');
+            return arr[arr.length - 1];
+        }
 
         return (
             <Dropdown

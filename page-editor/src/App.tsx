@@ -66,7 +66,9 @@ class App extends Component<any, AppState> {
     }
 
     onSelectedPageChange = (e, data) => {
-        this.setState({ selectedPageType: this.state.pageTypes.find((p) => p.id === data) });
+        if (data.value === undefined) {
+            this.setState({ selectedPageType: this.state.pageTypes.find((p) => p.id === data) });
+        } else this.setState({ selectedPageType: this.state.pageTypes.find((p) => p.id === data.value) });
     };
 
     onWebSessionUpdated = (webSession: WebSession) => {

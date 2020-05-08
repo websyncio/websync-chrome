@@ -73,7 +73,7 @@ class Connection extends Component<ConnectionProps, State> {
                     switch (message.type) {
                         case 'PageType':
                             console.log('New page is opened:', message.data);
-                            return this.props.onSelectedPageChange(message.data);
+                            return this.props.onSelectedPageChange(null, message.data);
                         case 'modules':
                             console.log('Modules received: ', message.data);
                             return this.setState({ modules: message.data });
