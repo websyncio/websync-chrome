@@ -98,9 +98,13 @@ class App extends Component<any, AppState> {
                     onSelectedPageChange={this.onSelectedPageChange}
                     onSelectedProject={this.onSelectedProject}
                 />
-                <div>
-                    <p>Current IDEA project: {this.state.module}</p>
-                </div>
+                {this.state.pageTypes.length === 0 ? (
+                    <img src={AjaxLoader} />
+                ) : (
+                        <div>
+                            <p>Current IDEA project: {this.state.module}</p>
+                        </div>
+                    )}
                 <PageList
                     pageTypes={this.state.pageTypes}
                     selected={this.state.selectedPageType}
