@@ -29,7 +29,6 @@ class Attribute extends Component<{ attribute: AttributeModel; onEditSelector: a
 
     render() {
         return (
-           
             <span className="init-attribute">
                 {'('}
                 {this.props.attribute.parameters.map((p, index) => (
