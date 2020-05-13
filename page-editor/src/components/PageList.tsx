@@ -19,11 +19,9 @@ class PageList extends Component<PageListProps, any> {
         });
 
         function getName(id: any) {
-
             if (id === undefined) {
                 return null;
-            }
-            else {
+            } else {
                 const arr = id.split('.');
                 return arr[arr.length - 1];
             }
