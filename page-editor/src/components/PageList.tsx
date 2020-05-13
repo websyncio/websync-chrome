@@ -18,13 +18,20 @@ class PageList extends Component<PageListProps, any> {
             };
         });
 
-        function getName(id: string) {
-            const arr = id.split('.');
-            return arr[arr.length - 1];
+        function getName(id: any) {
+
+            if (id === undefined) {
+                return null;
+            }
+            else {
+                const arr = id.split('.');
+                return arr[arr.length - 1];
+            }
         }
 
         return (
             <Dropdown
+                text={getName(this.props.selected?.id)}
                 placeholder="Select Page"
                 fluid
                 search
