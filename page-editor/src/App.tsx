@@ -61,6 +61,7 @@ class App extends Component<any, AppState> {
 
         const message = {};
         message['command'] = 'update-component-instance';
+        message['moduleName'] = this.state.module;
         message['data'] = component;
         this.onSend(JSON.stringify(message));
     }
@@ -81,6 +82,15 @@ class App extends Component<any, AppState> {
     onSend = (json: string) => {
         this.connection.current.sendHandler(json);
     };
+    onComponentUpdated = (json: any) => {
+        //TODO implement
+        return;
+    };
+
+    onPageUpdated = (json: any) => {
+        //TODO implement
+        return;
+    };
 
     render() {
         return (
@@ -89,6 +99,8 @@ class App extends Component<any, AppState> {
                     ref={this.connection}
                     onWebSessionUpdated={this.onWebSessionUpdated}
                     onSelectedPageChange={this.onSelectedPageChange}
+                    onComponentUpdated={this.onComponentUpdated}
+                    onPageUpdated={this.onPageUpdated}
                 />
                 <div>
                     <p>Current IDEA project: {this.state.module}</p>

@@ -15,6 +15,8 @@ type State = {
 type ConnectionProps = {
     onWebSessionUpdated: any;
     onSelectedPageChange: any;
+    onPageUpdated: any;
+    onComponentUpdated: any;
 };
 
 class Connection extends Component<ConnectionProps, State> {
@@ -67,6 +69,14 @@ class Connection extends Component<ConnectionProps, State> {
                 const message = JSON.parse(e.data, Message.reviver);
                 if (message.status !== 0) {
                     console.log('error message ===', message.data);
+                    return;
+                }
+                if (message.command === 'update-component') {
+                    this.props.onComponentUpdated(message.data);
+                    return;
+                }
+                if (message.command === 'update-page') {
+                    this.props.onPageUpdated(message.data);
                     return;
                 }
                 if (message.data.modules) {
