@@ -223,13 +223,7 @@ export default Service.extend({
         return false;
     },
     parseScss(scss, isInner) {
-        // console.log(scss);
-        // scss = scss.replace('<', '/..//');
-        // console.log(scss);
         let scssParts = this.splitScssToParts(scss, ' ', '>', '+', '<');
-        // scssParts.forEach((e,i) => {
-        //     console.log(i + ': ' + e);
-        // })
         let parts=[];
         let fullScss='';
         let fullCss='';
