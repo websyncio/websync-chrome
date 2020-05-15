@@ -18,6 +18,7 @@ export default Service.extend({
         try {
             parts = this.parseScss(scssSelector);
         } catch (e) {
+            console.log(e);
             // .hmm, not a valid scss, may be it is a regular css?
             if(this.isValidCss(scssSelector)){
                 isCssStyle = true;
@@ -140,12 +141,10 @@ export default Service.extend({
             return false;
         }
     },
-    // private
     IsNullOrWhiteSpace(input) {
         if (typeof input === 'undefined' || input == null) return true;
         return input.replace(/\s/g, '').length < 1;
     },
-    // private
     splitScssToParts(scssSelector, ...delimiters) {
         let parts = [];
         let value = '';
@@ -213,7 +212,6 @@ export default Service.extend({
         }
         return delimiterWithSpaces;
     },
-    // private
     IsClosingConditionBracket(conditionOpenBrackets, c) {
         if (c == '[')
             conditionOpenBrackets.Count++;
@@ -224,9 +222,8 @@ export default Service.extend({
         }
         return false;
     },
-    // private
     parseScss(scss, isInner) {
-        let scssParts = this.splitScssToParts(scss, ' ', '>', '+');
+        let scssParts = this.splitScssToParts(scss, ' ', '>', '+', '<');
         let parts=[];
         let fullScss='';
         let fullCss='';
@@ -272,7 +269,6 @@ export default Service.extend({
         
         return parts;
     },
-    // private
     cutLeadingString(text, toCut){
         return text.startsWith(toCut)?text.slice(toCut.length):text;
     },
@@ -280,12 +276,10 @@ export default Service.extend({
     {
         return this.cutLeadingString(elementXpath, "descendant::");
     },
-    // private
     RemoveChildAxis(elementXpath)
     {
         return this.cutLeadingString(elementXpath,"child::");
     },
-    // private
     parseScssPart(partScss) {
         const State = {
             Undefined: 0,
@@ -299,7 +293,7 @@ export default Service.extend({
         if (this.IsNullOrWhiteSpace(partScss)) {
             throw "Invalid scss: " + partScss;
         }        
-        let combinator = this.findDelimiter(partScss, ['>', '+'], true);
+        let combinator = this.findDelimiter(partScss, ['>', '+', '<'], true);
         if (combinator) {
             partScss = partScss.slice(combinator.length);
         }
@@ -330,22 +324,21 @@ export default Service.extend({
                     switch (state) {
                         case State.ReadClass:
                             if (!className) {
-                                throw "incorrect symbol for state: state: "+state+", index: "+i+", scss: "+partScss+"}";
+                                throw "incorrect symbol for state: "+state+", index: "+i+", scss: "+partScss+", case: '" + c + "'";
                             }
                             classNames.push(className);
                             className = '';
                             break;
                         case State.ReadId:
                             if (!id){
-                                throw "incorrect symbol for state: state: "+state+", index: "+i+", scss: "+partScss+"}";
+                                throw "incorrect symbol for state: "+state+", index: "+i+", scss: "+partScss+", case: '" + c + "'";
                             }
                             break;
                         case State.ReadTag:
                         case State.Undefined:
                             break; // допустимые состояния
                         default:
-                            throw "incorrect symbol for state: state: "+state+", index: "+i+", scss: "+partScss+"}";
-                            break;
+                            throw "incorrect symbol for state: "+state+", index: "+i+", scss: "+partScss+", case: '" + c + "'";
                     }
                     state = State.ReadClass;
                     break;
@@ -356,7 +349,7 @@ export default Service.extend({
                     switch (state) {
                         case State.ReadClass:
                             if (!className){
-                                throw "incorrect symbol for state: state: "+state+", index: "+i+", scss: "+partScss+"}";
+                                throw "incorrect symbol for state: "+state+", index: "+i+", scss: "+partScss+", case: '" + c + "'";
                             }
                             classNames.push(className);
                             className = '';
@@ -365,7 +358,7 @@ export default Service.extend({
                         case State.Undefined:
                             break;
                         default:
-                            throw "incorrect symbol for state: state: "+state+", index: "+i+", scss: "+partScss+"}";
+                            throw "incorrect symbol for state: "+state+", index: "+i+", scss: "+partScss+", case: '" + c + "'";
                             break;
                     }
                     state = State.ReadId;
@@ -374,29 +367,28 @@ export default Service.extend({
                     switch (state) {
                         case State.ReadClass:
                             if (!className){
-                                throw "incorrect symbol for state: state: "+state+", index: "+i+", scss: "+partScss+"}";
+                                throw "incorrect symbol for state: "+state+", index: "+i+", scss: "+partScss+", case: '" + c + "'";
                             }
                             classNames.push(className);
                             className = '';
                             break;
                         case State.ReadId:
                             if (!id){
-                                throw "incorrect symbol for state: state: "+state+", index: "+i+", scss: "+partScss+"}";
+                                throw "incorrect symbol for state: "+state+", index: "+i+", scss: "+partScss+", case: '" + c + "'";
                             }
                             break;
                         case State.ReadTag:
                         case State.Undefined:
                             break; // допустимые состояния
                         default:
-                            throw "incorrect symbol for state: state: "+state+", index: "+i+", scss: "+partScss+"}";
-                            break;
+                            throw "incorrect symbol for state: "+state+", index: "+i+", scss: "+partScss+", case: '" + c + "'";
                     }
 
                     state = State.ReadCondition;
                     break;
                 case ']':
                     if (state != State.ReadCondition){
-                        throw "incorrect symbol for state: state: "+state+", index: "+i+", scss: "+partScss+"}";
+                        throw "incorrect symbol for state: "+state+", index: "+i+", scss: "+partScss+", case: '" + c + "'";
                     }
                     if (this.IsText(condition)){
                         // текстовое условие
@@ -426,8 +418,7 @@ export default Service.extend({
                     switch (state) {
                         case State.ReadFunction:
                         case State.ReadFunctionArgument:
-                            throw "incorrect symbol for state: state: "+state+", index: "+i+", scss: "+partScss+"}";
-                            break;
+                            throw "incorrect symbol for state: "+state+", index: "+i+", scss: "+partScss+", case: '" + c + "'";
                         default:
                             state = State.ReadFunction;
                             break;
@@ -435,13 +426,13 @@ export default Service.extend({
                     break;
                 case '(':
                     if (state != State.ReadFunction){
-                        throw "incorrect symbol for state: state: "+state+", index: "+i+", scss: "+partScss+"}";
+                        throw "incorrect symbol for state: "+state+", index: "+i+", scss: "+partScss+", case: '" + c + "'";
                     }
                     state = State.ReadFunctionArgument;
                     break;
                 case ')':
                     if (state != State.ReadFunctionArgument){
-                        throw "incorrect symbol for state: state: "+state+", index: "+i+", scss: "+partScss+"}";
+                        throw "incorrect symbol for state: "+state+", index: "+i+", scss: "+partScss+", case: '" + c + "'";
                     }
                     state = State.Undefined;
                     break;
@@ -466,11 +457,10 @@ export default Service.extend({
                             functionArgument += c;
                             break;
                         case State.Undefined:
-                            throw "incorrect symbol for state: state: "+state+", index: "+i+", scss: "+partScss+"}";
+                            throw "incorrect symbol for state: "+state+", index: "+i+", scss: "+partScss+", case: '" + c + "'";
                             break;
                         default:
-                            throw "incorrect symbol for state: state: "+state+", index: "+i+", scss: "+partScss+"}";
-                            break;
+                            throw "incorrect symbol for state: "+state+", index: "+i+", scss: "+partScss+", case: '" + c + "'";
                     }
                     break;
             }
@@ -492,7 +482,6 @@ export default Service.extend({
 //              break;
             default:
                 throw "incorrect symbol for state: state: "+state+", index: "+i+", scss: "+partScss+"}";
-                break;
         }
         this.validate(tag, id, classNames, attributes, func, functionArgument);
         let isTrueCss = 
@@ -527,9 +516,8 @@ export default Service.extend({
             isCssStyle: true
         };
     },
-    // private
     IsText(stringValue) {
-        stringValue = stringValue[0] == '~' ? stringValue.slice(1) : stringValue;
+        stringValue = (stringValue[0] == '~' || stringValue[0] == '*') ? stringValue.slice(1) : stringValue;
         return stringValue.length > 1 &&
                ((stringValue.startsWith("'") && stringValue.endsWith("'")) ||
                 (stringValue.startsWith("\"") && stringValue.endsWith("\"")));
@@ -537,11 +525,9 @@ export default Service.extend({
     isSymbol(stringValue){
         return new RegExp("^[A-Za-z0-9_-]+$").test(stringValue);
     },
-    // private
     IsNumber(condition) {
         return Number.isInteger(condition);
     },
-    // private
     IsFunction(condition) {
         switch (condition) {
             case "last()":
@@ -553,7 +539,6 @@ export default Service.extend({
     stripWrappingQuotes(text){
         return text.replace(/^('|")|('|")$/g, "");
     },
-    // private
     ParseAttribute(condition) {
         let attributeMatchStyle = ['=','~'];
         for(let i=0; i<attributeMatchStyle.length; i++) {
@@ -563,7 +548,6 @@ export default Service.extend({
         }
         return null;
     },
-    // private
     IsCssMatchStyle(matchStyle) {
         switch (matchStyle) {
             case '=':
@@ -572,7 +556,6 @@ export default Service.extend({
                 return false;
         }
     },
-    // private
     validate(tag, id, classNames, attributes, func, functionArgument) {
         if (tag) {
             this.ValidateIsElementName(tag);
@@ -590,26 +573,22 @@ export default Service.extend({
             this.ValidateIsCSSFunction(func, functionArgument);
         }
     },
-    // private
     ValidateIsElementName(value) {
         if (!this.IsElementName(value)) {
             throw value + " is not element name";
         }
     },
-    // private
     ValidateIsName(value) {
         if (!this.IsName(value)) {
             throw value + " is not name";
         }
     },
-    // private
     ValidateIsIdent(value)
     {
         if (!this.IsIdent(value)) {
             throw value + " is not ident";
         }
     },
-    // private
     ValidateIsCSSFunction(value, functionArgument) {
         switch (value) {
             case "contains":
@@ -622,43 +601,35 @@ export default Service.extend({
                 throw "'"+value+"' is not css function";
         }
     },
-    // private
     ValidateIsContainsArgument(functionArgument) {
         if (!this.IsContainsArgument(functionArgument)) {
             throw "'"+functionArgument+"' is not valid argument for :contains function.";
         }
     },
-    // private
     ValidateIsNthChildArgument(functionArgument) {
         if (!this.IsNthChildArgument(functionArgument)) {
             throw "'"+functionArgument+"' is not nth-child argument.";
         }
     },
-    // private
     IsElementName(value) {
         // element_name : IDENT | '*'
         return value == "*" || this.IsIdent(value);
     },
-    // private
     IsIdent(value) {
         let r = /^-?[_a-zA-Z][_a-zA-Z0-9-]*$/g.test(value);
         return r;
     },
-    // private
     IsName(value) {
         let r = /^[_a-zA-Z0-9-]+$/g.test(value);
         return r;
     },
-    // private
     IsContainsArgument(condition) {
         return /^'(?:.*)'$/g.test(condition);
     },
-    // private
     IsNthChildArgument(condition) {
         let r = /^\d+(?:n(?:\+\d+)?)?$/g.test(condition);
         return r;
     },
-    // private
     aggregateToXpath(axis, tag, id, classNames,
         attributes, texts, conditions, subelementXpaths, func, functionArgument)
     {
@@ -690,7 +661,6 @@ export default Service.extend({
         }
         return xpath;
     },
-    // private
     XpathFunction(func, functionArgument) {
         switch (func) {
             case "nth-child":
@@ -701,12 +671,10 @@ export default Service.extend({
                 throw "ArgumentOutOfRangeException: function";
         }
     },
-    // private
     XpathCondition(condition)
     {
         return "["+condition+"]";
     },
-    // private
     XpathAxis(axis)
     {
         switch (axis)
@@ -716,13 +684,14 @@ export default Service.extend({
                 return "descendant::";
             case ">":
                 return "child::";
+            case "<":
+                return "..//";
             case "+":
                 return "following-sibling::";
             default:
                 throw "argument out of range: axis";
         }
     },
-    // private
     XpathAttributeCondition(name, value, style = '=')
     {
         value = "'" + value + "'";
@@ -736,12 +705,10 @@ export default Service.extend({
                 throw "argument out of range: style";
         }
     },
-    // private
     XpathTextCondition(text)
     {
-        if (text.startsWith("~")) {
-            text = text[0] == '~' ? text.slice(1) : text;
-            return "[text()[contains(normalize-space(.),"+text+")]]";
+        if (text.startsWith("~") || text.startsWith("*") ) {
+            return "[text()[contains(normalize-space(.),"+text.slice(1)+")]]";
         }
         let textWithNoQuotes = text.slice(1,text.length-1);
         // TODO: need tests for this change

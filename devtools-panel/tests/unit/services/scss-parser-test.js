@@ -42,9 +42,12 @@ moduleFor('service:scss-parser', 'Unit | Service | selector scss builder', {
 
 cases([
   {scssSelector:"div[~'text']", result: "//div[text()[contains(normalize-space(.),'text')]]"},
+  {scssSelector:"div[*'text']", result: "//div[text()[contains(normalize-space(.),'text')]]"},
+  {scssSelector:"a['Log in']<a", result: "//a[text()[normalize-space(.)='Log in']]/..//a"},
+  {scssSelector:"a['Log in']<a[2]", result: "//a[text()[normalize-space(.)='Log in']]/..//a[2]"},
   {scssSelector:"div['text']", result: "//div[text()[normalize-space(.)='text']]"},
   {scssSelector:"div[src='1.png']['text']", result: "//div[@src='1.png'][text()[normalize-space(.)='text']]"},
-  {scssSelector:"div[src=\"1.png\"]['text']", result: "//div[@src=\"1.png\"][text()[normalize-space(.)='text']]"},
+  {scssSelector:"div[src=\"1.png\"]['text']", result: "//div[@src='1.png'][text()[normalize-space(.)='text']]"},
   {scssSelector:".classname#myid['text']", result: "//*[@id='myid'][contains(@class,'classname')][text()[normalize-space(.)='text']]"},
   {scssSelector:".classname['mytext']", result: "//*[contains(@class,'classname')][text()[normalize-space(.)='mytext']]"},
   {scssSelector:"div.classname['mytext']", result: "//div[contains(@class,'classname')][text()[normalize-space(.)='mytext']]"},
