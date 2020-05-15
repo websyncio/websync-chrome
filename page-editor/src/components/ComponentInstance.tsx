@@ -112,6 +112,8 @@ export default class ComponentInstance extends Component<
 
         const data = {};
         data['command'] = 'update-component-instance';
+
+        // data['moduleName'] = app.state.module; // TODO moduleName is required in the command
         data['data'] = component;
         const json = JSON.stringify(data);
         console.log('sent ' + json);

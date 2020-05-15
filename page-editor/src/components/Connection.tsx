@@ -16,6 +16,8 @@ type ConnectionProps = {
     onWebSessionUpdated: any;
     onSelectedPageChange: any;
     onSelectedProject: any;
+    onPageUpdated: any;
+    onComponentUpdated: any;
 };
 
 class Connection extends Component<ConnectionProps, State> {
@@ -81,6 +83,12 @@ class Connection extends Component<ConnectionProps, State> {
                             console.log('Module received: ', message.data);
                             this.setState({ selected: message.data });
                             return this.props.onSelectedProject(message.data);
+                            case 'component':
+                                this.props.onComponentUpdated(message.data);
+                                return;
+                        case 'page':
+                            this.props.onPageUpdated(message.data);
+                            return;
                         default:
                             const webSession = message.data;
                             console.log('WebSession received:', webSession);

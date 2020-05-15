@@ -6,6 +6,18 @@ export default class WebSession {
     pages: PageType[];
     components: ComponentType[];
 
+    updatePage(json: any): void {
+        const newPage = PageType.fromJSON(json);
+        const indexForNewOne = this.pages.findIndex((p) => p.id === newPage.id);
+        this.pages[indexForNewOne] = newPage;
+    }
+
+    updateComponent(json: any): void {
+        const newComponent = ComponentType.fromJSON(json);
+        const indexForNewOne = this.components.findIndex((c) => c.id === newComponent.id);
+        this.components[indexForNewOne] = newComponent;
+    }
+
     constructor(module: string, pages: PageType[], components: ComponentType[]) {
         this.module = module;
         this.pages = pages;
