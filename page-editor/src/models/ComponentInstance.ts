@@ -13,16 +13,6 @@ export default class ComponentInstance {
         this.initializationAttribute = initializationAttribute;
     }
 
-    getName() {
-        const arr = this.id.split('.');
-        return arr[arr.length - 1].trim();
-    }
-
-    getTypeName() {
-        const arr = this.componentTypeId.split('.');
-        return arr[arr.length - 1].trim();
-    }
-
     static fromJSON(json: any): ComponentInstance {
         const componentInstence = Object.create(ComponentInstance.prototype);
         return Object.assign(componentInstence, json, {

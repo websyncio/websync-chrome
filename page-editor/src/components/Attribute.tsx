@@ -16,8 +16,8 @@ class Attribute extends Component<{ attribute: AttributeModel; onEditSelector: a
                 {parameter.values.length > 1 && '{'}
                 {parameter.values.map((s, index) => {
                     return (
-                        <span key={s.value}>
-                            <Selector selector={s} onEdit={() => this.props.onEditSelector(parameter, index)} />
+                        <span key={parameter.name}>
+                            <Selector selector={s} onEdit={() => this.props.onEditSelector(s, index)} />
                             {index !== parameter.values.length - 1 && ', '}
                         </span>
                     );

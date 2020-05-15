@@ -111,7 +111,7 @@ export default class Selector extends Component<
                     className={` ${this.state.status === undefined || (this.state.status < 1 && 'invalid')}`}
                     onClick={this.props.onEdit}
                 >
-                    {this.props.selector.value}
+                    {`${this.props.selector}`}
                 </span>
                 &apos;
             </span>

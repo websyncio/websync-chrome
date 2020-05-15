@@ -137,11 +137,21 @@ export default class ComponentInstance extends Component<
         console.log('edit component type');
     }
 
+    getName(id: string) {
+        const arr = id.split('.');
+        return arr[arr.length - 1].trim();
+    }
+
+    getTypeName(componentTypeId: string) {
+        const arr = componentTypeId.split('.');
+        return arr[arr.length - 1].trim();
+    }
+
     render() {
         return (
             <span>
                 <span className="trigger type-name" ref={this.triggerRef} onClick={this.togglePopup}>
-                    {this.props.component.getTypeName()}
+                    {this.getTypeName(this.props.component.componentTypeId)}
                 </span>
 
                 <Portal>
@@ -170,7 +180,7 @@ export default class ComponentInstance extends Component<
                     onKeyDown={this.onNameKeyDown}
                     onBlur={this.onNameBlur}
                 >
-                    {this.props.component.getName()}
+                    {this.getName(this.props.component.id)}
                 </span>
                 {this.props.component.initializationAttribute && (
                     <Attribute

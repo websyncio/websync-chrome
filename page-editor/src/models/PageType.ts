@@ -12,11 +12,6 @@ export default class PageType {
         this.componentsInstances = componentsInstances;
     }
 
-    getName() {
-        const arr = this.id.split('.');
-        return arr[arr.length - 1];
-    }
-
     static fromJSON(json: any): PageType {
         const pageType = Object.create(PageType.prototype);
         return Object.assign(pageType, json, {

@@ -5,7 +5,7 @@ import PageType from './models/PageType';
 import PageList from './components/PageList';
 import ComponentInstancesList from './components/ComponentInstancesTree';
 import SelectorEditorProxy, { MessageTypes } from './services/SelectorEditorProxy';
-
+import AjaxLoader from './resources/ajaxloader-64x64.gif';
 import 'semantic-ui-css/semantic.min.css';
 import WebSession from './models/WebSession';
 
@@ -67,7 +67,9 @@ class App extends Component<any, AppState> {
     }
 
     onSelectedPageChange = (e, data) => {
-        this.setState({ selectedPageType: this.state.pageTypes.find((p) => p.id === data) });
+        if (data.value === undefined) {
+            this.setState({ selectedPageType: this.state.pageTypes.find((p) => p.id === data) });
+        } else this.setState({ selectedPageType: this.state.pageTypes.find((p) => p.id === data.value) });
     };
 
     onWebSessionUpdated = (webSession: WebSession) => {
@@ -77,6 +79,11 @@ class App extends Component<any, AppState> {
             (p) => this.state.selectedPageType !== undefined && p.id === this.state.selectedPageType.id,
         );
         this.setState({ selectedPageType: page });
+    };
+
+    onSelectedProject = (message) => {
+        this.setState({ module: message.module });
+        this.setState({ pageTypes: message.pages });
     };
 
     onSend = (json: string) => {
@@ -99,12 +106,17 @@ class App extends Component<any, AppState> {
                     ref={this.connection}
                     onWebSessionUpdated={this.onWebSessionUpdated}
                     onSelectedPageChange={this.onSelectedPageChange}
+                    onSelectedProject={this.onSelectedProject}
                     onComponentUpdated={this.onComponentUpdated}
                     onPageUpdated={this.onPageUpdated}
                 />
-                <div>
-                    <p>Current IDEA project: {this.state.module}</p>
-                </div>
+                {this.state.pageTypes.length === 0 ? (
+                    <img src={AjaxLoader} />
+                ) : (
+                    <div>
+                        <p>Current IDEA project: {this.state.module}</p>
+                    </div>
+                )}
                 <PageList
                     pageTypes={this.state.pageTypes}
                     selected={this.state.selectedPageType}
