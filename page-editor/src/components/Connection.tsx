@@ -83,9 +83,9 @@ class Connection extends Component<ConnectionProps, State> {
                             console.log('Module received: ', message.data);
                             this.setState({ selected: message.data });
                             return this.props.onSelectedProject(message.data);
-                            case 'component':
-                                this.props.onComponentUpdated(message.data);
-                                return;
+                        case 'component':
+                            this.props.onComponentUpdated(message.data);
+                            return;
                         case 'page':
                             this.props.onPageUpdated(message.data);
                             return;
@@ -124,7 +124,7 @@ class Connection extends Component<ConnectionProps, State> {
             <div
                 className={`connection ${
                     this.state.isConnected ? (this.state.selected === '' ? 'selecting' : 'connected') : 'disconnected'
-                }`}
+                    }`}
             >
                 {this.state.isConnected ? (
                     this.state.selected === '' ? (
@@ -133,11 +133,11 @@ class Connection extends Component<ConnectionProps, State> {
                             getProjectWebSession={(module: string) => this.getProjectWebSession(module)}
                         />
                     ) : (
-                        <p />
-                    )
+                            <p />
+                        )
                 ) : (
-                    <DisconnectedState />
-                )}
+                        <DisconnectedState />
+                    )}
             </div>
         );
     }
