@@ -11,7 +11,13 @@ export class Scss {
         this.value = value;
     }
 
-    convert() {
+    static create(type: string, value: string): Scss {
+        const scss: Scss = new Scss(type, value);
+        scss.init();
+        return scss;
+    }
+
+    init() {
         console.log('type: ' + this.type);
         console.log('value: ' + this.value);
 

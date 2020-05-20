@@ -6,8 +6,7 @@ export default class Selector {
 
     constructor(type: string, value: string) {
         this.value = value;
-        this.scss = new Scss(type, value);
-        this.scss.convert();
+        this.scss = Scss.create(type, value);
     }
 
     static fromJSON(json: any): Selector {
