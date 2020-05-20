@@ -1,4 +1,4 @@
-import { Scss } from 'components/ScssParser';
+import { Scss } from 'components/ScssBuilder';
 
 export default class Selector {
     value: string;

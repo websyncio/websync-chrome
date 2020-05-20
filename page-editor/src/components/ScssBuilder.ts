@@ -18,9 +18,6 @@ export class Scss {
     }
 
     init() {
-        console.log('type: ' + this.type);
-        console.log('value: ' + this.value);
-
         switch (this.type) {
             case 'Css':
                 this.css = this.value;
