@@ -1,7 +1,7 @@
 export class Scss {
-    xpath = '';
-    css = '';
-    scss = '';
+    xpath: undefined | string;
+    css: undefined | string;
+    scss: undefined | string;
 
     type;
     value;
