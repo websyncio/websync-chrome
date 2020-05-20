@@ -25,21 +25,14 @@ export class Scss {
                 break;
             }
             case 'ByText':
+                this.scss = "*['" + this.value + "']";
+                break;
             case 'UI':
-            case 'UI.List':
-            case 'WithText':
-            case 'FindBy':
-            case 'FindBys':
-            case 'Frame':
-            case 'Name':
-            case 'Title':
-            case 'JDropdown':
-            case 'JMenu':
-            case 'JTable':
-            case 'WithText': {
                 this.scss = this.value;
                 break;
-            }
+            case 'WithText':
+                this.scss = "*[*'" + this.value + "']";
+                break;
             default: {
                 break;
             }
