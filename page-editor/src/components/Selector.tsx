@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import SelectorModel from 'models/Selector';
 import SelectorValidator from 'services/SelectorValidator';
 import SelectorHighlighter from 'services/SelectorHighlighter';
-import ComponentInstance from '../models/ComponentInstance';
 
 export default class Selector extends Component<
     { selector: SelectorModel; onEdit: any },
@@ -23,7 +22,8 @@ export default class Selector extends Component<
     }
 
     validate() {
-        this.selectorValidator.validate(this.props.selector.value, this.onValidated.bind(this));
+        // this.selectorValidator.validate(this.props.selector.value, this.onValidated.bind(this));
+        this.selectorValidator.validate(this.props.selector.scss, this.onValidated.bind(this));
     }
 
     onValidated(validationResult: any) {
@@ -90,7 +90,7 @@ export default class Selector extends Component<
 
     highlightSelector() {
         this.selectorHighlighter.highlight({
-            css: this.props.selector.value,
+            css: this.props.selector.scss,
         });
     }
 

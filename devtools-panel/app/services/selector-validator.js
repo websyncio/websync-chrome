@@ -19,6 +19,9 @@ export default Ember.Service.extend({
 		}
 		else if(selector.xpath){
 			this.validateXpath(selector.xpath, onValidated);
+		}
+		else if(selector.xpath){
+			this.validateXpath(selector.xpath, onValidated);
 		}else{
 			throw Error('invalid selector');
 		}

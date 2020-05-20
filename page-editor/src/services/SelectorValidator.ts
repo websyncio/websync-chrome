@@ -1,6 +1,7 @@
 import SelectorEditorProxy from './SelectorEditorProxy';
 import { MessageTypes } from './SelectorEditorProxy';
 export const SELECTOR_VALIDATED = 'selector-validated';
+import { Scss } from 'components/ScssParser';
 
 // https://stackoverflow.com/questions/27383224/chrome-extension-long-lived-message-connection-how-to-use-callback-functions
 export default class SelectorValidator {
@@ -12,7 +13,7 @@ export default class SelectorValidator {
         return count;
     }
 
-    validate(selector: string, callback: Function) {
+    validate(selector: Scss, callback: Function) {
         SelectorEditorProxy.instance().sendMessage(MessageTypes.ValidateSelector, selector, (event) => {
             this.callback(event, callback);
         });

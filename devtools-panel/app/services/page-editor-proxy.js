@@ -46,7 +46,11 @@ export default Service.extend({
 		}
 	},
 	highlightSelector(event){
-		this.get('selectorHighlighter').highlight(event.data.data);
+		let selector = event.data.data;
+		if (selector.scss) {
+			selector = this.get('scssParser').parse(event.data.data);
+		}
+		this.get('selectorHighlighter').highlight(selector);
 	},
 	removeHighlighting(){
 		this.get('selectorHighlighter').removeHighlighting();
@@ -59,7 +63,10 @@ export default Service.extend({
 	},
 	validateSelector(event){
 		try{
-			var selector = this.get('scssParser').parse(event.data.data);
+			let selector = event.data.data;
+			if (selector.scss) {
+				selector = this.get('scssParser').parse(event.data.data);
+			}
 			this.get('selectorValidator').validate(selector, function(result, isException){
 				this.postResult(event, result, isException);
 			}.bind(this));
