@@ -22,11 +22,21 @@ export default class Message {
 
     static getMessageforType(json: any, message: any): Message {
         if (json.type != null) {
-            return Object.assign(json, {
-                status: json.status,
-                data: json.data,
-                type: json.type,
-            });
+            switch (json.type) {
+                case 'module': {
+                    return Object.assign(json, {
+                        status: json.status,
+                        data: json.data,
+                        type: json.type,
+                    });
+                }
+                default: {
+                    return Object.assign(message, json, {
+                        status: json.status,
+                        data: json.data = WebSession.fromJSON(json.data),
+                    });
+                }
+            }
         } else {
             return Object.assign(message, json, {
                 status: json.status,
