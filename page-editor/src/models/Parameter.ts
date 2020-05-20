@@ -7,10 +7,10 @@ export default class Parameter {
         this.name = name;
         this.values = values;
     }
-    static fromJSON(json: any): Parameter {
+    static fromJSON(type: string, json: any): Parameter {
         const parameter = Object.create(Parameter.prototype);
         return Object.assign(parameter, json, {
-            values: json.values.map((v) => new Selector(json.name, v)),
+            values: json.values.map((v) => new Selector(type, v)),
         });
     }
 }

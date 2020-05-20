@@ -12,7 +12,7 @@ export default class Attribute {
     static fromJSON(json: any): Attribute {
         const attribute = Object.create(Attribute.prototype);
         return Object.assign(attribute, json, {
-            parameters: json.parameters.map((p) => Parameter.fromJSON(p)),
+            parameters: json.parameters.map((p) => Parameter.fromJSON(json.name, p)),
         });
     }
 }
