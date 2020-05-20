@@ -22,14 +22,12 @@ export class Scss {
         console.log('value: ' + this.value);
 
         switch (this.type) {
-            case 'Css': {
+            case 'Css':
                 this.css = this.value;
                 break;
-            }
-            case 'XPath': {
+            case 'XPath':
                 this.xpath = this.value;
                 break;
-            }
             case 'ByText':
                 this.scss = "*['" + this.value + "']";
                 break;
@@ -39,9 +37,8 @@ export class Scss {
             case 'WithText':
                 this.scss = "*[*'" + this.value + "']";
                 break;
-            default: {
+            default:
                 break;
-            }
         }
     }
 }
