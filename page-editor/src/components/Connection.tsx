@@ -49,9 +49,7 @@ class Connection extends Component<ConnectionProps, State> {
             console.log('WebSocket Client Connected');
             isConnection = true;
 
-            const data = {};
-            data['command'] = 'get-modules';
-            client.send(JSON.stringify(data));
+            client.send(JSON.stringify({ type: 'get-modules' }));
 
             this.setState({ modules: [] });
             this.setState({ isConnected: isConnection });
@@ -69,34 +67,34 @@ class Connection extends Component<ConnectionProps, State> {
             try {
                 const message = JSON.parse(e.data, Message.reviver);
                 if (message.status !== 0) {
-                    console.log('error message ===', message.data);
+                    console.log('error message ===', message.error);
                     return;
-                } else
-                    switch (message.type) {
-                        case 'PageType':
-                            console.log('New page is opened:', message.data);
-                            return this.props.onSelectedPageChange(null, message.data);
-                        case 'modules':
-                            console.log('Modules received: ', message.data);
-                            return this.setState({ modules: message.data });
-                        case 'module':
-                            console.log('Module received: ', message.data);
-                            this.setState({ selected: message.data });
-                            return this.props.onSelectedProject(message.data);
-                        case 'component':
-                            this.props.onComponentUpdated(message.data);
-                            return;
-                        case 'page':
-                            this.props.onPageUpdated(message.data);
-                            return;
-                        default:
-                            const webSession = message.data;
-                            console.log('WebSession received:', webSession);
-                            const modules = [webSession.module];
-                            console.log(modules);
-                            this.setState({ modules: modules });
-                            return this.props.onWebSessionUpdated(webSession);
-                    }
+                }
+                switch (message.type) {
+                    case 'get-modules-response':
+                        console.log('Modules received: ', message.data);
+                        return this.setState({ modules: message.data });
+                    case 'get-module-response':
+                        console.log('Module received: ', message.data);
+                        this.setState({ selected: message.data });
+                        return this.props.onSelectedProject(message.data);
+                    case 'show-page':
+                        console.log('New page is opened:', message.className);
+                        return this.props.onSelectedPageChange(null, message.className);
+                    case 'update-component':
+                        this.props.onComponentUpdated(message.data);
+                        return;
+                    case 'update-page':
+                        this.props.onPageUpdated(message.data);
+                        return;
+                    default:
+                        const webSession = message.data;
+                        console.log('WebSession received:', webSession);
+                        const modules = [webSession.module];
+                        console.log(modules);
+                        this.setState({ modules: modules });
+                        return this.props.onWebSessionUpdated(webSession);
+                }
             } catch (ex) {
                 console.log('Message received "' + e.data + '"');
                 console.log(ex);
@@ -114,9 +112,8 @@ class Connection extends Component<ConnectionProps, State> {
     };
 
     getProjectWebSession = (module: string) => {
-        const commandModule = 'get-module';
         this.setState({ selected: module });
-        this.sendHandler(JSON.stringify({ command: commandModule, data: module }));
+        this.sendHandler(JSON.stringify({ type: 'get-module', moduleName: module }));
     };
 
     render() {
@@ -124,7 +121,7 @@ class Connection extends Component<ConnectionProps, State> {
             <div
                 className={`connection ${
                     this.state.isConnected ? (this.state.selected === '' ? 'selecting' : 'connected') : 'disconnected'
-                    }`}
+                }`}
             >
                 {this.state.isConnected ? (
                     this.state.selected === '' ? (
@@ -133,11 +130,11 @@ class Connection extends Component<ConnectionProps, State> {
                             getProjectWebSession={(module: string) => this.getProjectWebSession(module)}
                         />
                     ) : (
-                            <p />
-                        )
+                        <p />
+                    )
                 ) : (
-                        <DisconnectedState />
-                    )}
+                    <DisconnectedState />
+                )}
             </div>
         );
     }
