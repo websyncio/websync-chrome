@@ -10,7 +10,7 @@ export default class Parameter {
     static fromJSON(json: any): Parameter {
         const parameter = Object.create(Parameter.prototype);
         return Object.assign(parameter, json, {
-            values: json.values.map((v) => new Selector(v)),
+            values: json.values.map((v) => new Selector(json.name, v)),
         });
     }
 }
