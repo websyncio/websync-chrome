@@ -10,14 +10,6 @@ type PageListProps = {
 
 class PageList extends Component<PageListProps, any> {
     render() {
-        const options = this.props.pageTypes.map((item) => {
-            return {
-                key: item.id,
-                value: item.id,
-                text: getName(item.id),
-            };
-        });
-
         function getName(id: any) {
             if (id === undefined) {
                 return null;
@@ -26,6 +18,14 @@ class PageList extends Component<PageListProps, any> {
                 return arr[arr.length - 1];
             }
         }
+
+        const options = this.props.pageTypes.map((item) => {
+            return {
+                key: item.id,
+                value: item.id,
+                text: getName(item.id),
+            };
+        });
 
         return (
             <Dropdown

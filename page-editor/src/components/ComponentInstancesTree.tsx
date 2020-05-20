@@ -48,10 +48,11 @@ export default class ComponentInstancesList extends Component<{
 
         component.name = newName;
 
-        const data = {};
-        data['command'] = 'update-component-instance';
-        data['data'] = component;
-        const json = JSON.stringify(data);
+        const message = {};
+        message['type'] = 'update-component-instance';
+        // message['moduleName'] = app.state.module; // TODO moduleName is required in the command
+        message['data'] = component;
+        const json = JSON.stringify(message);
         console.log('sent ' + json);
         this.props.onSend(json);
 
