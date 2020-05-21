@@ -46,7 +46,7 @@ export default Service.extend({
 		}
 	},
 	highlightSelector(event){
-		let selector = getSelector(event);
+		let selector = this.getSelector(event);
 		this.get('selectorHighlighter').highlight(selector);
 	},
 	removeHighlighting(){
@@ -60,7 +60,7 @@ export default Service.extend({
 	},
 	validateSelector(event){
 		try{
-			let selector = getSelector(event);
+			let selector = this.getSelector(event);
 			this.get('selectorValidator').validate(selector, function(result, isException){
 				this.postResult(event, result, isException);
 			}.bind(this));
