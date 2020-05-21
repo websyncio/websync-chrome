@@ -23,7 +23,6 @@ export default class Selector extends Component<
     }
 
     validate() {
-        // this.selectorValidator.validate(this.props.selector.value, this.onValidated.bind(this));
         this.selectorValidator.validate(this.props.selector.scss, this.onValidated.bind(this));
     }
 

@@ -72,7 +72,7 @@ export default Service.extend({
 	getSelector(event) {
 		let selector = event.data.data;
 		if (selector.scss) {
-			selector = this.get('scssParser').parse(event.data.data);
+			selector = this.get('scssParser').parse(selector.scss);
 		}
 		return selector;
 	},
