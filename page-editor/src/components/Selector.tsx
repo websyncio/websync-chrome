@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import SelectorModel from 'models/Selector';
 import SelectorValidator from 'services/SelectorValidator';
 import SelectorHighlighter from 'services/SelectorHighlighter';
+import ComponentInstance from '../models/ComponentInstance';
 
 export default class Selector extends Component<
     { selector: SelectorModel; onEdit: any },
@@ -89,9 +90,7 @@ export default class Selector extends Component<
     }
 
     highlightSelector() {
-        this.selectorHighlighter.highlight({
-            css: this.props.selector.scss,
-        });
+        this.selectorHighlighter.highlight(this.props.selector.scss);
     }
 
     removeHighlighting() {

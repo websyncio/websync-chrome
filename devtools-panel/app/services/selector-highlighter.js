@@ -11,13 +11,21 @@ export default Ember.Service.extend({
 		if(!selector){
 			throw Error('invalid selector');
 		}
+		console.log(42398);
 		if(selector.inspected){
+			console.log(42398);
 			this.highlightInspectedElement(selector.childIndicesChain);
 		}else if(selector.css){
+			console.log(95803);
+			console.log("css: ", selector.css);
+			console.log("xpath: ", selector.xpath);
+			console.log("scss: ", selector.scss);
 			this.highlightCss(selector.css, selector.iframeIndex, selector.elementIndex, selector.childIndicesChain);
 		}else if(selector.xpath){
+			console.log(439805);
 			this.highlightXpath(selector.xpath, selector.iframeIndex, selector.elementIndex, selector.childIndicesChain);
 		}else{
+			console.log(756);
 			throw Error('invalid selector');
 		}
 	},

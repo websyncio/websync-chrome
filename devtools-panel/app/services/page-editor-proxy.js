@@ -61,6 +61,7 @@ export default Service.extend({
 	validateSelector(event){
 		try{
 			let selector = this.getSelector(event);
+			console.log(10);
 			this.get('selectorValidator').validate(selector, function(result, isException){
 				this.postResult(event, result, isException);
 			}.bind(this));

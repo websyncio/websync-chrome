@@ -11,15 +11,20 @@ export default Ember.Service.extend({
 		// 	xpath: selector.xpath ? this.validateXpath(selector.xpath) : { isValid:false }
 		// });
 
+		console.log(213);
 		if(!selector){
+			console.log(23487829);
 			return;
 		}
 		if(selector.css){
+			console.log(8735);
 			this.validateCss(selector.css, onValidated);
 		}
 		else if(selector.xpath){
+			console.log(53748);
 			this.validateXpath(selector.xpath, onValidated);
 		}else{
+			console.log(98534);
 			throw Error('invalid selector');
 		}
 	},
