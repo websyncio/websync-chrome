@@ -46,10 +46,7 @@ export default Service.extend({
 		}
 	},
 	highlightSelector(event){
-		let selector = event.data.data;
-		if (selector.scss) {
-			selector = this.get('scssParser').parse(event.data.data);
-		}
+		let selector = getSelector(event);
 		this.get('selectorHighlighter').highlight(selector);
 	},
 	removeHighlighting(){
@@ -63,10 +60,7 @@ export default Service.extend({
 	},
 	validateSelector(event){
 		try{
-			let selector = event.data.data;
-			if (selector.scss) {
-				selector = this.get('scssParser').parse(event.data.data);
-			}
+			let selector = getSelector(event;
 			this.get('selectorValidator').validate(selector, function(result, isException){
 				this.postResult(event, result, isException);
 			}.bind(this));
@@ -74,6 +68,13 @@ export default Service.extend({
 		catch(e){
 			this.postResult(event, null, true);
 		}
+	},
+	getSelector(event) {
+		let selector = event.data.data;
+		if (selector.scss) {
+			selector = this.get('scssParser').parse(event.data.data);
+		}
+		return selector;
 	},
 	postResult(event, result, isException){
 		// Assuming you've verified the origin of the received message (which

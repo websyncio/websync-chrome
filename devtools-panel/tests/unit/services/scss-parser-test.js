@@ -26,7 +26,7 @@
 // 		'--no-sandbox'
 // - rename bower.json to bower.json1
 
-import { moduleFor, test } from 'ember-qunit';
+import { moduleFor } from 'ember-qunit';
 import cases from 'qunit-parameterize';
 
 moduleFor('service:scss-parser', 'Unit | Service | selector scss builder', {
