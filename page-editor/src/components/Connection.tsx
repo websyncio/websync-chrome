@@ -68,8 +68,8 @@ class Connection extends Component<ConnectionProps, State> {
             try {
                 // const message = JSON.parse(e.data, Message.reviver);
                 const message = JSON.parse(e.data);
-                if (message.status !== 0) {
-                    console.log('error message ===', message.error);
+                if (message.hasOwnProperty('status') && message.status !== 0) {
+                    console.log('error occured:', message.error);
                     return;
                 }
                 switch (message.type) {
@@ -81,27 +81,20 @@ class Connection extends Component<ConnectionProps, State> {
                         const webSession = WebSession.fromJSON(message.data);
                         this.setState({ selected: webSession.module });
                         this.props.onSelectedProject(webSession);
-
-                        // console.log('Module received: ', message.data);
-                        // this.setState({ selected: message.data });
-                        // this.props.onSelectedProject(message.data);
                         return;
                     case 'show-page':
-                        console.log('New page is opened:', message.className);
+                        console.log('page is opened:', message.className);
                         return this.props.onSelectedPageChange(null, message.className);
                     case 'update-component':
                         this.props.onComponentUpdated(message.data);
                         return;
                     case 'update-page':
+                        console.log('page is updated:', message.data);
                         this.props.onPageUpdated(message.data);
                         return;
                     default:
-                    // const webSession = message.data;
-                    // console.log('WebSession received:', webSession);
-                    // const modules = [webSession.module];
-                    // console.log(modules);
-                    // this.setState({ modules: modules });
-                    // return this.props.onWebSessionUpdated(webSession);
+                        console.log('no message type, ignored: ', e.data);
+                        return;
                 }
             } catch (ex) {
                 console.log('Message received "' + e.data + '"');
