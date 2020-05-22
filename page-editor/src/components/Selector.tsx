@@ -81,7 +81,7 @@ export default class Selector extends Component<
         // }
         // console.log('param.index: ' + this.props.index);
         // const data = {};
-        // data['command'] = 'update-component-instance';
+        // data['type'] = 'update-component-instance';
         // data['data'] = this.props.component;
         // const json = JSON.stringify(data);
         // console.log('sent ' + json);

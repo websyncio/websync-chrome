@@ -60,7 +60,7 @@ class App extends Component<any, AppState> {
         this.setState(this.state);
 
         const message = {};
-        message['command'] = 'update-component-instance';
+        message['type'] = 'update-component-instance';
         message['moduleName'] = this.state.module;
         message['data'] = component;
         this.onSend(JSON.stringify(message));
