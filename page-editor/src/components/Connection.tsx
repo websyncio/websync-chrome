@@ -79,13 +79,12 @@ class Connection extends Component<ConnectionProps, State> {
                     case 'get-module-response':
                         console.log('Module received: ', message.data);
                         const webSession = WebSession.fromJSON(message.data);
-                        console.log('WebSession received:', webSession);
-                        const modules = [webSession.module];
-                        console.log(modules);
-                        this.setState({ modules: modules });
                         this.setState({ selected: webSession.module });
-                        this.props.onWebSessionUpdated(webSession);
-                        this.props.onSelectedProject(message.data);
+                        this.props.onSelectedProject(webSession);
+
+                        // console.log('Module received: ', message.data);
+                        // this.setState({ selected: message.data });
+                        // this.props.onSelectedProject(message.data);
                         return;
                     case 'show-page':
                         console.log('New page is opened:', message.className);
