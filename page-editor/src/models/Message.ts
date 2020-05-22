@@ -23,7 +23,7 @@ export default class Message {
     static getMessageforType(json: any, message: any): Message {
         if (json.type != null) {
             switch (json.type) {
-                case 'modules': {
+                case 'get-modules-response': {
                     return Object.assign(json, {
                         status: json.status,
                         data: json.data,
