@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
-import Message from '../models/Message';
+// import Message from '../models/Message';
 import ConnectedState from './ConnectedState';
 import DisconnectedState from './DisconnectedState';
+import WebSession from '../models/WebSession';
 
 import 'styles/Connection.sass';
 
@@ -65,7 +66,8 @@ class Connection extends Component<ConnectionProps, State> {
 
         client.onmessage = (e) => {
             try {
-                const message = JSON.parse(e.data, Message.reviver);
+                // const message = JSON.parse(e.data, Message.reviver);
+                const message = JSON.parse(e.data);
                 if (message.status !== 0) {
                     console.log('error message ===', message.error);
                     return;
@@ -76,8 +78,14 @@ class Connection extends Component<ConnectionProps, State> {
                         return this.setState({ modules: message.data });
                     case 'get-module-response':
                         console.log('Module received: ', message.data);
-                        this.setState({ selected: message.data });
-                        return this.props.onSelectedProject(message.data);
+                        const webSession = WebSession.fromJSON(message.data);
+                        this.setState({ selected: webSession.module });
+                        this.props.onSelectedProject(webSession);
+
+                        // console.log('Module received: ', message.data);
+                        // this.setState({ selected: message.data });
+                        // this.props.onSelectedProject(message.data);
+                        return;
                     case 'show-page':
                         console.log('New page is opened:', message.className);
                         return this.props.onSelectedPageChange(null, message.className);
@@ -88,12 +96,12 @@ class Connection extends Component<ConnectionProps, State> {
                         this.props.onPageUpdated(message.data);
                         return;
                     default:
-                        const webSession = message.data;
-                        console.log('WebSession received:', webSession);
-                        const modules = [webSession.module];
-                        console.log(modules);
-                        this.setState({ modules: modules });
-                        return this.props.onWebSessionUpdated(webSession);
+                    // const webSession = message.data;
+                    // console.log('WebSession received:', webSession);
+                    // const modules = [webSession.module];
+                    // console.log(modules);
+                    // this.setState({ modules: modules });
+                    // return this.props.onWebSessionUpdated(webSession);
                 }
             } catch (ex) {
                 console.log('Message received "' + e.data + '"');
