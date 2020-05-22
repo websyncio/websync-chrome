@@ -13,7 +13,6 @@ import PageInstancesList from 'components/PageInstancesTree';
 import Website from 'models/Website';
 import WebsiteList from 'components/WebsiteList';
 
-
 type AppState = {
     module: string;
     pageTypes: Array<PageType>;
@@ -99,7 +98,7 @@ class App extends Component<any, AppState> {
     onSelectedProject = (message) => {
         this.setState({ module: message.module });
         this.setState({ pageTypes: message.pages });
-        this.setState({websites: message.websites});
+        this.setState({ websites: message.websites });
     };
 
     onSend = (json: string) => {

@@ -3,7 +3,6 @@ import PageInstanceModel from 'models/PageInstance';
 import PageInstance from 'components/PageInstance';
 import 'styles/ComponentInstancesTree.sass';
 
-
 export default class PageInstancesList extends Component<{
     pageInstancesList: PageInstanceModel[];
     onSend: any;
@@ -65,16 +64,18 @@ export default class PageInstancesList extends Component<{
 
         return (
             console.log('WE ARE HERE WITH PAGE INSTANCES LIST: ', pageInstancesList),
-            <div className="components-tree">
-                <ul>
-                    {pageInstancesList.map((page) => [
-                        <li key={page.id}>
-                            <PageInstance page={page} onSend={this.props.onSend} />
-                        </li>,
-                        // <ComponentInstancesList componentInstancesList={component.selectedPageType.componentsInstances}/>
-                    ])}
-                </ul>
-            </div>
+            (
+                <div className="components-tree">
+                    <ul>
+                        {pageInstancesList.map((page) => [
+                            <li key={page.id}>
+                                <PageInstance page={page} onSend={this.props.onSend} />
+                            </li>,
+                            // <ComponentInstancesList componentInstancesList={component.selectedPageType.componentsInstances}/>
+                        ])}
+                    </ul>
+                </div>
+            )
         );
     }
 }
