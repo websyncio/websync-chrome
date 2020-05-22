@@ -95,7 +95,12 @@ class App extends Component<any, AppState> {
     };
 
     onPageUpdated = (json: any) => {
-        //TODO implement
+        const newPage = PageType.fromJSON(json);
+        const indexForNewOne = this.state.pageTypes.findIndex((p) => p.id === newPage.id);
+        const pages = this.state.pageTypes;
+        pages[indexForNewOne] = newPage;
+        this.setState({ pageTypes: pages });
+        this.setState({ selectedPageType: pages[indexForNewOne] });
         return;
     };
 
