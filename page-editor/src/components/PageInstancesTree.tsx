@@ -63,7 +63,6 @@ export default class PageInstancesList extends Component<{
         const { pageInstancesList } = this.props;
 
         return (
-            console.log('WE ARE HERE WITH PAGE INSTANCES LIST: ', pageInstancesList),
             (
                 <div className="components-tree">
                     <ul>
