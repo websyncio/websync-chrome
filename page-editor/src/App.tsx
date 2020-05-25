@@ -9,10 +9,16 @@ import AjaxLoader from './resources/ajaxloader-64x64.gif';
 import 'semantic-ui-css/semantic.min.css';
 import WebSession from './models/WebSession';
 
+import PageInstancesList from 'components/PageInstancesTree';
+import Website from 'models/Website';
+import WebsiteList from 'components/WebsiteList';
+
 type AppState = {
     module: string;
     pageTypes: Array<PageType>;
     selectedPageType?: PageType;
+    websites: Array<Website>;
+    selectedWebsite?: Website;
 };
 
 class App extends Component<any, AppState> {
@@ -34,6 +40,8 @@ class App extends Component<any, AppState> {
             module: '',
             pageTypes: [], // webSession.pages,
             selectedPageType: undefined,
+            websites: [], // webSession.pages,
+            selectedWebsite: undefined,
         };
     }
 
@@ -72,6 +80,12 @@ class App extends Component<any, AppState> {
         } else this.setState({ selectedPageType: this.state.pageTypes.find((p) => p.id === data.value) });
     };
 
+    onSelectedWebsiteChange = (e, data) => {
+        if (data.value === undefined) {
+            this.setState({ selectedWebsite: this.state.websites.find((p) => p.id === data) });
+        } else this.setState({ selectedWebsite: this.state.websites.find((p) => p.id === data.value) });
+    };
+
     onWebSessionUpdated = (webSession: WebSession) => {
         this.setState({ module: webSession.module });
         this.setState({ pageTypes: webSession.pages });
@@ -84,6 +98,7 @@ class App extends Component<any, AppState> {
     onSelectedProject = (message) => {
         this.setState({ module: message.module });
         this.setState({ pageTypes: message.pages });
+        this.setState({ websites: message.websites });
     };
 
     onSend = (json: string) => {
@@ -118,24 +133,47 @@ class App extends Component<any, AppState> {
                 {this.state.pageTypes.length === 0 ? (
                     <img src={AjaxLoader} />
                 ) : (
+                        <div>
+                            <p>Current IDEA project: {this.state.module}</p>
+                        </div>
+                    )}
+                <div style={divStyle}>
                     <div>
-                        <p>Current IDEA project: {this.state.module}</p>
+                        <PageList
+                            pageTypes={this.state.pageTypes}
+                            selected={this.state.selectedPageType}
+                            onSelectedPageChanged={this.onSelectedPageChange}
+                        />
+                        {this.state.selectedPageType && (
+                            <ComponentInstancesList
+                                componentInstancesList={this.state.selectedPageType.componentsInstances}
+                                onSend={this.onSend}
+                            />
+                        )}
                     </div>
-                )}
-                <PageList
-                    pageTypes={this.state.pageTypes}
-                    selected={this.state.selectedPageType}
-                    onSelectedPageChanged={this.onSelectedPageChange}
-                />
-                {this.state.selectedPageType && (
-                    <ComponentInstancesList
-                        componentInstancesList={this.state.selectedPageType.componentsInstances}
-                        onSend={this.onSend}
-                    />
-                )}
+                    <div>
+                        <WebsiteList
+                            websites={this.state.websites}
+                            selectedWebsite={this.state.selectedWebsite}
+                            onSelectedWebsiteChanged={this.onSelectedWebsiteChange}
+                        />
+                        {this.state.selectedWebsite && (
+                            <PageInstancesList
+                                pageInstancesList={this.state.selectedWebsite.pageInstances}
+                                onSend={this.onSend}
+                            />
+                        )}
+                    </div>
+                </div>
             </div>
         );
     }
 }
+
+const divStyle = {
+    justifyContent: 'space-evenly',
+    display: 'flex',
+    alignItems: 'center'
+};
 
 export default App;
