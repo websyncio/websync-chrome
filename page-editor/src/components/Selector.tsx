@@ -23,7 +23,7 @@ export default class Selector extends Component<
     }
 
     validate() {
-        this.selectorValidator.validate(this.props.selector.value, this.onValidated.bind(this));
+        this.selectorValidator.validate(this.props.selector.scss, this.onValidated.bind(this));
     }
 
     onValidated(validationResult: any) {
@@ -89,9 +89,7 @@ export default class Selector extends Component<
     }
 
     highlightSelector() {
-        this.selectorHighlighter.highlight({
-            css: this.props.selector.value,
-        });
+        this.selectorHighlighter.highlight(this.props.selector.scss);
     }
 
     removeHighlighting() {
@@ -111,7 +109,7 @@ export default class Selector extends Component<
                     className={` ${this.state.status === undefined || (this.state.status < 1 && 'invalid')}`}
                     onClick={this.props.onEdit}
                 >
-                    {`${this.props.selector}`}
+                    {`${this.props.selector.value}`}
                 </span>
                 &apos;
             </span>
