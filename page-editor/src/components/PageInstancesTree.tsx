@@ -63,18 +63,16 @@ export default class PageInstancesList extends Component<{
         const { pageInstancesList } = this.props;
 
         return (
-            (
-                <div className="components-tree">
-                    <ul>
-                        {pageInstancesList.map((page) => [
-                            <li key={page.id}>
-                                <PageInstance page={page} onSend={this.props.onSend} />
-                            </li>,
-                            // <ComponentInstancesList componentInstancesList={component.selectedPageType.componentsInstances}/>
-                        ])}
-                    </ul>
-                </div>
-            )
+            <div className="components-tree">
+                <ul>
+                    {pageInstancesList.map((page) => [
+                        <li key={page.id}>
+                            <PageInstance page={page} onSend={this.props.onSend} />
+                        </li>,
+                        // <ComponentInstancesList componentInstancesList={component.selectedPageType.componentsInstances}/>
+                    ])}
+                </ul>
+            </div>
         );
     }
 }

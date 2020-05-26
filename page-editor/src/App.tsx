@@ -21,6 +21,12 @@ type AppState = {
     selectedWebsite?: Website;
 };
 
+const divStyle = {
+    justifyContent: 'space-evenly',
+    display: 'flex',
+    alignItems: 'center',
+};
+
 class App extends Component<any, AppState> {
     connection: any;
 
@@ -133,10 +139,10 @@ class App extends Component<any, AppState> {
                 {this.state.pageTypes.length === 0 ? (
                     <img src={AjaxLoader} />
                 ) : (
-                        <div>
-                            <p>Current IDEA project: {this.state.module}</p>
-                        </div>
-                    )}
+                    <div>
+                        <p>Current IDEA project: {this.state.module}</p>
+                    </div>
+                )}
                 <div style={divStyle}>
                     <div>
                         <PageList
@@ -169,11 +175,5 @@ class App extends Component<any, AppState> {
         );
     }
 }
-
-const divStyle = {
-    justifyContent: 'space-evenly',
-    display: 'flex',
-    alignItems: 'center'
-};
 
 export default App;
