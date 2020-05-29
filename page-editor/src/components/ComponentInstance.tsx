@@ -33,6 +33,11 @@ export default class ComponentInstance extends Component<
         };
 
         this.togglePopup = this.togglePopup.bind(this);
+        this.onRename = this.onRename.bind(this);
+        this.submitRename = this.submitRename.bind(this);
+        this.onNameKeyDown = this.onNameKeyDown.bind(this);
+        this.onNameBlur = this.onNameBlur.bind(this);
+        this.editSelector = this.editSelector.bind(this);
     }
 
     componentDidMount() {
@@ -78,6 +83,35 @@ export default class ComponentInstance extends Component<
         }
     }
 
+    submitRename(event, newName) {
+        event.target.contentEditable = false;
+        if (newName === null) {
+            event.target.innerText = this.props.component.name;
+            return;
+        } else if (this.props.component.name === newName) {
+            return;
+        }
+
+        this.props.component.name = newName;
+
+        const message = {};
+        message['type'] = 'update-component-instance';
+
+        // message['moduleName'] = app.state.module; // TODO moduleName is required in the command
+        message['data'] = this.props.component;
+        console.log('dfsfsf');
+        const temp = JSON.stringify(message['data']['initializationAttribute']['parameters'][0]['values']);
+        console.log(temp);
+        console.log(message);
+        // const json = JSON.stringify(message);
+        // console.log('sent ' + json);
+        // this.props.onSend(json);
+        this.props.onSend(message);
+
+        const lastDot = this.props.component.id.lastIndexOf('.');
+        this.props.component.id = this.props.component.id.substring(0, lastDot + 1) + newName;
+    }
+
     onNameKeyDown(event) {
         const newName = event.target.innerText.trim();
         if (!event.key.match(/[A-Za-z0-9_$]+/g)) {
@@ -85,10 +119,10 @@ export default class ComponentInstance extends Component<
             return;
         }
         if (event.key === 'Enter') {
-            this.submitRename(event, this.props.component, newName);
+            this.submitRename(event, newName);
             event.preventDefault();
         } else if (event.key === 'Escape') {
-            this.submitRename(event, this.props.component, null);
+            this.submitRename(event, null);
         } else if (newName.length === 100) {
             event.preventDefault();
         }
@@ -96,34 +130,10 @@ export default class ComponentInstance extends Component<
 
     onNameBlur(event) {
         const newName = event.target.innerText.trim();
-        this.submitRename(event, this.props.component, newName);
+        this.submitRename(event, newName);
     }
 
-    submitRename(event, component, newName) {
-        event.target.contentEditable = false;
-        if (newName === null) {
-            event.target.innerText = component.name;
-            return;
-        } else if (component.name === newName) {
-            return;
-        }
-
-        component.name = newName;
-
-        const message = {};
-        message['type'] = 'update-component-instance';
-
-        // message['moduleName'] = app.state.module; // TODO moduleName is required in the command
-        message['data'] = component;
-        const json = JSON.stringify(message);
-        console.log('sent ' + json);
-        this.props.onSend(json);
-
-        const lastDot = component.id.lastIndexOf('.');
-        component.id = component.id.substring(0, lastDot + 1) + newName;
-    }
-
-    editSelector = (component: ComponentInstanceModel, parameter: ParameterModel, valueIndex: number) => {
+    editSelector(component: ComponentInstanceModel, parameter: ParameterModel, valueIndex: number) {
         SelectorEditorProxy.instance().sendMessage('edit-component-selector', {
             componentId: component.id,
             componentName: component.name,
@@ -131,7 +141,7 @@ export default class ComponentInstance extends Component<
             parameterValueIndex: valueIndex,
             selector: parameter.values[valueIndex].value,
         });
-    };
+    }
 
     editComponentType() {
         console.log('edit component type');

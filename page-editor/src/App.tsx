@@ -86,7 +86,12 @@ class App extends Component<any, AppState> {
         this.setState({ pageTypes: message.pages });
     };
 
-    onSend = (json: string) => {
+    // onSend = (json: string) => {
+    //     this.connection.current.sendHandler(json);
+    // };
+    onSend = (message: any) => {
+        message['moduleName'] = this.state.module;
+        const json = JSON.stringify(message);
         this.connection.current.sendHandler(json);
     };
     onComponentUpdated = (json: any) => {

@@ -23,6 +23,9 @@ export default class Selector extends Component<
     }
 
     validate() {
+        if (this.props.selector.scss == undefined) {
+            return;
+        }
         this.selectorValidator.validate(this.props.selector.scss, this.onValidated.bind(this));
     }
 
@@ -109,6 +112,7 @@ export default class Selector extends Component<
                     className={` ${this.state.status === undefined || (this.state.status < 1 && 'invalid')}`}
                     onClick={this.props.onEdit}
                 >
+                    {/* {this.props.selector.value === undefined || `${this.props.selector.value}`} */}
                     {`${this.props.selector.value}`}
                 </span>
                 &apos;
