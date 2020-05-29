@@ -99,10 +99,7 @@ export default class ComponentInstance extends Component<
 
         // message['moduleName'] = app.state.module; // TODO moduleName is required in the command
         message['data'] = this.props.component;
-        console.log('dfsfsf');
-        const temp = JSON.stringify(message['data']['initializationAttribute']['parameters'][0]['values']);
-        console.log(temp);
-        console.log(message);
+        console.log('dfsfsf', message);
         // const json = JSON.stringify(message);
         // console.log('sent ' + json);
         // this.props.onSend(json);

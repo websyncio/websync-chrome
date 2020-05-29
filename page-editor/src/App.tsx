@@ -8,6 +8,8 @@ import SelectorEditorProxy, { MessageTypes } from './services/SelectorEditorProx
 import AjaxLoader from './resources/ajaxloader-64x64.gif';
 import 'semantic-ui-css/semantic.min.css';
 import WebSession from './models/WebSession';
+import Selector from './models/Selector';
+import Scss from './components/ScssBuilder';
 
 type AppState = {
     module: string;
@@ -86,14 +88,25 @@ class App extends Component<any, AppState> {
         this.setState({ pageTypes: message.pages });
     };
 
+    replacer(key, value) {
+        if (value instanceof Selector) {
+            return value['value'];
+        }
+        if (value instanceof Scss) {
+            return undefined;
+        }
+        return value;
+    }
+
     // onSend = (json: string) => {
     //     this.connection.current.sendHandler(json);
     // };
     onSend = (message: any) => {
         message['moduleName'] = this.state.module;
-        const json = JSON.stringify(message);
+        const json = JSON.stringify(message, this.replacer);
         this.connection.current.sendHandler(json);
     };
+
     onComponentUpdated = (json: any) => {
         //TODO implement
         return;
