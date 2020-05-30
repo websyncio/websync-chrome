@@ -4,7 +4,7 @@ import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import ConnectedState from './ConnectedState';
 import DisconnectedState from './DisconnectedState';
 import WebSession from '../models/WebSession';
-import { DomainStoreModel } from 'mst/DomainStore';
+import { ProjectStoreModel } from 'mst/ProjectStore';
 
 import 'styles/Connection.sass';
 
@@ -41,7 +41,7 @@ class Connection extends Component<ConnectionProps, State> {
     }
 
     onProjectMetadataReceived = (json) => {
-        const rootStore = DomainStoreModel.create(json);
+        const rootStore = ProjectStoreModel.create(json);
         this.props.onProjectMetadataReceived(rootStore);
     };
 
@@ -85,9 +85,9 @@ class Connection extends Component<ConnectionProps, State> {
                         return this.setState({ modules: message.data });
                     case 'get-module-response':
                         console.log('Module received: ', message.data);
-                        const webSession = WebSession.fromJSON(message.data);
-                        this.setState({ selected: webSession.module });
-                        this.props.onSelectedProject(webSession);
+                        //const webSession = WebSession.fromJSON(message.data);
+                        //this.setState({ selected: webSession.module });
+                        //this.props.onSelectedProject(webSession);
                         this.onProjectMetadataReceived(message.data);
                         break;
                     case 'show-page':

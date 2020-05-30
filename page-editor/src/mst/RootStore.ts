@@ -1,10 +1,16 @@
 import { types, Instance } from 'mobx-state-tree';
-import { DomainStoreModel } from './DomainStore';
+import ProjectStore, { ProjectStoreModel } from './ProjectStore';
 import { UiStoreModel } from './UiStore';
 
-export const RootStoreModel = types.model({
-    DomainStore: types.optional(DomainStoreModel, {}),
-    UiStore: types.optional(UiStoreModel, {}),
-});
+export const RootStoreModel = types
+    .model({
+        projectStore: types.optional(ProjectStoreModel, {}),
+        uiStore: types.optional(UiStoreModel, {}),
+    })
+    .actions((self) => ({
+        setProjectStore(projectStore: ProjectStore) {
+            self.projectStore = projectStore;
+        },
+    }));
 
 export default interface RootStore extends Instance<typeof RootStoreModel> {}

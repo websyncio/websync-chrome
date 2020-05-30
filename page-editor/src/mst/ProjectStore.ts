@@ -3,10 +3,10 @@ import { WebSiteModel } from './WebSite';
 import { PageTypeModel } from './PageType';
 import { ComponentTypeModel } from './ComponentType';
 
-export const DomainStoreModel = types.model({
+export const ProjectStoreModel = types.model({
     webSites: types.map(WebSiteModel),
     pageTypes: types.map(PageTypeModel),
     componentTypes: types.map(ComponentTypeModel),
 });
 
-export default interface DomainStore extends Instance<typeof DomainStoreModel> {}
+export default interface ProjectStore extends Instance<typeof ProjectStoreModel> {}
