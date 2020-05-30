@@ -4,6 +4,7 @@ import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import ConnectedState from './ConnectedState';
 import DisconnectedState from './DisconnectedState';
 import WebSession from '../models/WebSession';
+import { DomainStoreModel } from 'mst/DomainStore';
 
 import 'styles/Connection.sass';
 
@@ -19,6 +20,7 @@ type ConnectionProps = {
     onSelectedProject: any;
     onPageUpdated: any;
     onComponentUpdated: any;
+    onProjectMetadataReceived: any;
 };
 
 class Connection extends Component<ConnectionProps, State> {
@@ -37,6 +39,11 @@ class Connection extends Component<ConnectionProps, State> {
     componentDidMount() {
         this.sendHandler = this.connect();
     }
+
+    onProjectMetadataReceived = (json) => {
+        const rootStore = DomainStoreModel.create(json);
+        this.props.onProjectMetadataReceived(rootStore);
+    };
 
     connect = () => {
         const client = new W3CWebSocket('ws://localhost:1804/');
@@ -81,7 +88,8 @@ class Connection extends Component<ConnectionProps, State> {
                         const webSession = WebSession.fromJSON(message.data);
                         this.setState({ selected: webSession.module });
                         this.props.onSelectedProject(webSession);
-                        return;
+                        this.onProjectMetadataReceived(message.data);
+                        break;
                     case 'show-page':
                         console.log('page is opened:', message.className);
                         return this.props.onSelectedPageChange(null, message.className);

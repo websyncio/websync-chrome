@@ -125,6 +125,10 @@ class App extends Component<any, AppState> {
         return;
     };
 
+    onProjectMetadataReceived = (domainStore) => {
+        console.log('project metadata received', domainStore);
+    };
+
     render() {
         return (
             <div className="App">
@@ -135,6 +139,7 @@ class App extends Component<any, AppState> {
                     onSelectedProject={this.onSelectedProject}
                     onComponentUpdated={this.onComponentUpdated}
                     onPageUpdated={this.onPageUpdated}
+                    onProjectMetadataReceived={this.onProjectMetadataReceived}
                 />
                 {this.state.pageTypes.length === 0 ? (
                     <img src={AjaxLoader} />

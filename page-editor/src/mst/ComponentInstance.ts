@@ -4,7 +4,8 @@ import { ComponentTypeModel } from './ComponentType';
 
 export const ComponentInstanceModel = types.model({
     id: types.identifier,
-    componentType: types.reference(ComponentTypeModel),
+    // try to fix - https://mobx-state-tree.js.org/tips/circular-deps
+    componentType: types.string, //.maybe(types.reference(types.late(() => ComponentTypeModel))),
     name: types.string,
     initializationAttribute: types.optional(AttributeModel, {
         name: '',

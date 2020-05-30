@@ -3,7 +3,7 @@ import { ComponentInstanceModel } from './ComponentInstance';
 
 export const PageTypeModel = types.model({
     id: types.identifier,
-    basePageType: types.maybe(types.reference(types.late(() => PageTypeModel))),
+    // basePageType: types.maybe(types.reference(types.late(() => PageTypeModel))),
     url: types.string,
     componentsInstances: types.map(ComponentInstanceModel),
 });
