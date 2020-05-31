@@ -1,23 +1,22 @@
 import React, { Component } from 'react';
-import AttributeModel from '../models/Attribute';
 import Selector from './Selector';
-import SelectorModel from 'models/Selector';
-import ComponentInstance from '../models/ComponentInstance';
-import ParmeterModel from 'models/Parameter';
+import ComponentInstance from 'mst/ComponentInstance';
+import AttributeModel from 'mst/Attribute';
+import ParameterModel from 'mst/Parameter';
 
 class Attribute extends Component<{ attribute: AttributeModel; onEditSelector: any }> {
     getStatus() {
         return Math.floor(Math.random() * 3);
     }
 
-    valuesList = (parameter: ParmeterModel) => {
+    valuesList = (parameter: ParameterModel) => {
         return (
             <span className="parameter-values">
                 {parameter.values.length > 1 && '{'}
                 {parameter.values.map((s, index) => {
                     return (
-                        <span key={parameter.name}>
-                            <Selector selector={s} onEdit={() => this.props.onEditSelector(s, index)} />
+                        <span key={parameter.name || ''}>
+                            {/* <Selector selector={s} onEdit={() => this.props.onEditSelector(s, index)} /> */}
                             {index !== parameter.values.length - 1 && ', '}
                         </span>
                     );

@@ -4,13 +4,6 @@ import { Dropdown } from 'semantic-ui-react';
 import { StoreContext, useRootStore } from 'context';
 import { observer } from 'mobx-react';
 import RootStore from 'mst/RootStore';
-import { values } from 'mobx';
-
-// type PageListProps = {
-//     pageTypes: Array<PageType>;
-//     selected?: PageType;
-//     onSelectedPageChanged: any;
-// };
 
 export default observer(() => {
     const rootStore: RootStore = useRootStore();
@@ -25,13 +18,13 @@ export default observer(() => {
 
     function onPageChanged(e, data) {
         console.log('page changed', data);
-        const selectedPage = rootStore.projectStore.pageTypes.find((p) => p.id == data.value);
-        rootStore.uiStore.setSelectedPage(selectedPage);
+        const selectedPageType = rootStore.projectStore.pageTypes.find((p) => p.id == data.value);
+        rootStore.uiStore.setSelectedPageType(selectedPageType);
     }
 
     return (
         <Dropdown
-            text={rootStore.uiStore.selectedPage?.name || ''}
+            text={rootStore.uiStore.selectedPageType?.name || ''}
             placeholder="Select Page"
             fluid
             search

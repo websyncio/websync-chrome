@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ComponentInstanceModel from 'models/ComponentInstance';
+import ComponentInstanceModel from 'mst/ComponentInstance';
 import ParameterModel from 'models/Parameter';
 import Attribute from './Attribute';
 import SelectorEditorProxy from 'services/SelectorEditorProxy';
@@ -151,7 +151,7 @@ export default class ComponentInstance extends Component<
         return (
             <span>
                 <span className="trigger type-name" ref={this.triggerRef} onClick={this.togglePopup}>
-                    {this.getTypeName(this.props.component.componentTypeId)}
+                    {this.getTypeName(this.props.component.componentType)}
                 </span>
 
                 <Portal>

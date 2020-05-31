@@ -3,11 +3,11 @@ import PageType, { PageTypeModel } from './PageType';
 
 export const UiStoreModel = types
     .model({
-        selectedPage: types.safeReference(PageTypeModel),
+        selectedPageType: types.safeReference(PageTypeModel),
     })
     .actions((self) => ({
-        setSelectedPage(page: PageType | undefined) {
-            self.selectedPage = page;
+        setSelectedPageType(pageType: PageType | undefined) {
+            self.selectedPageType = pageType;
         },
     }));
 

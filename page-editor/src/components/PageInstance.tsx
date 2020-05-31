@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import ComponentInstanceModel from 'models/ComponentInstance';
 import ParameterModel from 'models/Parameter';
-import Attribute from './Attribute';
 import SelectorEditorProxy from 'services/SelectorEditorProxy';
 import { createPopper } from '@popperjs/core';
 import FocusTrap from 'focus-trap-react';
@@ -183,14 +181,15 @@ export default class PageInstance extends Component<
                 >
                     {this.getName(this.props.page.id)}
                 </span>
-                {this.props.page.initializationAttribute && (
+                <span>URL</span>
+                {/* {this.props.page.initializationAttribute && (
                     <Attribute
                         attribute={this.props.page.initializationAttribute}
                         onEditSelector={(parameter, valueIndex) =>
                             this.editSelector(this.props.page, parameter, valueIndex)
                         }
                     />
-                )}
+                )} */}
             </span>
         );
     }

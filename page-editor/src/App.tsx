@@ -161,12 +161,7 @@ export default observer(
                                 selected={this.state.selectedPageType}
                                 onSelectedPageChanged={this.onSelectedPageChange}
                             /> */}
-                            {this.state.selectedPageType && (
-                                <ComponentInstancesList
-                                    componentInstancesList={this.state.selectedPageType.componentsInstances}
-                                    onSend={this.onSend}
-                                />
-                            )}
+                            {this.context.uiStore.selectedPageType && <ComponentInstancesList />}
                         </div>
                         <div>
                             <WebsiteList
