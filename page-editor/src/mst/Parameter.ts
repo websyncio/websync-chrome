@@ -1,9 +1,8 @@
 import { types, Instance } from 'mobx-state-tree';
-import { SelectorModel } from './Selector';
 
 export const ParameterModel = types.model({
-    name: types.optional(types.string, ''),
-    values: types.map(SelectorModel),
+    name: types.maybeNull(types.string),
+    values: types.array(types.string),
 });
 
 export default interface Parameter extends Instance<typeof ParameterModel> {}

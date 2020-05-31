@@ -1,44 +1,43 @@
 import React, { Component } from 'react';
 import PageType from '../models/PageType';
 import { Dropdown } from 'semantic-ui-react';
+import { StoreContext, useRootStore } from 'context';
+import { observer } from 'mobx-react';
+import RootStore from 'mst/RootStore';
+import { values } from 'mobx';
 
-type PageListProps = {
-    pageTypes: Array<PageType>;
-    selected?: PageType;
-    onSelectedPageChanged: any;
-};
+// type PageListProps = {
+//     pageTypes: Array<PageType>;
+//     selected?: PageType;
+//     onSelectedPageChanged: any;
+// };
 
-class PageList extends Component<PageListProps, any> {
-    render() {
-        function getName(id: any) {
-            if (id === undefined) {
-                return null;
-            } else {
-                const arr = id.split('.');
-                return arr[arr.length - 1];
-            }
-        }
+export default observer(() => {
+    const rootStore: RootStore = useRootStore();
 
-        const options = this.props.pageTypes.map((item) => {
-            return {
-                key: item.id,
-                value: item.id,
-                text: getName(item.id),
-            };
-        });
+    const options = rootStore.projectStore.pageTypes.map((item) => {
+        return {
+            key: item.id,
+            value: item.id,
+            text: item.name,
+        };
+    });
 
-        return (
-            <Dropdown
-                text={getName(this.props.selected?.id)}
-                placeholder="Select Page"
-                fluid
-                search
-                selection
-                options={options}
-                onChange={this.props.onSelectedPageChanged}
-            />
-        );
+    function onPageChanged(e, data) {
+        console.log('page changed', data);
+        const selectedPage = rootStore.projectStore.pageTypes.find((p) => p.id == data.value);
+        rootStore.uiStore.setSelectedPage(selectedPage);
     }
-}
 
-export default PageList;
+    return (
+        <Dropdown
+            text={rootStore.uiStore.selectedPage?.name || ''}
+            placeholder="Select Page"
+            fluid
+            search
+            selection
+            options={options}
+            onChange={onPageChanged}
+        />
+    );
+});

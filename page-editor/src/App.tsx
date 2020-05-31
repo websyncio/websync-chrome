@@ -155,11 +155,12 @@ export default observer(
                     )}
                     <div style={divStyle}>
                         <div>
-                            <PageList
+                            <PageList />
+                            {/* <PageList 
                                 pageTypes={this.state.pageTypes}
                                 selected={this.state.selectedPageType}
                                 onSelectedPageChanged={this.onSelectedPageChange}
-                            />
+                            /> */}
                             {this.state.selectedPageType && (
                                 <ComponentInstancesList
                                     componentInstancesList={this.state.selectedPageType.componentsInstances}

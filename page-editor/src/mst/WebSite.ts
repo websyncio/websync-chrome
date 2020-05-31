@@ -5,7 +5,7 @@ export const WebSiteModel = types.model({
     id: types.identifier,
     baseWebSite: types.maybe(types.reference(types.late(() => WebSiteModel))),
     url: types.string,
-    pageInstances: types.map(PageInstanceModel),
+    pageInstances: types.array(PageInstanceModel),
 });
 
 export default interface WebSite extends Instance<typeof WebSiteModel> {}

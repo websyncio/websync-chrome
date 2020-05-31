@@ -4,9 +4,9 @@ import { PageTypeModel } from './PageType';
 import { ComponentTypeModel } from './ComponentType';
 
 export const ProjectStoreModel = types.model({
-    webSites: types.map(WebSiteModel),
-    pageTypes: types.map(PageTypeModel),
-    componentTypes: types.map(ComponentTypeModel),
+    webSites: types.array(WebSiteModel),
+    pageTypes: types.array(PageTypeModel),
+    componentTypes: types.array(ComponentTypeModel),
 });
 
 export default interface ProjectStore extends Instance<typeof ProjectStoreModel> {}
