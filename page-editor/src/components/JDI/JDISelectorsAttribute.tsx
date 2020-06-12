@@ -20,9 +20,9 @@ const JDISelectorsAttribute: React.SFC<JDISelectorsAttributeProps> = (props: JDI
         return new SelectorModel(props.attribute.name, value);
     }
 
-    function onEditSelector(index, value) {
+    function onEditSelector(parameter, index) {
         console.log('implement this');
-        //props.onEditSelector(v, index);
+        props.onEditSelector(parameter, index);
     }
 
     const valuesList = (parameter: ParameterModel) => {
@@ -32,7 +32,7 @@ const JDISelectorsAttribute: React.SFC<JDISelectorsAttributeProps> = (props: JDI
                 {parameter.values.map((v, index) => {
                     return (
                         <span key={parameter.name || ''}>
-                            <Selector selector={getSelector(v)} onEdit={onEditSelector(index, v)} />
+                            <Selector selector={getSelector(v)} onEdit={() => onEditSelector(parameter, index)} />
                             {index !== parameter.values.length - 1 && ', '}
                         </span>
                     );
