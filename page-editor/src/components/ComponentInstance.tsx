@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import ComponentInstanceModel from 'mst/ComponentInstance';
-import ParameterModel from 'models/Parameter';
-import Attribute from './Attribute';
+import AttributeModel from 'mst/Attribute';
+import ParameterModel from 'mst/Parameter';
+import JDISelectorsAttribute from './JDI/JDISelectorsAttribute';
 import SelectorEditorProxy from 'services/SelectorEditorProxy';
 import { createPopper } from '@popperjs/core';
 import FocusTrap from 'focus-trap-react';
 import Portal from './Portal';
 import 'styles/Popup.sass';
 import ComponentTypeSelector from './ComponentTypeSelector';
+import { InitializationAttributes } from 'services/JDI';
 
 export default class ComponentInstance extends Component<
     {
@@ -36,9 +38,7 @@ export default class ComponentInstance extends Component<
     }
 
     componentDidMount() {
-        console.log(this.triggerRef.current);
-        console.log(this.popupRef.current);
-
+        console.log('ComponentInstance.props', this.props);
         this.popper = createPopper(this.triggerRef.current, this.popupRef.current, {
             placement: 'bottom-start',
             strategy: 'fixed',
@@ -129,7 +129,7 @@ export default class ComponentInstance extends Component<
             componentName: component.name,
             parameterName: parameter.name,
             parameterValueIndex: valueIndex,
-            selector: parameter.values[valueIndex].value,
+            selector: parameter.values[valueIndex],
         });
     };
 
@@ -145,6 +145,22 @@ export default class ComponentInstance extends Component<
     getTypeName(componentTypeId: string) {
         const arr = componentTypeId.split('.');
         return arr[arr.length - 1].trim();
+    }
+
+    initializationAttribute(attribute: AttributeModel) {
+        if (attribute) {
+            if (InitializationAttributes.Generic.indexOf(attribute.name) != -1) {
+                return (
+                    <JDISelectorsAttribute
+                        attribute={this.props.component.initializationAttribute}
+                        onEditSelector={(parameter, valueIndex) =>
+                            this.editSelector(this.props.component, parameter, valueIndex)
+                        }
+                    />
+                );
+            }
+            console.error('Unsupported type of initialization attribute', attribute);
+        }
     }
 
     render() {
@@ -182,14 +198,7 @@ export default class ComponentInstance extends Component<
                 >
                     {this.getName(this.props.component.id)}
                 </span>
-                {this.props.component.initializationAttribute && (
-                    <Attribute
-                        attribute={this.props.component.initializationAttribute}
-                        onEditSelector={(parameter, valueIndex) =>
-                            this.editSelector(this.props.component, parameter, valueIndex)
-                        }
-                    />
-                )}
+                {this.initializationAttribute(this.props.component.initializationAttribute)}
             </span>
         );
     }
