@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import AttributeModel from 'mst/Attribute';
 import ParameterModel from 'mst/Parameter';
 import { observer } from 'mobx-react';
+import { Scss } from 'components/ScssBuilder';
+import Selector from 'components/Selector';
+import SelectorModel from 'models/Selector';
 
 interface JDISelectorsAttributeProps {
     attribute: AttributeModel;
@@ -13,14 +16,23 @@ const JDISelectorsAttribute: React.SFC<JDISelectorsAttributeProps> = (props: JDI
         return Math.floor(Math.random() * 3);
     }
 
+    function getSelector(value: string) {
+        return new SelectorModel(props.attribute.name, value);
+    }
+
+    function onEditSelector(index, value) {
+        console.log('implement this');
+        //props.onEditSelector(v, index);
+    }
+
     const valuesList = (parameter: ParameterModel) => {
         return (
             <span className="parameter-values">
                 {parameter.values.length > 1 && '{'}
-                {parameter.values.map((s, index) => {
+                {parameter.values.map((v, index) => {
                     return (
                         <span key={parameter.name || ''}>
-                            {/* <Selector selector={s} onEdit={() => this.props.onEditSelector(s, index)} /> */}
+                            <Selector selector={getSelector(v)} onEdit={onEditSelector(index, v)} />
                             {index !== parameter.values.length - 1 && ', '}
                         </span>
                     );
