@@ -281,7 +281,7 @@ i.remove-root:hover{
 	background: gainsboro;
 	cursor: pointer;
 	padding: 0px 2px;
-	margin-right: 2px;
+	margin-right: 3px;
 	border-radius: 2px;
 	border: 1px dotted #ccc;
 	color: darkslategrey;
@@ -336,6 +336,7 @@ i.remove-root:hover{
 	opacity: 1;
 	display: inline-block;
 	margin-right: 2px;
+	margin-left: -1px;
 }
 
 #target .validator .part.blank.selected .remove-icon{
