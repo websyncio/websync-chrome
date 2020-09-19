@@ -8,28 +8,33 @@ export const UiStoreModel = types
     .model({
         selectedPageType: types.safeReference(PageTypeModel),
         selectedWebSite: types.safeReference(WebSiteModel),
-        ideProxies: types.map(IdeProxyModel),
+        ideProxies: types.array(IdeProxyModel),
     })
+    .views((self) => ({}))
     .actions((self) => ({
         setSelectedPageType(pageType: PageType | undefined) {
             self.selectedPageType = pageType;
         },
         addIdeProxy(type: string) {
-            self.ideProxies.set(
-                type,
+            this.removeIdeProxy(type);
+            self.ideProxies.push(
                 IdeProxyModel.create({
                     type,
                 }),
             );
         },
         removeIdeProxy(type: string) {
-            delete self.ideProxies[type];
+            const ide = self.ideProxies.find((ide) => ide.type == type);
+            if (ide) {
+                self.ideProxies.remove(ide);
+            }
         },
         setProjectsList(type, projectsList) {
-            if (!self.ideProxies[type]) {
-                throw new Error("No ide proxy of type '" + { type } + "' in the list");
+            const ide = self.ideProxies.find((ide) => ide.type == type);
+            if (!ide) {
+                throw new Error('There is no connection to IDE: ' + type);
             }
-            (self.ideProxies[type] as IdeProxy).setProjectList(projectsList);
+            (ide as IdeProxy).setProjectList(projectsList);
         },
     }));
 

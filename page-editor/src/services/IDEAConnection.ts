@@ -43,7 +43,7 @@ export default class IDEAConnection implements IIdeProxy {
                 // this.props.onPageUpdated(message.data);
                 return;
             default:
-                console.log('no message type, ignored: ', message.data);
+                console.log('no message type, ignored: ', message);
                 return;
         }
     }

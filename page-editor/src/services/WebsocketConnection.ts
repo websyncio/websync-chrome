@@ -39,11 +39,11 @@ export default class IdeConnection {
     }
 
     connect() {
-        const client = new W3CWebSocket(`ws://localhost:${this.port}/`);
-        client.onerror = this.onError.bind(this);
-        client.onopen = this.onOpen.bind(this);
-        client.onclose = this.onClose.bind(this);
-        client.onmessage = this.onMessage.bind(this);
+        this.client = new W3CWebSocket(`ws://localhost:${this.port}/`);
+        this.client.onerror = this.onError.bind(this);
+        this.client.onopen = this.onOpen.bind(this);
+        this.client.onclose = this.onClose.bind(this);
+        this.client.onmessage = this.onMessage.bind(this);
     }
 
     send(messageObject) {
@@ -69,7 +69,14 @@ export default class IdeConnection {
     }
 
     onMessage(e) {
-        this.reactor.dispatchEvent(Events.onmessage, e.data);
+        console.log('Message received:', e);
+        try {
+            const messageData = JSON.parse(e.data);
+            this.reactor.dispatchEvent(Events.onmessage, messageData);
+        } catch (e) {
+            console.log('Can not parse message: ', e);
+        }
+
         // try {
         //     // const message = JSON.parse(e.data, Message.reviver);
         //     const message = JSON.parse(e.data);
