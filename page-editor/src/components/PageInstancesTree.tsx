@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import PageInstanceModel from 'models/PageInstance';
+import React from 'react';
 import PageInstance from 'components/PageInstance';
 import 'styles/ComponentInstancesTree.sass';
+import { useRootStore } from 'context';
+import RootStore from 'mst/RootStore';
+import { observer } from 'mobx-react';
 
-export default class PageInstancesList extends Component<{
-    pageInstancesList: PageInstanceModel[];
-    onSend: any;
-}> {
-    onRename(event, component) {
+export default observer(() => {
+    const { projectStore, uiStore }: RootStore = useRootStore();
+    function onRename(event, component) {
         if (event.target.contentEditable === true) {
             event.target.contentEditable = false;
         } else {
@@ -15,28 +15,7 @@ export default class PageInstancesList extends Component<{
         }
     }
 
-    onNameKeyDown(event, component) {
-        const newName = event.target.innerText.trim();
-        if (!event.key.match(/[a-z_$][A-Za-z0-9_$]+/g)) {
-            event.preventDefault();
-            return;
-        }
-        if (event.key === 'Enter') {
-            this.submitRename(event, component, newName);
-            event.preventDefault();
-        } else if (event.key === 'Escape') {
-            this.submitRename(event, component, null);
-        } else if (newName.length === 100) {
-            event.preventDefault();
-        }
-    }
-
-    onNameBlur(event, component) {
-        const newName = event.target.innerText.trim();
-        this.submitRename(event, component, newName);
-    }
-
-    submitRename(event, component, newName) {
+    function submitRename(event, component, newName) {
         event.target.contentEditable = false;
         if (newName === null) {
             event.target.innerText = component.name;
@@ -53,26 +32,42 @@ export default class PageInstancesList extends Component<{
         message['data'] = component;
         const json = JSON.stringify(message);
         console.log('sent ' + json);
-        this.props.onSend(json);
 
         const lastDot = component.id.lastIndexOf('.');
         component.id = component.id.substring(0, lastDot + 1) + newName;
     }
 
-    render() {
-        const { pageInstancesList } = this.props;
-
-        return (
-            <div className="components-tree">
-                <ul>
-                    {pageInstancesList.map((page) => [
-                        <li key={page.id}>
-                            <PageInstance page={page} onSend={this.props.onSend} />
-                        </li>,
-                        // <ComponentInstancesList componentInstancesList={component.selectedPageType.componentsInstances}/>
-                    ])}
-                </ul>
-            </div>
-        );
+    function onNameKeyDown(event, component) {
+        const newName = event.target.innerText.trim();
+        if (!event.key.match(/[a-z_$][A-Za-z0-9_$]+/g)) {
+            event.preventDefault();
+            return;
+        }
+        if (event.key === 'Enter') {
+            submitRename(event, component, newName);
+            event.preventDefault();
+        } else if (event.key === 'Escape') {
+            submitRename(event, component, null);
+        } else if (newName.length === 100) {
+            event.preventDefault();
+        }
     }
-}
+
+    function onNameBlur(event, component) {
+        const newName = event.target.innerText.trim();
+        submitRename(event, component, newName);
+    }
+
+    return (
+        <div className="components-tree">
+            <ul>
+                {uiStore.selectedWebSite.pageInstances.map((page) => [
+                    <li key={page.id}>
+                        <PageInstance page={page} />
+                    </li>,
+                    // <ComponentInstancesList componentInstancesList={component.selectedPageType.componentsInstances}/>
+                ])}
+            </ul>
+        </div>
+    );
+});

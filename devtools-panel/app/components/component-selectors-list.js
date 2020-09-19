@@ -174,7 +174,7 @@ export default Component.extend({
 		onCopy(){
 			var text="";
 			this.selectors.forEach(function(item){
-				text+=item.get('value')+"|"+item.get('name')+"\r\n";
+				text+=item.get('selector.scss')+"|"+item.get('name')+"\r\n";
 			});
 			this.get('clipboard').copy(text);
 		},

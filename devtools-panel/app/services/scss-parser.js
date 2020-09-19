@@ -648,12 +648,12 @@ export default Service.extend({
         {
             xpath += this.XpathTextCondition(texts[i]);
         }
+        for (let i=0; i<subelementXpaths.length; i++) {
+            xpath += this.XpathCondition(subelementXpaths[i]);
+        }
         for (let i=0; i<conditions.length; i++)
         {
             xpath += this.XpathCondition(conditions[i]);
-        }
-        for (let i=0; i<subelementXpaths.length; i++) {
-            xpath += this.XpathCondition(subelementXpaths[i]);
         }
         if (func)
         {

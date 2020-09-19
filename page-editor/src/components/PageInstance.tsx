@@ -11,7 +11,6 @@ import PageInstanceModel from 'models/PageInstance';
 export default class PageInstance extends Component<
     {
         page: PageInstanceModel;
-        onSend: any;
     },
     {
         isOpen: boolean;
@@ -116,7 +115,8 @@ export default class PageInstance extends Component<
         message['data'] = page;
         const json = JSON.stringify(message);
         console.log('sent ' + json);
-        this.props.onSend(json);
+        // TODO: use MOBX
+        //this.props.onSend(json);
 
         const lastDot = page.id.lastIndexOf('.');
         page.id = page.id.substring(0, lastDot + 1) + newName;

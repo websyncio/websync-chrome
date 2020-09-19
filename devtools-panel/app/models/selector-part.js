@@ -23,7 +23,9 @@ export default Ember.Object.extend({
 		return this.get('startIndex') + this.get('scss').length;
 	}),
 	getSelector(){
-		if(this.get('fullCss')){
+		let cssStatus = this.get('cssElements.length');
+		let xpathStatus = this.get('xpathElements.length');
+		if(this.get('fullCss') && (cssStatus || !xpathStatus)){
 			return {
 				scss: this.get('fullScss'),
 				css: this.get('fullCss')

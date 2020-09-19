@@ -7,7 +7,6 @@ import Website from 'models/Website';
 type WebsiteListProps = {
     websites: Array<Website>;
     selectedWebsite?: Website;
-    onSelectedWebsiteChanged: any;
 };
 
 class WebsiteList extends Component<WebsiteListProps, any> {
@@ -29,6 +28,10 @@ class WebsiteList extends Component<WebsiteListProps, any> {
             };
         });
 
+        function onSelectedWebsiteChanged() {
+            throw new Error('not implemented');
+        }
+
         return (
             <Dropdown
                 text={getName(this.props.selectedWebsite?.id)}
@@ -37,7 +40,7 @@ class WebsiteList extends Component<WebsiteListProps, any> {
                 search
                 selection
                 options={options}
-                onChange={this.props.onSelectedWebsiteChanged}
+                onChange={onSelectedWebsiteChanged}
             />
         );
     }

@@ -3,7 +3,6 @@ import 'styles/App.sass';
 import Connection from './components/Connection';
 import PageType from './models/PageType';
 import PageList from './components/PageList';
-import ComponentInstancesList from './components/ComponentInstancesTree';
 import SelectorEditorProxy, { MessageTypes } from './services/SelectorEditorProxy';
 import AjaxLoader from './resources/ajaxloader-64x64.gif';
 import 'semantic-ui-css/semantic.min.css';
@@ -14,6 +13,10 @@ import { observer } from 'mobx-react';
 import PageInstancesList from 'components/PageInstancesTree';
 import Website from 'models/Website';
 import WebsiteList from 'components/WebsiteList';
+import IIdeProxy from 'interfaces/IIdeProxy';
+import IDEAConnection from 'services/IDEAConnection';
+import ProjectSelector from 'components/ProjectSelector';
+import ProjectViewer from 'components/ProjectViewer';
 
 type AppState = {
     module: string;
@@ -23,19 +26,16 @@ type AppState = {
     selectedWebsite?: Website;
 };
 
-const divStyle = {
-    justifyContent: 'space-evenly',
-    display: 'flex',
-    alignItems: 'center',
-};
-
 export default observer(
     class App extends Component<any, AppState> {
         static contextType = StoreContext;
+        ideProxies: IIdeProxy[] = [];
         connection: any;
 
         constructor(props) {
             super(props);
+            this.ideProxies.push(new IDEAConnection());
+
             this.onSelectedPageChange = this.onSelectedPageChange.bind(this);
             this.onWebSessionUpdated = this.onWebSessionUpdated.bind(this);
             this.connection = React.createRef();
@@ -137,7 +137,8 @@ export default observer(
         render() {
             return (
                 <div className="App">
-                    <Connection
+                    {this.context.projectStore ? <ProjectSelector /> : <ProjectViewer />}
+                    {/* <Connection
                         ref={this.connection}
                         onWebSessionUpdated={this.onWebSessionUpdated}
                         onSelectedPageChange={this.onSelectedPageChange}
@@ -145,38 +146,14 @@ export default observer(
                         onComponentUpdated={this.onComponentUpdated}
                         onPageUpdated={this.onPageUpdated}
                         onProjectMetadataReceived={this.onProjectMetadataReceived}
-                    />
-                    {this.state.pageTypes.length === 0 ? (
+                    /> */}
+                    {/* {this.state.pageTypes.length === 0 ? (
                         <img src={AjaxLoader} />
                     ) : (
                         <div>
                             <p>Current IDEA project: {this.state.module}</p>
                         </div>
-                    )}
-                    <div style={divStyle}>
-                        <div>
-                            <PageList />
-                            {/* <PageList 
-                                pageTypes={this.state.pageTypes}
-                                selected={this.state.selectedPageType}
-                                onSelectedPageChanged={this.onSelectedPageChange}
-                            /> */}
-                            {this.context.uiStore.selectedPageType && <ComponentInstancesList />}
-                        </div>
-                        <div>
-                            <WebsiteList
-                                websites={this.state.websites}
-                                selectedWebsite={this.state.selectedWebsite}
-                                onSelectedWebsiteChanged={this.onSelectedWebsiteChange}
-                            />
-                            {this.state.selectedWebsite && (
-                                <PageInstancesList
-                                    pageInstancesList={this.state.selectedWebsite.pageInstances}
-                                    onSend={this.onSend}
-                                />
-                            )}
-                        </div>
-                    </div>
+                    )} */}
                 </div>
             );
         }
