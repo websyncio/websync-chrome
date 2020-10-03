@@ -6,8 +6,13 @@ import PageList from './PageList';
 import WebsiteList from './WebsiteList';
 import PageInstancesTree from './PageInstancesTree';
 import ComponentInstancesTree from './ComponentInstancesTree';
+import IIdeProxy from 'interfaces/IIdeProxy';
 
-export default observer(() => {
+interface Props {
+    ideProxy: IIdeProxy;
+}
+
+const ProjectViewer: React.FC<Props> = observer((ideProxy) => {
     const { projectStore, uiStore }: RootStore = useRootStore();
     return (
         <div id="projectViewer">
@@ -27,3 +32,5 @@ export default observer(() => {
         </div>
     );
 });
+
+export default ProjectViewer;

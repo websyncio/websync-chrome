@@ -1,6 +1,6 @@
 import { types, Instance, cast } from 'mobx-state-tree';
 
-export const IdeProxyModel = types
+export const IdeConnectionModel = types
     .model({
         type: types.string,
         name: types.optional(types.string, ''),
@@ -13,4 +13,4 @@ export const IdeProxyModel = types
         },
     }));
 
-export default interface IdeProxy extends Instance<typeof IdeProxyModel> {}
+export default interface IdeConnection extends Instance<typeof IdeConnectionModel> {}

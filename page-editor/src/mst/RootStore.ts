@@ -8,8 +8,14 @@ export const RootStoreModel = types
         uiStore: types.optional(UiStoreModel, {}),
     })
     .actions((self) => ({
-        setProjectStore(projectStore: ProjectStore) {
-            self.projectStore = projectStore;
+        setProjectData(ideConnectionType: string, projectData) {
+            if (
+                self.uiStore.selectedIdeConnectionType == ideConnectionType &&
+                self.uiStore.selectedProject == projectData.project
+            ) {
+                self.uiStore.selectedProjectIsLoaded = true;
+                self.projectStore = ProjectStoreModel.create(projectData);
+            }
         },
     }));
 

@@ -8,7 +8,7 @@ import RootStore from 'mst/RootStore';
 export default observer(() => {
     const rootStore: RootStore = useRootStore();
 
-    const options = rootStore.projectStore.pageTypes.map((item) => {
+    const options = rootStore.projectStore?.pageTypes.map((item) => {
         return {
             key: item.id,
             value: item.id,
@@ -18,7 +18,7 @@ export default observer(() => {
 
     function onPageChanged(e, data) {
         console.log('page changed', data);
-        const selectedPageType = rootStore.projectStore.pageTypes.find((p) => p.id == data.value);
+        const selectedPageType = rootStore.projectStore?.pageTypes.find((p) => p.id == data.value);
         rootStore.uiStore.setSelectedPageType(selectedPageType);
     }
 

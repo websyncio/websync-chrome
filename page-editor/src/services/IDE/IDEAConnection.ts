@@ -1,12 +1,14 @@
 import WebsocketConnection, { Events } from './WebsocketConnection';
-import { RootStore } from '../context';
+import { RootStore } from '../../context';
 import IIdeProxy from 'interfaces/IIdeProxy';
 import { destroy, getParent, Instance, cast } from 'mobx-state-tree';
 import { ProjectStoreModel } from 'mst/ProjectStore';
+import UIStore from 'mst/UiStore';
 
 export default class IDEAConnection implements IIdeProxy {
     connection: WebsocketConnection;
     type = 'IDEA';
+    uiStore: UIStore = RootStore.uiStore;
 
     constructor() {
         this.connection = new WebsocketConnection(1804);
@@ -16,21 +18,40 @@ export default class IDEAConnection implements IIdeProxy {
     }
 
     onOpen() {
-        RootStore.uiStore.addIdeProxy(this.type);
-        this.connection.send({ type: 'get-projects' });
+        this.uiStore.addIdeConnection(this.type);
+        this.requestProjects();
     }
 
     onClosed() {
-        RootStore.uiStore.removeIdeProxy(this.type);
+        this.uiStore.removeIdeConnection(this.type);
+    }
+
+    requestProjects() {
+        this.connection.send({ type: 'get-projects' });
+    }
+
+    requestProjectData(projectName: string) {
+        this.connection.send({
+            type: 'get-project',
+            moduleName: projectName,
+        });
+    }
+
+    onProjectDataReceived(projectData: any) {
+        RootStore.setProjectData(this.type, projectData);
+    }
+
+    onProjectsReceived(projectsList) {
+        this.uiStore.setProjectsList(this.type, projectsList);
     }
 
     onMessage(message) {
         switch (message.type) {
             case 'get-projects-response':
-                RootStore.uiStore.setProjectsList(this.type, message.data);
+                this.onProjectsReceived(message.data);
                 break;
             case 'get-project-response':
-                RootStore.setProjectStore(ProjectStoreModel.create(message.data));
+                this.onProjectDataReceived(message.data);
                 break;
             case 'show-page':
                 console.log('page is opened:', message.className);

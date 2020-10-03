@@ -3,7 +3,7 @@ import ComponentInstanceModel from 'mst/ComponentInstance';
 import AttributeModel from 'mst/Attribute';
 import ParameterModel from 'mst/Parameter';
 import JDISelectorsAttribute from './JDI/JDISelectorsAttribute';
-import SelectorEditorProxy from 'services/SelectorEditorProxy';
+import SelectorEditorProxy from 'services/SelectorEditor/SelectorEditorProxy';
 import { createPopper } from '@popperjs/core';
 import FocusTrap from 'focus-trap-react';
 import Portal from './Portal';
