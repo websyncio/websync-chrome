@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'styles/App.sass';
 import PageType from './models/PageType';
-import PageList from './components/PageList';
+import PageList from './components/ProjectViewer/Sidebar/PageList';
 import SelectorEditorProxy, { MessageTypes } from './services/SelectorEditor/SelectorEditorProxy';
 import 'semantic-ui-css/semantic.min.css';
 import WebSession from './models/WebSession';
@@ -13,7 +13,7 @@ import IIdeProxy from 'interfaces/IIdeProxy';
 import IDEAConnection from 'services/IDE/IDEAConnection';
 import VSConnection from 'services/IDE/VSConnection';
 import ProjectSelector from 'components/ProjectSelector/ProjectSelector';
-import ProjectViewer from 'components/ProjectViewer';
+import ProjectViewer from 'components/ProjectViewer/ProjectViewer';
 import RootStore from 'mst/RootStore';
 import { useRootStore } from 'context';
 

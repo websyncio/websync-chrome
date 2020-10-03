@@ -10,12 +10,8 @@ export const PageTypeModel = types
     })
     .views((self) => ({
         get name() {
-            if (self.id === undefined) {
-                return null;
-            } else {
-                const arr = self.id.split('.');
-                return arr[arr.length - 1];
-            }
+            const arr = self.id.split('.');
+            return arr[arr.length - 1];
         },
     }));
 
