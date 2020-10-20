@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import WebSite from 'mst/WebSite';
 import PageList from 'components/ProjectViewer/Sidebar/PageList';
-import 'styles/WebSitesTree.sass';
+import './WebSitesTree.sass';
 
 type Props = {
     webSite: WebSite;

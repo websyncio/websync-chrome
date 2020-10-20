@@ -7,7 +7,7 @@ interface Props {}
 
 const PageObjectEditor: React.FC<Props> = observer(() => {
     const { projectStore, uiStore }: RootStore = useRootStore();
-    return <div id="pageObjectEditor"></div>;
+    return <div id="pageObjectEditor" className="flex-auto"></div>;
 });
 
 export default PageObjectEditor;

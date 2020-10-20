@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import WebSite from 'mst/WebSite';
 import WebSitesTreeItem from './WebSiteTreeItem';
-import 'styles/WebSitesTree.sass';
+import './WebSitesTree.sass';
 
 interface Props {
     websites: WebSite[];

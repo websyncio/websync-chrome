@@ -4,7 +4,7 @@ import { useRootStore } from 'context';
 import RootStore from 'mst/RootStore';
 import IIdeProxy from 'interfaces/IIdeProxy';
 import ProjectViewerSidebar from './Sidebar/Sidebar';
-import ProjectViewerHeader from './PeojectViewerHeader';
+import ProjectViewerHeader from './Header/Header';
 import PageObjectEditor from './PageObjectEditor';
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
 const ProjectViewer: React.FC<Props> = observer((ideProxy) => {
     const { projectStore, uiStore }: RootStore = useRootStore();
     return (
-        <div id="projectViewer">
+        <div id="projectViewer" className="vbox">
             <ProjectViewerHeader />
             <ProjectViewerSidebar />
             <PageObjectEditor />

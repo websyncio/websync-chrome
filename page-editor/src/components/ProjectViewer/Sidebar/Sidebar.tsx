@@ -6,13 +6,14 @@ import PageList from './PageList';
 import WebsitesTree from './WebsitesTree';
 import PageInstancesTree from '../../PageInstancesTree';
 import ComponentInstancesTree from '../../ComponentInstancesTree';
+import './Sidebar.sass';
 
 interface Props {}
 
 const Sidebar: React.FC<Props> = observer(() => {
     const { projectStore, uiStore }: RootStore = useRootStore();
     return (
-        <div id="sidebar">
+        <div id="sidebar" className="flex-auto">
             <div id="sidebar-search"></div>
             <WebsitesTree websites={projectStore.webSites} />
             {/* {uiStore.selectedWebSite && <PageInstancesTree />} */}
