@@ -133,7 +133,7 @@ const App: React.FC = observer(() => {
     console.log(projectStore.webSites.length);
 
     return (
-        <div className="App">
+        <div className="App full-height">
             {uiStore.selectedProjectIsLoaded ? (
                 <ProjectViewer ideProxy={getIdeProxyForSelectedProject()} />
             ) : (

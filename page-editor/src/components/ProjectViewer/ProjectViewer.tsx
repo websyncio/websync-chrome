@@ -15,7 +15,7 @@ interface Props {
 const ProjectViewer: React.FC<Props> = observer((ideProxy) => {
     const { projectStore, uiStore }: RootStore = useRootStore();
     return (
-        <div id="projectViewer" className="vbox">
+        <div id="projectViewer" className="vbox full-height">
             <ProjectViewerHeader />
             {uiStore.editedPageType ? <PageObjectEditor /> : <ProjectExplorer />}
         </div>

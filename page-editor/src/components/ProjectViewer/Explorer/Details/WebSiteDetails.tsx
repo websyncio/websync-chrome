@@ -9,7 +9,7 @@ interface Props {
 const WebSiteDetails: React.FC<Props> = observer(({ website }) => {
     return (
         <div className="details-wrap">
-            <div className="pageinstance-url">
+            <div className="website-hosturl">
                 <label>Url:</label>
                 <span>{website.url}</span>
             </div>
