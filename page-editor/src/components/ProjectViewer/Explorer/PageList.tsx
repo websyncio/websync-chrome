@@ -6,9 +6,10 @@ import PageInstance from 'mst/PageInstance';
 
 interface Props {
     pages: PageInstance[];
+    onPageInstanceSelected: (pageInstance: PageInstance) => void;
 }
 
-const PageList: React.FC<Props> = observer(({ pages }) => {
+const PageList: React.FC<Props> = observer(({ pages, onPageInstanceSelected }) => {
     // const rootStore: RootStore = useRootStore();
 
     // const options = rootStore.projectStore?.pageTypes.map((item) => {
@@ -28,7 +29,9 @@ const PageList: React.FC<Props> = observer(({ pages }) => {
     return (
         <ul className="pages-list">
             {pages.map((p) => (
-                <li key={p.pageType.name}>{p.pageType.name}</li>
+                <li className="website-page" key={p.pageType.name} onClick={() => onPageInstanceSelected(p)}>
+                    {p.pageType.name}
+                </li>
             ))}
         </ul>
     );

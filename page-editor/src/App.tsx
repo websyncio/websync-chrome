@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'styles/App.sass';
 import PageType from './models/PageType';
-import PageList from './components/ProjectViewer/Sidebar/PageList';
+import PageList from './components/ProjectViewer/Explorer/PageList';
 import SelectorEditorProxy, { MessageTypes } from './services/SelectorEditor/SelectorEditorProxy';
 import 'semantic-ui-css/semantic.min.css';
 import WebSession from './models/WebSession';

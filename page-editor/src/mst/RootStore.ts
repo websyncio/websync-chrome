@@ -17,6 +17,10 @@ export const RootStoreModel = types
                 self.projectStore = ProjectStoreModel.create(projectData);
             }
         },
+        clearProject() {
+            self.uiStore.selectedProjectIsLoaded = false;
+            self.uiStore.selectedProject = null;
+        },
     }));
 
 export default interface RootStore extends Instance<typeof RootStoreModel> {}

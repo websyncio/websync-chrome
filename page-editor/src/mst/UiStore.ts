@@ -1,5 +1,6 @@
 import { types, Instance } from 'mobx-state-tree';
 import PageType, { PageTypeModel } from './PageType';
+import ComponentType, { ComponentTypeModel } from './ComponentType';
 import IIdeProxy from 'interfaces/IIdeProxy';
 import { WebSiteModel } from './WebSite';
 import IdeConnection, { IdeConnectionModel } from './IdeConnection';
@@ -12,6 +13,8 @@ export const UiStoreModel = types
         selectedProjectIsLoaded: types.optional(types.boolean, false),
         selectedWebSite: types.safeReference(WebSiteModel),
         selectedPageType: types.safeReference(PageTypeModel),
+        editedPageType: types.maybeNull(PageTypeModel),
+        editedComponentType: types.maybeNull(ComponentTypeModel),
     })
     .views((self) => ({}))
     .actions((self) => ({

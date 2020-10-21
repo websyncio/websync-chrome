@@ -5,6 +5,7 @@ import RootStore from 'mst/RootStore';
 import IIdeProxy from 'interfaces/IIdeProxy';
 import IdeConnection from 'mst/IdeConnection';
 import IdeProject from './IdeProject';
+import './ProjectSelector.sass';
 
 interface Props {
     ideProxies: IIdeProxy[];
