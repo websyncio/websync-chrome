@@ -1,9 +1,12 @@
 import { types, Instance } from 'mobx-state-tree';
-import PageType, { PageTypeModel } from './PageType';
-import ComponentType, { ComponentTypeModel } from './ComponentType';
-import IIdeProxy from 'interfaces/IIdeProxy';
-import { WebSiteModel } from './WebSite';
+// import PageType, { PageTypeModel } from './PageType';
+// import ComponentType, { ComponentTypeModel } from './ComponentType';
+// import IIdeProxy from 'interfaces/IIdeProxy';
+// import { WebSiteModel } from './WebSite';
 import IdeConnection, { IdeConnectionModel } from './IdeConnection';
+import ComponentsContainer, { ComponentsContainerModel } from './ComponentsContainer';
+import { PageTypeModel } from './PageType';
+import PageType from 'models/PageType';
 
 export const UiStoreModel = types
     .model({
@@ -11,16 +14,20 @@ export const UiStoreModel = types
         selectedIdeConnectionType: types.maybeNull(types.string),
         selectedProject: types.maybeNull(types.string),
         selectedProjectIsLoaded: types.optional(types.boolean, false),
-        selectedWebSite: types.safeReference(WebSiteModel),
-        selectedPageType: types.safeReference(PageTypeModel),
-        editedPageType: types.maybeNull(PageTypeModel),
-        editedComponentType: types.maybeNull(ComponentTypeModel),
+        editedPageObjects: types.array(types.reference(PageTypeModel)),
+        // selectedWebSite: types.safeReference(WebSiteModel),
+        // selectedPageType: types.safeReference(PageTypeModel),s
+        // editedComponentType: types.maybeNull(ComponentTypeModel),
     })
-    .views((self) => ({}))
-    .actions((self) => ({
-        setSelectedPageType(pageType: PageType | undefined) {
-            self.selectedPageType = pageType;
+    .views((self) => ({
+        get editedPageObject() {
+            return self.editedPageObjects.find((po) => po.selected);
         },
+    }))
+    .actions((self) => ({
+        // setSelectedPageType(pageType: PageType | undefined) {
+        //     self.selectedPageType = pageType;
+        // },
         addIdeConnection(type: string) {
             this.removeIdeConnection(type);
             self.ideConnections.push(
@@ -45,6 +52,9 @@ export const UiStoreModel = types
         setSelectedProject(ideConnectionType: string, projectName: string) {
             self.selectedIdeConnectionType = ideConnectionType;
             self.selectedProject = projectName;
+        },
+        addEditedPageObject(po: PageType) {
+            self.editedPageObjects.push(po);
         },
     }));
 

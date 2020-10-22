@@ -17,7 +17,7 @@ const ProjectViewer: React.FC<Props> = observer((ideProxy) => {
     return (
         <div id="projectViewer" className="full-height">
             <ProjectViewerHeader />
-            {uiStore.editedPageType ? <PageObjectEditor /> : <ProjectExplorer />}
+            {uiStore.editedPageObject ? <PageObjectEditor /> : <ProjectExplorer />}
         </div>
     );
 });

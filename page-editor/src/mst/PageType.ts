@@ -1,18 +1,11 @@
 import { types, Instance } from 'mobx-state-tree';
-import { ComponentInstanceModel } from './ComponentInstance';
+import { ComponentsContainerModel } from './ComponentsContainer';
 
-export const PageTypeModel = types
-    .model({
-        id: types.identifier,
-        // basePageType: types.maybe(types.reference(types.late(() => PageTypeModel))),
+export const PageTypeModel = types.compose(
+    ComponentsContainerModel,
+    types.model({
         url: types.maybeNull(types.string),
-        componentsInstances: types.array(ComponentInstanceModel),
-    })
-    .views((self) => ({
-        get name() {
-            const arr = self.id.split('.');
-            return arr[arr.length - 1];
-        },
-    }));
+    }),
+);
 
 export default interface PageType extends Instance<typeof PageTypeModel> {}

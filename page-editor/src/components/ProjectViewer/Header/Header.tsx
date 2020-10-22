@@ -2,6 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { useRootStore } from 'context';
 import RootStore from 'mst/RootStore';
+import ComponentsContainer from 'mst/ComponentsContainer';
 import './Header.sass';
 
 interface Props {}
@@ -11,6 +12,14 @@ const Header: React.FC<Props> = observer(() => {
 
     function goBackToProjectSelector() {
         rootStore.clearProject();
+    }
+
+    function editedPageObjects() {
+        return rootStore.uiStore.editedPageObjects.map((po: ComponentsContainer) => (
+            <div key={po.id} className="header-tab">
+                {po.name}
+            </div>
+        ));
     }
 
     return (
@@ -28,6 +37,7 @@ const Header: React.FC<Props> = observer(() => {
                 <path fill="#5a5a5a" d="M6,6V3L0,8l6,5v-3c4-1,7-0.5,10,2C14,7,10.5,6,6,6z" />
             </svg>
             <div className="header-tab">Project Explorer (jdi-x.x.x)</div>
+            {editedPageObjects()}
         </div>
     );
 });

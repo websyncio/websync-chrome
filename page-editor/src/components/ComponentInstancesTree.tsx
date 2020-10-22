@@ -68,12 +68,12 @@ export default observer(() => {
     return (
         <div className="components-tree">
             <ul>
-                {uiStore.selectedPageType?.componentsInstances.map((component) => [
+                {/* {uiStore.selectedPageType?.componentsInstances.map((component) => [
                     <li key={component.id}>
                         <ComponentInstance component={component} onSend={onSend} />
                     </li>,
                     // <ComponentInstancesList componentInstancesList={component.selectedPageType.componentsInstances}/>
-                ])}
+                ])} */}
             </ul>
         </div>
     );

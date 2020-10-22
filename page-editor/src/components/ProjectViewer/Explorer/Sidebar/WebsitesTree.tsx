@@ -3,6 +3,8 @@ import { observer } from 'mobx-react';
 import WebSite from 'mst/WebSite';
 import PageInstance from 'mst/PageInstance';
 import './WebSitesTree.sass';
+import RootStore from 'mst/RootStore';
+import { useRootStore } from 'context';
 
 interface Props {
     websites: WebSite[];
@@ -11,8 +13,14 @@ interface Props {
 }
 
 const WebSitesTree: React.FC<Props> = observer(({ websites, onSelected }) => {
+    const { projectStore, uiStore }: RootStore = useRootStore();
+
     function expand(website: WebSite) {
         website.toggleExpanded();
+    }
+
+    function editPageObject(po) {
+        uiStore.addEditedPageObject(po);
     }
 
     function pageList(website: WebSite) {
@@ -23,6 +31,7 @@ const WebSitesTree: React.FC<Props> = observer(({ websites, onSelected }) => {
                         className={`website-page selectable ${p.selected ? 'selected' : ''}`}
                         key={p.pageType.name}
                         onClick={() => onSelected(website, p)}
+                        onDoubleClick={() => editPageObject(p.pageType)}
                     >
                         {p.pageType.name}
                     </li>
