@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import SelectorModel from 'models/Selector';
 import SelectorValidator from 'services/SelectorEditor/SelectorValidator';
 import SelectorHighlighter from 'services/SelectorEditor/SelectorHighlighter';
-import ComponentInstance from '../models/ComponentInstance';
+import ComponentInstance from '../../../models/ComponentInstance';
 
 export default class Selector extends Component<
     { selector: SelectorModel; onEdit: any },

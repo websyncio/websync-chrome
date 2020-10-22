@@ -7,7 +7,7 @@ export const SELECTOR_VALIDATED = 'selector-validated';
 export default class SelectorValidator {
     getNodesCount(iframesDataList, displayedOnly: boolean) {
         let count = 0;
-        iframesDataList.forEach(function (iframeData) {
+        iframesDataList?.forEach(function (iframeData) {
             count += displayedOnly ? iframeData.elements.filter((e) => e.displayed).length : iframeData.elements.length;
         });
         return count;

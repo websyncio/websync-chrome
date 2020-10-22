@@ -3,7 +3,7 @@ import AttributeModel from 'mst/Attribute';
 import ParameterModel from 'mst/Parameter';
 import { observer } from 'mobx-react';
 import { Scss } from 'components/ScssBuilder';
-import Selector from 'components/Selector';
+import Selector from 'components/ProjectViewer/Editor/Selector';
 import SelectorModel from 'models/Selector';
 
 interface JDISelectorsAttributeProps {

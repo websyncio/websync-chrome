@@ -5,7 +5,7 @@ import { createPopper } from '@popperjs/core';
 import FocusTrap from 'focus-trap-react';
 import Portal from './Portal';
 import 'styles/Popup.sass';
-import ComponentTypeSelector from './ComponentTypeSelector';
+import ComponentTypeSelector from './ProjectViewer/Editor/ComponentTypeSelector';
 import PageInstanceModel from 'models/PageInstance';
 
 export default class PageInstance extends Component<

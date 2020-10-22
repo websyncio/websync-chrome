@@ -43,7 +43,7 @@ const Header: React.FC<Props> = observer(() => {
                 <path fill="#5a5a5a" d="M6,6V3L0,8l6,5v-3c4-1,7-0.5,10,2C14,7,10.5,6,6,6z" />
             </svg>
             <div
-                className={`header-tab ${uiStore.selectedPageObject ? '' : 'selected'}`}
+                className={`header-tab project-explorer ${uiStore.selectedPageObject ? '' : 'selected'}`}
                 onClick={() => uiStore.showExplorer()}
             >
                 Project Explorer ({uiStore.selectedProject})

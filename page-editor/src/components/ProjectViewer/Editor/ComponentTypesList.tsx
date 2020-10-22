@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ComponentType from '../models/ComponentType';
+import ComponentType from '../../../models/ComponentType';
 
 type PageListProps = {
     componentTypesList: Array<ComponentType>;

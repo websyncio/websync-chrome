@@ -1,12 +1,16 @@
 import React from 'react';
-import ComponentInstance from 'components/ComponentInstance';
+import ComponentInstance from 'components/ProjectViewer/Editor/ComponentInstance';
 import { observer } from 'mobx-react';
 import { useRootStore } from 'context';
-
 import 'styles/ComponentInstancesTree.sass';
 import RootStore from 'mst/RootStore';
+import ComponentsContainer from 'mst/ComponentsContainer';
 
-export default observer(() => {
+interface Props {
+    pageObject: ComponentsContainer;
+}
+
+const ComponentInstancesTree: React.FC<Props> = observer(({ pageObject }) => {
     const { projectStore, uiStore }: RootStore = useRootStore();
 
     // function onRename(event, component) {
@@ -68,13 +72,15 @@ export default observer(() => {
     return (
         <div className="components-tree">
             <ul>
-                {/* {uiStore.selectedPageType?.componentsInstances.map((component) => [
+                {pageObject.componentsInstances.map((component) => [
                     <li key={component.id}>
                         <ComponentInstance component={component} onSend={onSend} />
                     </li>,
                     // <ComponentInstancesList componentInstancesList={component.selectedPageType.componentsInstances}/>
-                ])} */}
+                ])}
             </ul>
         </div>
     );
 });
+
+export default ComponentInstancesTree;
