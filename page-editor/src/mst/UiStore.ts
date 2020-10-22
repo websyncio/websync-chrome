@@ -66,6 +66,9 @@ export const UiStoreModel = types
             }
             this.selectPageObject(pageObject);
         },
+        removeEditedPageObject(pageObject: PageType) {
+            self.editedPageObjects.remove(pageObject);
+        },
     }));
 
 export default interface UiStore extends Instance<typeof UiStoreModel> {}

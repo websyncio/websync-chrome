@@ -22,7 +22,8 @@ const Header: React.FC<Props> = observer(() => {
                 className={`header-tab ${po.selected ? 'selected' : ''}`}
                 onClick={() => uiStore.selectPageObject(po)}
             >
-                {po.name}
+                <span>{po.name}</span>
+                <span className="close-icon" onClick={() => uiStore.removeEditedPageObject(po)} />
             </div>
         ));
     }
