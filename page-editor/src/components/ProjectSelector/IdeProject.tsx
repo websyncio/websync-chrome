@@ -9,7 +9,7 @@ interface Props {
 
 const IdeProject: React.FC<Props> = observer(({ projectName, isSelected, onProjectSelected }) => {
     return (
-        <div key="{projectName}" className="ide-project" onClick={onProjectSelected}>
+        <div key={projectName} className="ide-project" onClick={onProjectSelected}>
             {projectName}
             {isSelected && <span>loading...</span>}
         </div>

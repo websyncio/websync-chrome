@@ -34,8 +34,8 @@ const Explorer: React.FC<Props> = observer(() => {
     }
 
     return (
-        <div id="projectExplorer" className="full-height">
-            <div id="sidebar" className="flex-auto full-height">
+        <div id="projectExplorer" className="hbox full-height">
+            <div id="sidebar" className="full-height">
                 <div id="sidebar-search"></div>
                 <WebsitesTree websites={projectStore.webSites} onSelected={onSelected} />
                 {/* {uiStore.selectedWebSite && <PageInstancesTree />} */}
@@ -50,7 +50,7 @@ const Explorer: React.FC<Props> = observer(() => {
                 {/* {uiStore.selectedPageType && <ComponentInstancesTree/>} */}
                 {/* </div> */}
             </div>
-            <div id="details">
+            <div id="details" className="flex-auto">
                 {selectedPageInstance ? (
                     <PageInstanceDetails pageInstance={selectedPageInstance} />
                 ) : selectedWebSite ? (
