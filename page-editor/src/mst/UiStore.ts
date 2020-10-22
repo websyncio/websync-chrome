@@ -6,7 +6,7 @@ import { types, Instance } from 'mobx-state-tree';
 import IdeConnection, { IdeConnectionModel } from './IdeConnection';
 import ComponentsContainer, { ComponentsContainerModel } from './ComponentsContainer';
 import { PageTypeModel } from './PageType';
-import PageType from 'models/PageType';
+import PageType from 'mst/PageType';
 
 export const UiStoreModel = types
     .model({
@@ -20,7 +20,7 @@ export const UiStoreModel = types
         // editedComponentType: types.maybeNull(ComponentTypeModel),
     })
     .views((self) => ({
-        get editedPageObject() {
+        get selectedPageObject() {
             return self.editedPageObjects.find((po) => po.selected);
         },
     }))
@@ -28,6 +28,13 @@ export const UiStoreModel = types
         // setSelectedPageType(pageType: PageType | undefined) {
         //     self.selectedPageType = pageType;
         // },
+        selectPageObject(pageObject: PageType) {
+            self.editedPageObjects.forEach((po) => po.deselect());
+            pageObject.select();
+        },
+        showExplorer() {
+            self.editedPageObjects.forEach((po) => po.deselect());
+        },
         addIdeConnection(type: string) {
             this.removeIdeConnection(type);
             self.ideConnections.push(
@@ -53,8 +60,11 @@ export const UiStoreModel = types
             self.selectedIdeConnectionType = ideConnectionType;
             self.selectedProject = projectName;
         },
-        addEditedPageObject(po: PageType) {
-            self.editedPageObjects.push(po);
+        addEditedPageObject(pageObject: PageType) {
+            if (!self.editedPageObjects.find((po) => po == pageObject)) {
+                self.editedPageObjects.push(pageObject);
+            }
+            this.selectPageObject(pageObject);
         },
     }));
 
