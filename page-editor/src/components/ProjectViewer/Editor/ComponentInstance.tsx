@@ -35,6 +35,8 @@ export default class ComponentInstance extends Component<
         };
 
         this.togglePopup = this.togglePopup.bind(this);
+        this.onNameBlur = this.onNameBlur.bind(this);
+        this.onNameKeyDown = this.onNameKeyDown.bind(this);
     }
 
     componentDidMount() {
@@ -71,11 +73,15 @@ export default class ComponentInstance extends Component<
     }
 
     onRename(event) {
-        if (event.target.contentEditable === true) {
-            event.target.contentEditable = false;
-        } else {
-            event.target.contentEditable = true;
-        }
+        // if (event.target.contentEditable === true) {
+        //     event.target.contentEditable = false;
+        // } else {
+        event.target.contentEditable = true;
+        event.target.focus();
+        event.target.classList.add('editing');
+        const target = event.target;
+        //setTimeout(()=>target.focus(),500);
+        // }
     }
 
     onNameKeyDown(event) {
@@ -85,9 +91,11 @@ export default class ComponentInstance extends Component<
             return;
         }
         if (event.key === 'Enter') {
+            event.target.classList.remove('editing');
             this.submitRename(event, this.props.component, newName);
             event.preventDefault();
         } else if (event.key === 'Escape') {
+            event.target.classList.remove('editing');
             this.submitRename(event, this.props.component, null);
         } else if (newName.length === 100) {
             event.preventDefault();
@@ -95,6 +103,7 @@ export default class ComponentInstance extends Component<
     }
 
     onNameBlur(event) {
+        event.target.classList.remove('editing');
         const newName = event.target.innerText.trim();
         this.submitRename(event, this.props.component, newName);
     }
@@ -189,15 +198,17 @@ export default class ComponentInstance extends Component<
                     </span>
                 </Portal>
 
-                <span
-                    className={`field-name`}
-                    title="Double Click to Edit Name"
-                    onDoubleClick={this.onRename}
-                    onKeyDown={this.onNameKeyDown}
-                    onBlur={this.onNameBlur}
-                >
-                    {this.getName(this.props.component.id)}
-                </span>
+                <div className="field-name-wrap">
+                    <span
+                        className={`field-name`}
+                        title="Double Click to Edit Name"
+                        onDoubleClick={this.onRename}
+                        onKeyDown={this.onNameKeyDown}
+                        onBlur={this.onNameBlur}
+                    >
+                        {this.getName(this.props.component.id)}
+                    </span>
+                </div>
                 {this.initializationAttribute(this.props.component.initializationAttribute)}
             </span>
         );

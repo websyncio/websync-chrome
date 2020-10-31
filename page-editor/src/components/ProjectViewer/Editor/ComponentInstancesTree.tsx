@@ -2,9 +2,9 @@ import React from 'react';
 import ComponentInstance from 'components/ProjectViewer/Editor/ComponentInstance';
 import { observer } from 'mobx-react';
 import { useRootStore } from 'context';
-import 'styles/ComponentInstancesTree.sass';
 import RootStore from 'mst/RootStore';
 import ComponentsContainer from 'mst/ComponentsContainer';
+import './ComponentInstancesTree.sass';
 
 interface Props {
     pageObject: ComponentsContainer;
