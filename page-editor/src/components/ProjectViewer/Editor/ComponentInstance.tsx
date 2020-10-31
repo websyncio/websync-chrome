@@ -80,8 +80,13 @@ export default class ComponentInstance extends Component<
         event.target.focus();
         event.target.classList.add('editing');
         const target = event.target;
-        //setTimeout(()=>target.focus(),500);
-        // }
+
+        target.focus();
+        const range = document.createRange();
+        range.selectNodeContents(target);
+        const selection = window.getSelection();
+        selection?.removeAllRanges();
+        selection?.addRange(range);
     }
 
     onNameKeyDown(event) {
