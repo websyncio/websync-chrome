@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useEffect, useLayoutEffect, useState } from 'react';
 import ComponentInstanceModel from 'mst/ComponentInstance';
 import AttributeModel from 'mst/Attribute';
 import ParameterModel from 'mst/Parameter';
@@ -28,7 +28,7 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component }) =>
 
     const [isOpen, setIsOpen] = useState(false);
 
-    function componentDidMount() {
+    useLayoutEffect(() => {
         popper = createPopper(triggerRef.current, popupRef.current, {
             placement: 'bottom-start',
             strategy: 'fixed',
@@ -41,24 +41,19 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component }) =>
                 },
             ],
         });
-    }
+        return function cleanup() {
+            popper.destroy();
+        };
+    }, []);
 
-    function componentWillUnmount() {
-        popper.destroy();
-    }
+    useEffect(() => {
+        if (popper) {
+            popper.forceUpdate();
+        }
+    }, [isOpen]);
 
     function togglePopup() {
         setIsOpen(!isOpen);
-        // this.setState(
-        //     (state) => {
-        //         return {
-        //             isOpen: !state.isOpen,
-        //         };
-        //     },
-        //     () => {
-        //         this.popper.forceUpdate();
-        //     },
-        // );
     }
 
     function onRename(event) {
