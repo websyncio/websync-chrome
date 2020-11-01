@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 import 'styles/App.sass';
 import PageType from './models/PageType';
-import PageList from './components/ProjectViewer/Explorer/PageList';
-import SelectorEditorProxy, { MessageTypes } from './services/SelectorEditor/SelectorEditorProxy';
 import 'semantic-ui-css/semantic.min.css';
-import WebSession from './models/WebSession';
-import { StoreContext } from 'context';
 import { observer } from 'mobx-react';
 
 import Website from 'models/Website';
 import IIdeProxy from 'interfaces/IIdeProxy';
 import IDEAConnection from 'services/IDE/IDEAConnection';
-import VSConnection from 'services/IDE/VSConnection';
 import ProjectSelector from 'components/ProjectSelector/ProjectSelector';
 import ProjectViewer from 'components/ProjectViewer/ProjectViewer';
 import RootStore from 'mst/RootStore';
@@ -26,7 +21,7 @@ type AppState = {
 };
 
 const App: React.FC = observer(() => {
-    const ideProxies: IIdeProxy[] = [new IDEAConnection(), new VSConnection()];
+    const ideProxies: IIdeProxy[] = [IDEAConnection.instance()];
     const { projectStore, uiStore }: RootStore = useRootStore();
 
     // SelectorEditorProxy.instance().addListener(

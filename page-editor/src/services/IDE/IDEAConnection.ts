@@ -4,6 +4,7 @@ import IIdeProxy from 'interfaces/IIdeProxy';
 import { destroy, getParent, Instance, cast } from 'mobx-state-tree';
 import { ProjectStoreModel } from 'mst/ProjectStore';
 import UIStore from 'mst/UiStore';
+import ComponentInstance from 'mst/ComponentInstance';
 
 export default class IDEAConnection implements IIdeProxy {
     connection: WebsocketConnection;
@@ -15,6 +16,24 @@ export default class IDEAConnection implements IIdeProxy {
         this.connection.addListener(Events.onopen, this.onOpen.bind(this));
         this.connection.addListener(Events.onclosed, this.onClosed.bind(this));
         this.connection.addListener(Events.onmessage, this.onMessage.bind(this));
+    }
+
+    private static _inst: IDEAConnection | undefined;
+
+    static instance() {
+        if (IDEAConnection._inst === undefined) {
+            IDEAConnection._inst = new IDEAConnection();
+        }
+        return IDEAConnection._inst;
+    }
+
+    updateComponentInstance(component: ComponentInstance) {
+        const message = {
+            projectName: RootStore.uiStore.selectedProject,
+            type: 'update-component-instance',
+            data: component,
+        };
+        this.connection.send(message);
     }
 
     onOpen() {
@@ -64,7 +83,7 @@ export default class IDEAConnection implements IIdeProxy {
                 // this.props.onPageUpdated(message.data);
                 return;
             default:
-                console.log('no message type, ignored: ', message);
+                console.log('unknown message type, ignored: ', message);
                 return;
         }
     }

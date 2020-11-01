@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import ComponentInstanceModel from 'mst/ComponentInstance';
 import AttributeModel from 'mst/Attribute';
 import ParameterModel from 'mst/Parameter';
@@ -10,38 +10,26 @@ import Portal from '../../Portal';
 import 'styles/Popup.sass';
 import ComponentTypeSelector from './ComponentTypeSelector';
 import { InitializationAttributes } from 'services/JDI';
+import IIdeProxy from 'interfaces/IIdeProxy';
+import { observer } from 'mobx-react';
+import RootStore from 'mst/RootStore';
+import { useRootStore } from 'context';
 
-export default class ComponentInstance extends Component<
-    {
-        component: ComponentInstanceModel;
-        onSend: any;
-    },
-    {
-        isOpen: boolean;
-    }
-> {
-    triggerRef: any;
-    popupRef: any;
-    popper: any;
+interface Props {
+    ideProxy: IIdeProxy;
+    component: ComponentInstanceModel;
+}
 
-    constructor(props) {
-        super(props);
+const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component }) => {
+    const { projectStore, uiStore }: RootStore = useRootStore();
+    const triggerRef: any = React.createRef();
+    const popupRef: any = React.createRef();
+    let popper: any;
 
-        this.triggerRef = React.createRef();
-        this.popupRef = React.createRef();
+    const [isOpen, setIsOpen] = useState(false);
 
-        this.state = {
-            isOpen: false,
-        };
-
-        this.togglePopup = this.togglePopup.bind(this);
-        this.onNameBlur = this.onNameBlur.bind(this);
-        this.onNameKeyDown = this.onNameKeyDown.bind(this);
-    }
-
-    componentDidMount() {
-        console.log('ComponentInstance.props', this.props);
-        this.popper = createPopper(this.triggerRef.current, this.popupRef.current, {
+    function componentDidMount() {
+        popper = createPopper(triggerRef.current, popupRef.current, {
             placement: 'bottom-start',
             strategy: 'fixed',
             modifiers: [
@@ -55,24 +43,25 @@ export default class ComponentInstance extends Component<
         });
     }
 
-    componentWillUnmount() {
-        this.popper.destroy();
+    function componentWillUnmount() {
+        popper.destroy();
     }
 
-    togglePopup() {
-        this.setState(
-            (state) => {
-                return {
-                    isOpen: !state.isOpen,
-                };
-            },
-            () => {
-                this.popper.forceUpdate();
-            },
-        );
+    function togglePopup() {
+        setIsOpen(!isOpen);
+        // this.setState(
+        //     (state) => {
+        //         return {
+        //             isOpen: !state.isOpen,
+        //         };
+        //     },
+        //     () => {
+        //         this.popper.forceUpdate();
+        //     },
+        // );
     }
 
-    onRename(event) {
+    function onRename(event) {
         // if (event.target.contentEditable === true) {
         //     event.target.contentEditable = false;
         // } else {
@@ -89,7 +78,21 @@ export default class ComponentInstance extends Component<
         selection?.addRange(range);
     }
 
-    onNameKeyDown(event) {
+    function submitRename(event, component, newName) {
+        if (event.target.contentEditable === 'true') {
+            event.target.contentEditable = false;
+            if (newName === null) {
+                event.target.innerText = component.name;
+                return;
+            } else if (component.name === newName) {
+                return;
+            }
+
+            component.rename(newName, ideProxy);
+        }
+    }
+
+    function onNameKeyDown(event) {
         const newName = event.target.innerText.trim();
         if (!event.key.match(/[A-Za-z0-9_$]+/g)) {
             event.preventDefault();
@@ -97,47 +100,23 @@ export default class ComponentInstance extends Component<
         }
         if (event.key === 'Enter') {
             event.target.classList.remove('editing');
-            this.submitRename(event, this.props.component, newName);
+            submitRename(event, component, newName);
             event.preventDefault();
         } else if (event.key === 'Escape') {
             event.target.classList.remove('editing');
-            this.submitRename(event, this.props.component, null);
+            submitRename(event, component, null);
         } else if (newName.length === 100) {
             event.preventDefault();
         }
     }
 
-    onNameBlur(event) {
+    function onNameBlur(event) {
         event.target.classList.remove('editing');
         const newName = event.target.innerText.trim();
-        this.submitRename(event, this.props.component, newName);
+        submitRename(event, component, newName);
     }
 
-    submitRename(event, component, newName) {
-        event.target.contentEditable = false;
-        if (newName === null) {
-            event.target.innerText = component.name;
-            return;
-        } else if (component.name === newName) {
-            return;
-        }
-
-        component.name = newName;
-
-        const message = {};
-        message['type'] = 'update-component-instance';
-
-        // message['moduleName'] = app.state.module; // TODO moduleName is required in the command
-        message['data'] = component;
-        const json = JSON.stringify(message);
-        console.log('sent ' + json);
-        this.props.onSend(json);
-
-        const lastDot = component.id.lastIndexOf('.');
-        component.id = component.id.substring(0, lastDot + 1) + newName;
-    }
-
-    editSelector = (component: ComponentInstanceModel, parameter: ParameterModel, valueIndex: number) => {
+    const editSelector = (component: ComponentInstanceModel, parameter: ParameterModel, valueIndex: number) => {
         SelectorEditorProxy.instance().sendMessage('edit-component-selector', {
             componentId: component.id,
             componentName: component.name,
@@ -147,29 +126,27 @@ export default class ComponentInstance extends Component<
         });
     };
 
-    editComponentType() {
+    function editComponentType() {
         console.log('edit component type');
     }
 
-    getName(id: string) {
+    function getName(id: string) {
         const arr = id.split('.');
         return arr[arr.length - 1].trim();
     }
 
-    getTypeName(componentTypeId: string) {
+    function getTypeName(componentTypeId: string) {
         const arr = componentTypeId.split('.');
         return arr[arr.length - 1].trim();
     }
 
-    initializationAttribute(attribute: AttributeModel) {
+    function initializationAttribute(attribute: AttributeModel) {
         if (attribute) {
             if (InitializationAttributes.Generic.indexOf(attribute.name) != -1) {
                 return (
                     <JDISelectorsAttribute
-                        attribute={this.props.component.initializationAttribute}
-                        onEditSelector={(parameter, valueIndex) =>
-                            this.editSelector(this.props.component, parameter, valueIndex)
-                        }
+                        attribute={component.initializationAttribute}
+                        onEditSelector={(parameter, valueIndex) => editSelector(component, parameter, valueIndex)}
                     />
                 );
             }
@@ -177,45 +154,46 @@ export default class ComponentInstance extends Component<
         }
     }
 
-    render() {
-        return (
-            <span>
-                <span className="trigger type-name" ref={this.triggerRef} onClick={this.togglePopup}>
-                    {this.getTypeName(this.props.component.componentType)}
-                </span>
-
-                <Portal>
-                    <span className="popup__container" ref={this.popupRef}>
-                        {this.state.isOpen && (
-                            <FocusTrap
-                                focusTrapOptions={{
-                                    onDeactivate: this.togglePopup,
-                                    clickOutsideDeactivates: true,
-                                }}
-                            >
-                                <div className="popup">
-                                    <div tabIndex={0}>
-                                        <ComponentTypeSelector onSelected={this.editSelector} />
-                                    </div>
-                                </div>
-                            </FocusTrap>
-                        )}
-                    </span>
-                </Portal>
-
-                <div className="field-name-wrap">
-                    <span
-                        className={`field-name`}
-                        title="Double Click to Edit Name"
-                        onDoubleClick={this.onRename}
-                        onKeyDown={this.onNameKeyDown}
-                        onBlur={this.onNameBlur}
-                    >
-                        {this.getName(this.props.component.id)}
-                    </span>
-                </div>
-                {this.initializationAttribute(this.props.component.initializationAttribute)}
+    return (
+        <span>
+            <span className="trigger type-name" ref={triggerRef} onClick={togglePopup}>
+                {getTypeName(component.componentType)}
             </span>
-        );
-    }
-}
+
+            <Portal>
+                <span className="popup__container" ref={popupRef}>
+                    {isOpen && (
+                        <FocusTrap
+                            focusTrapOptions={{
+                                onDeactivate: togglePopup,
+                                clickOutsideDeactivates: true,
+                            }}
+                        >
+                            <div className="popup">
+                                <div tabIndex={0}>
+                                    <ComponentTypeSelector onSelected={editSelector} />
+                                </div>
+                            </div>
+                        </FocusTrap>
+                    )}
+                </span>
+            </Portal>
+
+            <div className="field-name-wrap">
+                <span
+                    spellCheck="false"
+                    className={`field-name`}
+                    title="Double Click to Edit Name"
+                    onDoubleClick={onRename}
+                    onKeyDown={onNameKeyDown}
+                    onBlur={onNameBlur}
+                >
+                    {getName(component.id)}
+                </span>
+            </div>
+            {initializationAttribute(component.initializationAttribute)}
+        </span>
+    );
+});
+
+export default ComponentInstance;

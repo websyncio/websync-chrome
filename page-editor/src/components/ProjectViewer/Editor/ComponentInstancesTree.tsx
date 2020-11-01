@@ -5,12 +5,14 @@ import { useRootStore } from 'context';
 import RootStore from 'mst/RootStore';
 import ComponentsContainer from 'mst/ComponentsContainer';
 import './ComponentInstancesTree.sass';
+import IIdeProxy from 'interfaces/IIdeProxy';
 
 interface Props {
+    ideProxy: IIdeProxy;
     pageObject: ComponentsContainer;
 }
 
-const ComponentInstancesTree: React.FC<Props> = observer(({ pageObject }) => {
+const ComponentInstancesTree: React.FC<Props> = observer(({ ideProxy, pageObject }) => {
     const { projectStore, uiStore }: RootStore = useRootStore();
 
     // function onRename(event, component) {
@@ -65,16 +67,12 @@ const ComponentInstancesTree: React.FC<Props> = observer(({ pageObject }) => {
     //     component.id = component.id.substring(0, lastDot + 1) + newName;
     // }
 
-    function onSend() {
-        console.log('onSend call from ComponentInstncesTree');
-    }
-
     return (
         <div className="components-tree">
             <ul>
                 {pageObject.componentsInstances.map((component) => [
                     <li key={component.id}>
-                        <ComponentInstance component={component} onSend={onSend} />
+                        <ComponentInstance ideProxy={ideProxy} component={component} />
                     </li>,
                     // <ComponentInstancesList componentInstancesList={component.selectedPageType.componentsInstances}/>
                 ])}

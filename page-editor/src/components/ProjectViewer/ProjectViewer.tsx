@@ -12,13 +12,13 @@ interface Props {
     ideProxy: IIdeProxy;
 }
 
-const ProjectViewer: React.FC<Props> = observer((ideProxy) => {
+const ProjectViewer: React.FC<Props> = observer(({ ideProxy }) => {
     const { projectStore, uiStore }: RootStore = useRootStore();
     return (
         <div id="projectViewer" className="full-height">
             <ProjectViewerHeader />
             {uiStore.selectedPageObject ? (
-                <PageObjectEditor pageObject={uiStore.selectedPageObject} />
+                <PageObjectEditor ideProxy={ideProxy} pageObject={uiStore.selectedPageObject} />
             ) : (
                 <ProjectExplorer />
             )}
