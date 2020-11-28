@@ -2,14 +2,13 @@ import WebsocketConnection, { Events } from './WebsocketConnection';
 import { RootStore } from '../../context';
 import IIdeProxy from 'interfaces/IIdeProxy';
 import { destroy, getParent, Instance, cast } from 'mobx-state-tree';
-import { ProjectStoreModel } from 'mst/ProjectStore';
+import ProjectStore, { ProjectStoreModel } from 'mst/ProjectStore';
 import UIStore from 'mst/UiStore';
 import ComponentInstance from 'mst/ComponentInstance';
 
 export default class IDEAConnection implements IIdeProxy {
     connection: WebsocketConnection;
     type = 'IDEA';
-    uiStore: UIStore = RootStore.uiStore;
 
     constructor() {
         this.connection = new WebsocketConnection(1804);
@@ -37,12 +36,12 @@ export default class IDEAConnection implements IIdeProxy {
     }
 
     onOpen() {
-        this.uiStore.addIdeConnection(this.type);
+        RootStore.uiStore.addIdeConnection(this.type);
         this.requestProjects();
     }
 
     onClosed() {
-        this.uiStore.removeIdeConnection(this.type);
+        RootStore.uiStore.removeIdeConnection(this.type);
     }
 
     requestProjects() {
@@ -61,7 +60,7 @@ export default class IDEAConnection implements IIdeProxy {
     }
 
     onProjectsReceived(projectsList) {
-        this.uiStore.setProjectsList(this.type, projectsList);
+        RootStore.uiStore.setProjectsList(this.type, projectsList);
     }
 
     onMessage(message) {
@@ -76,11 +75,10 @@ export default class IDEAConnection implements IIdeProxy {
                 console.log('page is opened:', message.className);
             // return this.props.onSelectedPageChange(null, message.className);
             case 'update-component':
-                // this.props.onComponentUpdated(message.data);
+                RootStore.projectStore.updateComponentType(message.data);
                 return;
             case 'update-page':
-                console.log('page is updated:', message.data);
-                // this.props.onPageUpdated(message.data);
+                RootStore.projectStore.updatePageType(message.data);
                 return;
             default:
                 console.log('unknown message type, ignored: ', message);
