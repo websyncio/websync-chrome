@@ -1,12 +1,9 @@
 import { types, Instance } from 'mobx-state-tree';
-// import PageType, { PageTypeModel } from './PageType';
-// import ComponentType, { ComponentTypeModel } from './ComponentType';
-// import IIdeProxy from 'interfaces/IIdeProxy';
-// import { WebSiteModel } from './WebSite';
 import IdeConnection, { IdeConnectionModel } from './IdeConnection';
-import ComponentsContainer, { ComponentsContainerModel } from './ComponentsContainer';
 import { PageTypeModel } from './PageType';
+import PageInstance, { PageInstanceModel } from './PageInstance';
 import PageType from 'mst/PageType';
+import WebSite, { WebSiteModel } from './WebSite';
 
 export const UiStoreModel = types
     .model({

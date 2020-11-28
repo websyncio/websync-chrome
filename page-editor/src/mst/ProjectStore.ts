@@ -1,9 +1,8 @@
 import { types, Instance, getParent, hasParent, destroy, cast } from 'mobx-state-tree';
-import { WebSiteModel } from './WebSite';
+import WebSite, { WebSiteModel } from './WebSite';
 import { PageTypeModel } from './PageType';
+import PageInstance from './PageInstance';
 import { ComponentTypeModel } from './ComponentType';
-import ComponentInstance from 'models/ComponentInstance';
-import PageType from 'models/PageType';
 
 export const ProjectStoreModel = types
     .model({
@@ -11,6 +10,14 @@ export const ProjectStoreModel = types
         pageTypes: types.array(PageTypeModel),
         componentTypes: types.array(ComponentTypeModel),
     })
+    .views((self) => ({
+        get selectedWebSite(): WebSite | null {
+            return self.webSites.find((ws) => ws.selected);
+        },
+        get selectedPageInstance(): PageInstance | null {
+            return self.webSites.reduce((result, ws) => result.concat(ws.pageInstances), []).find((pi) => pi.selected);
+        },
+    }))
     .actions((self) => ({
         updatePageType(pageTypeJson) {
             const updated = PageTypeModel.create(pageTypeJson);

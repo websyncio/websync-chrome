@@ -9,7 +9,7 @@ import { useRootStore } from 'context';
 interface Props {
     websites: WebSite[];
     selectedWebsite?: WebSite;
-    onSelected: (webSite: WebSite, pageInstance: PageInstance | undefined) => void;
+    onSelected: (webSite: WebSite, pageInstance: PageInstance | null) => void;
 }
 
 const WebSitesTree: React.FC<Props> = observer(({ websites, onSelected }) => {
@@ -48,7 +48,7 @@ const WebSitesTree: React.FC<Props> = observer(({ websites, onSelected }) => {
                     className={`website selectable ${website.expanded ? 'expanded' : ''} ${
                         website.selected ? 'selected' : ''
                     }`}
-                    onClick={() => onSelected(website, undefined)}
+                    onClick={() => onSelected(website, null)}
                 >
                     <div className="expand-icon" onClick={() => expand(website)} />
                     <span className="name">{website.name}</span>

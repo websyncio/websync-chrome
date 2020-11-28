@@ -14,23 +14,22 @@ interface Props {}
 
 const Explorer: React.FC<Props> = observer(() => {
     const { projectStore, uiStore }: RootStore = useRootStore();
-    const [selectedWebSite, setSelectedWebSite] = useState<WebSite | undefined>(undefined);
-    const [selectedPageInstance, setSelectedPageInstance] = useState<PageInstance | undefined>(undefined);
 
-    function onSelected(ws: WebSite, pi: PageInstance | undefined) {
-        if (selectedWebSite) {
-            selectedWebSite.deselect();
+    // const [selectedWebSite, setSelectedWebSite] = useState<WebSite | undefined>(undefined);
+    // const [selectedPageInstance, setSelectedPageInstance] = useState<PageInstance | undefined>(undefined);
+
+    function onSelected(ws: WebSite, pi: PageInstance | null) {
+        if (projectStore.selectedWebSite) {
+            projectStore.selectedWebSite.deselect();
         }
-        if (selectedPageInstance) {
-            selectedPageInstance.deselect();
+        if (projectStore.selectedPageInstance) {
+            projectStore.selectedPageInstance.deselect();
         }
         if (pi) {
             pi.select();
         } else {
             ws.select();
         }
-        setSelectedWebSite(ws);
-        setSelectedPageInstance(pi);
     }
 
     return (
@@ -51,10 +50,10 @@ const Explorer: React.FC<Props> = observer(() => {
                 {/* </div> */}
             </div>
             <div id="details" className="flex-auto">
-                {selectedPageInstance ? (
-                    <PageInstanceDetails pageInstance={selectedPageInstance} />
-                ) : selectedWebSite ? (
-                    <WebSiteDetails website={selectedWebSite} />
+                {projectStore.selectedPageInstance ? (
+                    <PageInstanceDetails pageInstance={projectStore.selectedPageInstance} />
+                ) : projectStore.selectedWebSite ? (
+                    <WebSiteDetails website={projectStore.selectedWebSite} />
                 ) : (
                     <div>Nothing selected</div>
                 )}
