@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useLayoutEffect } from 'react';
 import 'styles/App.sass';
 import PageType from './models/PageType';
 import 'semantic-ui-css/semantic.min.css';
@@ -11,6 +11,7 @@ import ProjectSelector from 'components/ProjectSelector/ProjectSelector';
 import ProjectViewer from 'components/ProjectViewer/ProjectViewer';
 import RootStore from 'mst/RootStore';
 import { useRootStore } from 'context';
+import SelectorEditorConnection from 'services/SelectorEditor/SelectorEditorConnection';
 
 type AppState = {
     module: string;
@@ -23,6 +24,10 @@ type AppState = {
 const App: React.FC = observer(() => {
     const ideProxies: IIdeProxy[] = [IDEAConnection.instance()];
     const { projectStore, uiStore }: RootStore = useRootStore();
+
+    useLayoutEffect(() => {
+        SelectorEditorConnection.init();
+    }, []);
 
     // SelectorEditorProxy.instance().addListener(
     //     MessageTypes.UpdateComponentSelector,

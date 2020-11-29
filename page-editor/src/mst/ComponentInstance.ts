@@ -2,6 +2,7 @@ import { types, Instance, getSnapshot, getParent, hasParent, getParentOfType, ca
 import { AttributeModel } from './Attribute';
 import { ComponentTypeModel } from './ComponentType';
 import { PageTypeModel } from './PageType';
+import IDEAConnection from 'services/IDE/IDEAConnection';
 
 export const ComponentInstanceModel = types
     .model({
@@ -24,6 +25,13 @@ export const ComponentInstanceModel = types
             const pageType = getParentOfType(self, PageTypeModel);
             const updated = { ...getSnapshot(self), id: newId };
             pageType.updateComponentInstance(self, updated);
+        },
+        updateInitializationParameter(parameterName, parameterValueIndex, parameterValue) {
+            if (!self.initializationAttribute) {
+                throw new Error('No initialization attribute to update for component. componentId: ' + self.id);
+            }
+            self.initializationAttribute.updateParameterValue(parameterName, parameterValueIndex, parameterValue);
+            IDEAConnection.instance().updateComponentInstance(self as ComponentInstance);
         },
     }));
 

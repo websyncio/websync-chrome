@@ -11,7 +11,7 @@ interface JDISelectorsAttributeProps {
     onEditSelector: any;
 }
 
-const JDISelectorsAttribute: React.SFC<JDISelectorsAttributeProps> = (props: JDISelectorsAttributeProps) => {
+const JDISelectorsAttribute: React.FC<JDISelectorsAttributeProps> = (props: JDISelectorsAttributeProps) => {
     function getStatus() {
         return Math.floor(Math.random() * 3);
     }
@@ -21,7 +21,6 @@ const JDISelectorsAttribute: React.SFC<JDISelectorsAttributeProps> = (props: JDI
     }
 
     function onEditSelector(parameter, index) {
-        console.log('implement this');
         props.onEditSelector(parameter, index);
     }
 

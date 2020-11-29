@@ -73,7 +73,7 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component }) =>
         selection?.addRange(range);
     }
 
-    function submitRename(event, component, newName) {
+    function submitRename(event, component: ComponentInstanceModel, newName) {
         if (event.target.contentEditable === 'true') {
             event.target.contentEditable = false;
             if (newName === null) {

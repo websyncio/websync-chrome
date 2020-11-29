@@ -1,8 +1,9 @@
 import { types, Instance, getParent, hasParent, destroy, cast } from 'mobx-state-tree';
 import WebSite, { WebSiteModel } from './WebSite';
-import { PageTypeModel } from './PageType';
+import PageType, { PageTypeModel } from './PageType';
 import PageInstance from './PageInstance';
 import { ComponentTypeModel } from './ComponentType';
+import ComponentInstance from './ComponentInstance';
 
 export const ProjectStoreModel = types
     .model({
@@ -35,6 +36,21 @@ export const ProjectStoreModel = types
         },
         updateComponentType(componentTypeJson) {
             console.log('component is updated:', componentTypeJson);
+        },
+        updateComponentInitializationParameter(
+            pageType: PageType,
+            componentId,
+            parameterName,
+            parameterValueIndex,
+            parameterValue,
+        ) {
+            const componentInstance: ComponentInstance = pageType.componentsInstances.find(
+                (ci) => ci.id == componentId,
+            );
+            if (!componentInstance) {
+                throw new Error('No component to update. componentId: ' + componentId);
+            }
+            componentInstance.updateInitializationParameter(parameterName, parameterValueIndex, parameterValue);
         },
     }));
 
