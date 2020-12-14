@@ -1,7 +1,19 @@
 import { types, Instance } from 'mobx-state-tree';
 import { ComponentsContainerModel } from './ComponentsContainer';
 
-export const ComponentTypeModel = ComponentsContainerModel.named('ComponentType');
+export const ComponentTypeModel = types
+    .compose(
+        ComponentsContainerModel,
+        types.model({
+            isCustom: types.boolean,
+        }),
+    )
+    .views((self) => ({
+        get name(): string {
+            const arr = self.id.split('.');
+            return arr[arr.length - 1];
+        },
+    }));
 
 // types.model({
 //     id: types.identifier,

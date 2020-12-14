@@ -2,8 +2,17 @@ import { types, Instance, getParent, hasParent, destroy, cast } from 'mobx-state
 import WebSite, { WebSiteModel } from './WebSite';
 import PageType, { PageTypeModel } from './PageType';
 import PageInstance from './PageInstance';
-import { ComponentTypeModel } from './ComponentType';
+import ComponentType, { ComponentTypeModel } from './ComponentType';
 import ComponentInstance from './ComponentInstance';
+
+function compareComponentTypes(a: ComponentType, b: ComponentType) {
+    if (a.name > b.name) {
+        return 1;
+    } else if (a.name < b.name) {
+        return -1;
+    }
+    return 0;
+}
 
 export const ProjectStoreModel = types
     .model({
@@ -17,6 +26,12 @@ export const ProjectStoreModel = types
         },
         get selectedPageInstance(): PageInstance | null {
             return self.webSites.reduce((result, ws) => result.concat(ws.pageInstances), []).find((pi) => pi.selected);
+        },
+        get frameworkComponentTypes(): ComponentType[] {
+            return self.componentTypes.filter((ct) => !ct.isCustom).sort(compareComponentTypes);
+        },
+        get customComponentTypes(): ComponentType[] {
+            return self.componentTypes.filter((ct) => ct.isCustom).sort(compareComponentTypes);
         },
     }))
     .actions((self) => ({
