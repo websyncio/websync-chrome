@@ -38,8 +38,11 @@
         color: #111
         text-decoration: none
 
-    .field-name.selected, .type-name.selected
-        background-color: rgb(226,230,214)
+    .field-name, .type-name
+        &.selected
+            background-color: rgb(226,230,214)
+        &.invalid
+            color: rgb(253,3 ,38)
 
     .init-attribute
         margin-left: 10px

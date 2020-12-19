@@ -20,16 +20,16 @@ import { isType } from 'mobx-state-tree';
 interface Props {
     ideProxy: IIdeProxy;
     component: ComponentInstanceModel;
+    onSelected: () => void;
 }
 
-const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component }) => {
+const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSelected }) => {
     const { projectStore, uiStore }: RootStore = useRootStore();
     const triggerRef: any = React.createRef();
     const popupRef: any = React.createRef();
     let popper: any;
 
     const [isOpen, setIsOpen] = useState(false);
-    const [isSelected, setIsSelected] = useState(false);
     const [isTypeSelected, setIsTypeSelected] = useState(false);
     const [isNameSelected, setIsNameSelected] = useState(false);
 
@@ -155,19 +155,22 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component }) =>
     }
 
     function editType() {
-        setIsSelected(true);
         setIsTypeSelected(true);
         setIsNameSelected(false);
     }
 
     function editName() {
-        setIsSelected(true);
         setIsTypeSelected(false);
         setIsNameSelected(true);
     }
 
+    function selectComponent() {
+        component.select();
+        onSelected();
+    }
+
     return (
-        <div className={`component-instance ${isSelected ? 'selected' : ''}`}>
+        <div className={`component-instance ${component.selected ? 'selected' : ''}`} onClick={selectComponent}>
             <span
                 className={`trigger type-name editing ${isTypeSelected ? 'selected' : ''}`}
                 ref={triggerRef}

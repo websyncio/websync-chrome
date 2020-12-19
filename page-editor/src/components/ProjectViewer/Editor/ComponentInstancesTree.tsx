@@ -6,6 +6,7 @@ import RootStore from 'mst/RootStore';
 import ComponentsContainer from 'mst/ComponentsContainer';
 import './ComponentInstancesTree.sass';
 import IIdeProxy from 'interfaces/IIdeProxy';
+import ComponentInstanceModel from 'mst/ComponentInstance';
 
 interface Props {
     ideProxy: IIdeProxy;
@@ -67,12 +68,24 @@ const ComponentInstancesTree: React.FC<Props> = observer(({ ideProxy, pageObject
     //     component.id = component.id.substring(0, lastDot + 1) + newName;
     // }
 
+    function onComponentSelected(component: ComponentInstanceModel) {
+        pageObject.componentsInstances.forEach((c) => {
+            if (c !== component) {
+                c.deselect();
+            }
+        });
+    }
+
     return (
         <div className="components-tree">
             <ul>
                 {pageObject.componentsInstances.map((component) => [
                     <li key={component.id}>
-                        <ComponentInstance ideProxy={ideProxy} component={component} />
+                        <ComponentInstance
+                            ideProxy={ideProxy}
+                            component={component}
+                            onSelected={() => onComponentSelected(component)}
+                        />
                     </li>,
                     // <ComponentInstancesList componentInstancesList={component.selectedPageType.componentsInstances}/>
                 ])}
