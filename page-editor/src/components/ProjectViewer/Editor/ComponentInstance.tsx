@@ -15,6 +15,7 @@ import IIdeProxy from 'interfaces/IIdeProxy';
 import { observer } from 'mobx-react';
 import RootStore from 'mst/RootStore';
 import { useRootStore } from 'context';
+import { isType } from 'mobx-state-tree';
 
 interface Props {
     ideProxy: IIdeProxy;
@@ -29,6 +30,8 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component }) =>
 
     const [isOpen, setIsOpen] = useState(false);
     const [isSelected, setIsSelected] = useState(false);
+    const [isTypeSelected, setIsTypeSelected] = useState(false);
+    const [isNameSelected, setIsNameSelected] = useState(false);
 
     useLayoutEffect(() => {
         popper = createPopper(triggerRef.current, popupRef.current, {
@@ -151,18 +154,26 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component }) =>
         }
     }
 
-    function makeEditable() {
+    function editType() {
         setIsSelected(true);
+        setIsTypeSelected(true);
+        setIsNameSelected(false);
+    }
+
+    function editName() {
+        setIsSelected(true);
+        setIsTypeSelected(false);
+        setIsNameSelected(true);
     }
 
     return (
         <div className={`component-instance ${isSelected ? 'selected' : ''}`}>
             <span
-                className="trigger type-name editing"
+                className={`trigger type-name editing ${isTypeSelected ? 'selected' : ''}`}
                 ref={triggerRef}
                 contentEditable="true"
                 spellCheck="false"
-                onClick={makeEditable}
+                onClick={editType}
             >
                 {getTypeName(component.componentType)}
             </span>
@@ -190,10 +201,10 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component }) =>
                 <span
                     contentEditable="true"
                     spellCheck="false"
-                    className={`field-name editing`}
+                    className={`field-name editing ${isNameSelected ? 'selected' : ''}`}
                     title="Double Click to Edit Name"
                     // onDoubleClick={onRename}
-                    onClick={makeEditable}
+                    onClick={editName}
                     onKeyDown={onNameKeyDown}
                     onBlur={onNameBlur}
                 >
