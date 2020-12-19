@@ -172,7 +172,7 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
     return (
         <div className={`component-instance ${component.selected ? 'selected' : ''}`} onClick={selectComponent}>
             <span
-                className={`trigger type-name editing ${isTypeSelected ? 'selected' : ''}`}
+                className={`trigger type-name editing ${component.selected && isTypeSelected ? 'selected' : ''}`}
                 ref={triggerRef}
                 contentEditable="true"
                 spellCheck="false"
@@ -204,7 +204,7 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
                 <span
                     contentEditable="true"
                     spellCheck="false"
-                    className={`field-name editing ${isNameSelected ? 'selected' : ''}`}
+                    className={`field-name editing ${component.selected && isNameSelected ? 'selected' : ''}`}
                     title="Double Click to Edit Name"
                     // onDoubleClick={onRename}
                     onClick={editName}
