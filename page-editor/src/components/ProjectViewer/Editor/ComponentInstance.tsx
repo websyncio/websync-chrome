@@ -80,7 +80,7 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
 
     function submitRename(event, component: ComponentInstanceModel, newName) {
         if (event.target.contentEditable === 'true') {
-            event.target.contentEditable = false;
+            //event.target.contentEditable = false;
             if (newName === null) {
                 event.target.innerText = component.name;
                 return;
@@ -169,6 +169,14 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
         onSelected();
     }
 
+    function onTypeKeyDown(event) {
+        console.log(event.ctrlKey + ' + ' + event.keyCode);
+        if (event.ctrlKey && event.key === ' ') {
+            setIsOpen(true);
+            event.preventDefault();
+        }
+    }
+
     return (
         <div className={`component-instance ${component.selected ? 'selected' : ''}`} onClick={selectComponent}>
             <span
@@ -177,6 +185,7 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
                 contentEditable="true"
                 spellCheck="false"
                 onClick={editType}
+                onKeyDown={onTypeKeyDown}
             >
                 {getTypeName(component.componentType)}
             </span>
