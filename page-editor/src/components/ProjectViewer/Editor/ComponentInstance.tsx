@@ -8,6 +8,7 @@ import { createPopper } from '@popperjs/core';
 import FocusTrap from 'focus-trap-react';
 import Portal from '../../Portal';
 import 'styles/Popup.sass';
+import './ComponentInstance.sass';
 import ComponentTypeSelector from './ComponentTypeSelector';
 import { InitializationAttributes } from 'services/JDI';
 import IIdeProxy from 'interfaces/IIdeProxy';
@@ -27,6 +28,7 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component }) =>
     let popper: any;
 
     const [isOpen, setIsOpen] = useState(false);
+    const [isSelected, setIsSelected] = useState(false);
 
     useLayoutEffect(() => {
         popper = createPopper(triggerRef.current, popupRef.current, {
@@ -149,9 +151,19 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component }) =>
         }
     }
 
+    function makeEditable() {
+        setIsSelected(true);
+    }
+
     return (
-        <span>
-            <span className="trigger type-name" ref={triggerRef} onClick={togglePopup}>
+        <div className={`component-instance ${isSelected ? 'selected' : ''}`}>
+            <span
+                className="trigger type-name editing"
+                ref={triggerRef}
+                contentEditable="true"
+                spellCheck="false"
+                onClick={makeEditable}
+            >
                 {getTypeName(component.componentType)}
             </span>
 
@@ -176,10 +188,12 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component }) =>
 
             <div className="field-name-wrap">
                 <span
+                    contentEditable="true"
                     spellCheck="false"
-                    className={`field-name`}
+                    className={`field-name editing`}
                     title="Double Click to Edit Name"
-                    onDoubleClick={onRename}
+                    // onDoubleClick={onRename}
+                    onClick={makeEditable}
                     onKeyDown={onNameKeyDown}
                     onBlur={onNameBlur}
                 >
@@ -187,7 +201,7 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component }) =>
                 </span>
             </div>
             {initializationAttribute(component.initializationAttribute)}
-        </span>
+        </div>
     );
 });
 

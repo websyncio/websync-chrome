@@ -1,0 +1,62 @@
+.editing
+	// box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.2) 0px 2px 4px 0px, rgba(0, 0, 0, 0.1) 0px 2px 6px 0px
+    background-color: white;
+    text-overflow: clip !important;
+    padding-left: 2px;
+    margin-left: -2px;
+    padding-right: 2px;
+    margin-right: -2px;
+    margin-bottom: -1px;
+    padding-bottom: 1px;
+    padding-top: 2px;
+    opacity: 1.0 !important;
+    color: #222 !important;
+    text-decoration: none !important;
+    outline: none !important;
+
+.editing::selection
+    color: white
+    background: rgb(51,144,255)
+
+.component-instance
+    font-size: 14px
+    line-height: 14px
+    border: 2px solid rgba(0,0,0,0)
+    color: rgb(83, 145, 184)
+
+    &.selected
+        border: 2px solid rgb(237,237,244)
+        
+    .type-name
+        margin-right: 10px
+
+    .field-name-wrap
+        display: inline-block
+
+    .field-name
+        user-select: none
+        color: #111
+        text-decoration: none
+
+    .init-attribute
+        margin-left: 10px
+
+    .parameter-value
+        color: rgb(3,128,3)
+        border-radius: 3px
+        cursor: pointer
+        &:hover
+            font-weight: bold
+
+        // &.single
+        //     background: rgb(50, 205, 50)
+
+        // &.several
+        //     background: rgb(256,256,0)
+
+        >span.invalid
+            text-decoration: underline
+            text-decoration-style: double
+            text-decoration-color: red
+
+
