@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useLayoutEffect, useState } from 'react';
+import React, { Component, RefObject, useEffect, useLayoutEffect, useState } from 'react';
 import ComponentInstanceModel from 'mst/ComponentInstance';
 import AttributeModel from 'mst/Attribute';
 import ParameterModel from 'mst/Parameter';
@@ -26,7 +26,7 @@ interface Props {
 const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSelected }) => {
     const { projectStore, uiStore }: RootStore = useRootStore();
     const popupRef: any = React.createRef();
-    const typeRef: any = React.createRef();
+    const typeRef: RefObject<any> = React.createRef();
     const nameRef: any = React.createRef();
     let popper: any;
 
@@ -62,6 +62,7 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
         if (component.selected) {
             typeRef.current.focus();
             setIsTypeSelected(true);
+            setIsNameSelected(false);
         }
     }, [component.selected]);
 
@@ -100,21 +101,40 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
         }
     }
 
-    function onNameKeyDown(event) {
-        const newName = event.target.innerText.trim();
-        if (!event.key.match(/[A-Za-z0-9_$]+/g)) {
-            event.preventDefault();
+    function getCursorPosition(editableElement) {
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount) {
+            const range = sel.getRangeAt(0);
+            if (range.commonAncestorContainer.parentNode == editableElement) {
+                return range.endOffset;
+            }
+        }
+        return 0;
+    }
+
+    function onNameKeyDown(e) {
+        if (!e.altKey && !e.ctrlKey && !e.shiftKey) {
+            if (e.key == 'ArrowLeft' && getCursorPosition(e.target) == 0) {
+                setIsNameSelected(false);
+                setIsTypeSelected(true);
+                typeRef.current.focus();
+            }
+        }
+
+        const newName = e.target.innerText.trim();
+        if (!e.key.match(/[A-Za-z0-9_$]+/g)) {
+            e.preventDefault();
             return;
         }
-        if (event.key === 'Enter') {
-            event.target.classList.remove('editing');
-            submitRename(event, component, newName);
-            event.preventDefault();
-        } else if (event.key === 'Escape') {
-            event.target.classList.remove('editing');
-            submitRename(event, component, null);
+        if (e.key === 'Enter') {
+            e.target.classList.remove('editing');
+            submitRename(e, component, newName);
+            e.preventDefault();
+        } else if (e.key === 'Escape') {
+            e.target.classList.remove('editing');
+            submitRename(e, component, null);
         } else if (newName.length === 100) {
-            event.preventDefault();
+            e.preventDefault();
         }
     }
 
@@ -177,8 +197,16 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
         onSelected();
     }
 
-    function onTypeKeyDown(event) {
-        if (event.ctrlKey && event.key === ' ') {
+    function onTypeKeyDown(e) {
+        if (!e.altKey && !e.ctrlKey && !e.shiftKey) {
+            if (e.key == 'ArrowRight' && getCursorPosition(typeRef.current) == typeRef.current.textContent.length) {
+                setIsTypeSelected(false);
+                setIsNameSelected(true);
+                nameRef.current.focus();
+                e.preventDefault();
+            }
+        }
+        if (e.ctrlKey && e.key === ' ') {
             setIsOpen(true);
             // event.preventDefault();
         }
