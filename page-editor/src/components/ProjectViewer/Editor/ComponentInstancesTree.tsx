@@ -76,11 +76,38 @@ const ComponentInstancesTree: React.FC<Props> = observer(({ ideProxy, pageObject
         });
     }
 
+    function selectComponent(component: ComponentInstanceModel, shift: number) {
+        const index = pageObject.componentsInstances.indexOf(component);
+        const newIndex = index + shift;
+        // .first or last line
+        if (newIndex < 0 || newIndex > pageObject.componentsInstances.length - 1) {
+            return;
+        }
+        // .select next component
+        pageObject.componentsInstances.forEach((c, i) => {
+            if (i == newIndex) {
+                c.select();
+            } else {
+                c.deselect();
+            }
+        });
+    }
+
+    function onComponentKeyDown(e, component: ComponentInstanceModel) {
+        if (!e.altKey && !e.ctrlKey && !e.shiftKey) {
+            if (e.key == 'ArrowDown') {
+                selectComponent(component, 1);
+            } else if (e.key == 'ArrowUp') {
+                selectComponent(component, -1);
+            }
+        }
+    }
+
     return (
         <div className="components-tree">
             <ul>
                 {pageObject.componentsInstances.map((component) => [
-                    <li key={component.id}>
+                    <li key={component.id} onKeyDown={(e) => onComponentKeyDown(e, component)}>
                         <ComponentInstance
                             ideProxy={ideProxy}
                             component={component}

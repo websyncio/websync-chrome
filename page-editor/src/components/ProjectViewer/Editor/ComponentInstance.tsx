@@ -25,8 +25,9 @@ interface Props {
 
 const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSelected }) => {
     const { projectStore, uiStore }: RootStore = useRootStore();
-    const triggerRef: any = React.createRef();
     const popupRef: any = React.createRef();
+    const typeRef: any = React.createRef();
+    const nameRef: any = React.createRef();
     let popper: any;
 
     const [isOpen, setIsOpen] = useState(false);
@@ -34,7 +35,7 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
     const [isNameSelected, setIsNameSelected] = useState(false);
 
     useLayoutEffect(() => {
-        popper = createPopper(triggerRef.current, popupRef.current, {
+        popper = createPopper(typeRef.current, popupRef.current, {
             placement: 'bottom-start',
             strategy: 'fixed',
             modifiers: [
@@ -56,6 +57,13 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
             popper.forceUpdate();
         }
     }, [isOpen]);
+
+    useEffect(() => {
+        if (component.selected) {
+            typeRef.current.focus();
+            setIsTypeSelected(true);
+        }
+    }, [component.selected]);
 
     function togglePopup() {
         setIsOpen(!isOpen);
@@ -170,10 +178,9 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
     }
 
     function onTypeKeyDown(event) {
-        console.log(event.ctrlKey + ' + ' + event.keyCode);
         if (event.ctrlKey && event.key === ' ') {
             setIsOpen(true);
-            event.preventDefault();
+            // event.preventDefault();
         }
     }
 
@@ -181,7 +188,7 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
         <div className={`component-instance ${component.selected ? 'selected' : ''}`} onClick={selectComponent}>
             <span
                 className={`trigger type-name editing ${component.selected && isTypeSelected ? 'selected' : ''}`}
-                ref={triggerRef}
+                ref={typeRef}
                 contentEditable="true"
                 spellCheck="false"
                 onClick={editType}
@@ -211,6 +218,7 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
 
             <div className="field-name-wrap">
                 <span
+                    ref={nameRef}
                     contentEditable="true"
                     spellCheck="false"
                     className={`field-name editing ${component.selected && isNameSelected ? 'selected' : ''}`}
