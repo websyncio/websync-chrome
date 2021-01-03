@@ -27,28 +27,32 @@
     &.selected
         border: 2px solid rgb(237,237,244)
         
-    .type-name
-        margin-right: 10px
-        color: rgb(83, 145, 184)
+.type-name
+    margin-right: 10px
+    color: rgb(83, 145, 184)
 
-    .field-name-wrap
-        display: inline-block
+.field-name-wrap
+    display: inline-block
 
-    .field-name
-        user-select: none
-        text-decoration: none
+.field-name
+    user-select: none
+    text-decoration: none
 
-    .field-name, .type-name
-        cursor: text
-        
-        &.selected
-            background-color: rgb(226,230,214)
-        &.invalid
-            color: rgb(253,3 ,38)
-
-    >.warning-icon
-        margin: -1px 4px 0 4px
-        vertical-align: top
-        opacity: 0.7
-
+.field-name, .type-name
+    cursor: text
     
+    &:focus
+        background-color: rgb(226,230,214)
+    &.invalid
+        color: rgb(253,3 ,38)
+
+.error-icon
+    display: none
+    margin: -1px 4px 0 4px
+    vertical-align: top
+    opacity: 0.7
+
+.component-instance.has-error
+    >.error-icon
+        display: inline
+    background-color: lavenderblush

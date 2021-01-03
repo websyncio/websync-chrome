@@ -31,8 +31,6 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
     let popper: any;
 
     const [isOpen, setIsOpen] = useState(false);
-    const [isTypeSelected, setIsTypeSelected] = useState(false);
-    const [isNameSelected, setIsNameSelected] = useState(false);
     const [hasError, setHasError] = useState(false);
 
     useLayoutEffect(() => {
@@ -60,10 +58,12 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
     }, [isOpen]);
 
     useEffect(() => {
-        if (component.selected) {
+        if (
+            component.selected &&
+            window.document.activeElement !== typeRef.current &&
+            window.document.activeElement !== nameRef.current
+        ) {
             typeRef.current.focus();
-            setIsTypeSelected(true);
-            setIsNameSelected(false);
         }
     }, [component.selected]);
 
@@ -116,8 +116,6 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
     function onNameKeyDown(e) {
         if (!e.altKey && !e.ctrlKey && !e.shiftKey) {
             if (e.key == 'ArrowLeft' && getCursorPosition(e.target) == 0) {
-                setIsNameSelected(false);
-                setIsTypeSelected(true);
                 typeRef.current.focus();
             }
         }
@@ -186,16 +184,6 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
         }
     }
 
-    function editType() {
-        setIsTypeSelected(true);
-        setIsNameSelected(false);
-    }
-
-    function editName() {
-        setIsTypeSelected(false);
-        setIsNameSelected(true);
-    }
-
     function selectComponent() {
         component.select();
         onSelected();
@@ -204,8 +192,6 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
     function onTypeKeyDown(e) {
         if (!e.altKey && !e.ctrlKey && !e.shiftKey) {
             if (e.key == 'ArrowRight' && getCursorPosition(typeRef.current) == typeRef.current.textContent.length) {
-                setIsTypeSelected(false);
-                setIsNameSelected(true);
                 nameRef.current.focus();
                 e.preventDefault();
             }
@@ -217,19 +203,19 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
     }
 
     return (
-        <div className={`component-instance ${component.selected ? 'selected' : ''}`} onClick={selectComponent}>
-            {hasError && (
-                <svg className="warning-icon" width="14" height="14" viewBox="0 0 20 20" fill="red">
-                    <path d="M19.64 16.36L11.53 2.3A1.85 1.85 0 0 0 10 1.21 1.85 1.85 0 0 0 8.48 2.3L.36 16.36C-.48 17.81.21 19 1.88 19h16.24c1.67 0 2.36-1.19 1.52-2.64zM11 16H9v-2h2zm0-4H9V6h2z" />
-                </svg>
-            )}
+        <div
+            className={`component-instance ${component.selected ? 'selected' : ''} ${hasError ? 'has-error' : ''}`}
+            onClick={selectComponent}
+        >
+            <svg className="error-icon" width="14" height="14" viewBox="0 0 20 20" fill="red">
+                <path d="M19.64 16.36L11.53 2.3A1.85 1.85 0 0 0 10 1.21 1.85 1.85 0 0 0 8.48 2.3L.36 16.36C-.48 17.81.21 19 1.88 19h16.24c1.67 0 2.36-1.19 1.52-2.64zM11 16H9v-2h2zm0-4H9V6h2z" />
+            </svg>
 
             <span
-                className={`trigger type-name editing ${component.selected && isTypeSelected ? 'selected' : ''}`}
+                className={`trigger type-name editing`}
                 ref={typeRef}
                 contentEditable="true"
                 spellCheck="false"
-                onClick={editType}
                 onKeyDown={onTypeKeyDown}
             >
                 {getTypeName(component.componentType)}
@@ -259,10 +245,9 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
                     ref={nameRef}
                     contentEditable="true"
                     spellCheck="false"
-                    className={`field-name editing ${component.selected && isNameSelected ? 'selected' : ''}`}
+                    className={`field-name editing`}
                     title="Double Click to Edit Name"
                     // onDoubleClick={onRename}
-                    onClick={editName}
                     onKeyDown={onNameKeyDown}
                     onBlur={onNameBlur}
                 >
