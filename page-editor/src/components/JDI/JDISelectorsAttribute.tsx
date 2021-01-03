@@ -5,23 +5,25 @@ import { observer } from 'mobx-react';
 import { Scss } from 'components/ScssBuilder';
 import Selector from 'components/ProjectViewer/Editor/Selector';
 import SelectorModel from 'models/Selector';
+import './JDIAttribute.sass';
 
 interface JDISelectorsAttributeProps {
     attribute: AttributeModel;
     onEditSelector: any;
+    onValidationError: () => void;
 }
 
-const JDISelectorsAttribute: React.FC<JDISelectorsAttributeProps> = (props: JDISelectorsAttributeProps) => {
+const JDISelectorsAttribute: React.FC<JDISelectorsAttributeProps> = ({
+    attribute,
+    onEditSelector,
+    onValidationError,
+}: JDISelectorsAttributeProps) => {
     function getStatus() {
         return Math.floor(Math.random() * 3);
     }
 
     function getSelector(value: string) {
-        return new SelectorModel(props.attribute.name, value);
-    }
-
-    function onEditSelector(parameter, index) {
-        props.onEditSelector(parameter, index);
+        return new SelectorModel(attribute.name, value);
     }
 
     const valuesList = (parameter: ParameterModel) => {
@@ -30,10 +32,15 @@ const JDISelectorsAttribute: React.FC<JDISelectorsAttributeProps> = (props: JDIS
                 {parameter.values.length > 1 && '{'}
                 {parameter.values.map((v, index) => {
                     return (
-                        <span key={parameter.name || ''}>
-                            <Selector selector={getSelector(v)} onEdit={() => onEditSelector(parameter, index)} />
+                        <>
+                            <Selector
+                                parameterName={parameter.name}
+                                selector={getSelector(v)}
+                                onEdit={() => onEditSelector(parameter, index)}
+                                onValidationError={onValidationError}
+                            />
                             {index !== parameter.values.length - 1 && ', '}
-                        </span>
+                        </>
                     );
                 })}
                 {parameter.values.length > 1 && '}'}
@@ -44,7 +51,7 @@ const JDISelectorsAttribute: React.FC<JDISelectorsAttributeProps> = (props: JDIS
     return (
         <span className="init-attribute">
             {'('}
-            {props.attribute.parameters.map((p, index) => (
+            {attribute.parameters.map((p, index) => (
                 <span className="parameter" key={index}>
                     {p.name && [
                         <span className="parameter-name" key={index}>
@@ -53,7 +60,7 @@ const JDISelectorsAttribute: React.FC<JDISelectorsAttributeProps> = (props: JDIS
                         ' = ',
                     ]}
                     {valuesList(p)}
-                    {index !== props.attribute.parameters.length - 1 && ', '}
+                    {index !== attribute.parameters.length - 1 && ', '}
                 </span>
             ))}
             {')'}

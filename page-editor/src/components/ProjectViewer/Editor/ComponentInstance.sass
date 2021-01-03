@@ -22,20 +22,20 @@
     font-size: 14px
     line-height: 14px
     border: 2px solid rgba(0,0,0,0)
-    color: rgb(83, 145, 184)
+    color: #111
 
     &.selected
         border: 2px solid rgb(237,237,244)
         
     .type-name
         margin-right: 10px
+        color: rgb(83, 145, 184)
 
     .field-name-wrap
         display: inline-block
 
     .field-name
         user-select: none
-        color: #111
         text-decoration: none
 
     .field-name, .type-name
@@ -46,25 +46,9 @@
         &.invalid
             color: rgb(253,3 ,38)
 
-    .init-attribute
-        margin-left: 10px
+    >.warning-icon
+        margin: -1px 4px 0 4px
+        vertical-align: top
+        opacity: 0.7
 
-    .parameter-value
-        color: rgb(3,128,3)
-        border-radius: 3px
-        cursor: pointer
-        &:hover
-            font-weight: bold
-
-        // &.single
-        //     background: rgb(50, 205, 50)
-
-        // &.several
-        //     background: rgb(256,256,0)
-
-        >span.invalid
-            text-decoration: underline
-            text-decoration-style: double
-            text-decoration-color: red
-
-
+    

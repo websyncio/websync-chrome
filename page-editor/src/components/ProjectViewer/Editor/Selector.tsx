@@ -1,70 +1,40 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import SelectorModel from 'models/Selector';
 import SelectorValidator from 'services/SelectorEditor/SelectorValidator';
 import SelectorHighlighter from 'services/SelectorEditor/SelectorHighlighter';
-import ComponentInstance from '../../../models/ComponentInstance';
+import { observer } from 'mobx-react';
 
-export default class Selector extends Component<
-    { selector: SelectorModel; onEdit: any },
-    { status: number | undefined }
-> {
-    selectorValidator: SelectorValidator = new SelectorValidator();
-    selectorHighlighter: SelectorHighlighter = new SelectorHighlighter();
+interface Props {
+    parameterName: string | null;
+    selector: SelectorModel;
+    onEdit: () => void;
+    onValidationError: () => void;
+}
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            status: undefined,
-        };
-    }
+const Selector: React.FC<Props> = observer(({ parameterName, selector, onEdit, onValidationError }) => {
+    const selectorValidator: SelectorValidator = new SelectorValidator();
+    const selectorHighlighter: SelectorHighlighter = new SelectorHighlighter();
+    const [status, setStatus] = useState<number | undefined>(undefined);
 
-    componentDidMount() {
-        this.validate();
-    }
+    parameterName = parameterName ?? 'root';
 
-    validate() {
-        this.selectorValidator.validate(this.props.selector.scss, this.onValidated.bind(this));
-    }
-
-    onValidated(validationResult: any) {
-        console.log(this.props.selector.value + ': ' + validationResult.count);
-        this.setState({ status: validationResult.count });
-    }
-
-    onRename(event) {
-        console.log('onRename');
-        if (event.target.contentEditable === true) {
-            event.target.contentEditable = false;
-        } else {
-            event.target.contentEditable = true;
+    function validateCallback(validationResult: any) {
+        console.log(selector.value + ': ' + validationResult.count);
+        setStatus(validationResult.count);
+        if (validationResult.count === 0) {
+            onValidationError();
         }
     }
 
-    onNameKeyDown(event) {
-        const newName = event.target.innerText.trim();
-        // if (!event.key.match(/[A-Za-z0-9_$]+/g)) {
-        //     event.preventDefault();
-        //     return;
-        // }
-        console.log('onNameKeyDown');
-        console.log(event.key);
-        if (event.key === 'Enter') {
-            this.submitRename(event, newName);
-            event.preventDefault();
-        } else if (event.key === 'Escape') {
-            this.submitRename(event, null);
-        } else if (newName.length === 100) {
-            event.preventDefault();
-        }
+    function validate() {
+        selectorValidator.validate(selector.scss, validateCallback);
     }
 
-    onNameBlur(event) {
-        const newName = event.target.innerText.trim();
-        console.log('onNameBlur');
-        this.submitRename(event, newName);
-    }
+    useEffect(() => {
+        validate();
+    }, []);
 
-    submitRename(event, newName) {
+    function submitRename(event, newName) {
         // event.target.contentEditable = false;
         // if (newName === null) {
         //     event.target.innerText = this.props.component.name;
@@ -88,31 +58,72 @@ export default class Selector extends Component<
         // this.props.onSend(json);
     }
 
-    highlightSelector() {
-        this.selectorHighlighter.highlight(this.props.selector.scss);
+    function onRename(event) {
+        console.log('onRename');
+        if (event.target.contentEditable === true) {
+            event.target.contentEditable = false;
+        } else {
+            event.target.contentEditable = true;
+        }
     }
 
-    removeHighlighting() {
-        this.selectorHighlighter.removeHighlighting();
+    function onNameKeyDown(event) {
+        const newName = event.target.innerText.trim();
+        // if (!event.key.match(/[A-Za-z0-9_$]+/g)) {
+        //     event.preventDefault();
+        //     return;
+        // }
+        console.log('onNameKeyDown');
+        console.log(event.key);
+        if (event.key === 'Enter') {
+            submitRename(event, newName);
+            event.preventDefault();
+        } else if (event.key === 'Escape') {
+            submitRename(event, null);
+        } else if (newName.length === 100) {
+            event.preventDefault();
+        }
     }
 
-    render() {
-        return (
+    function onNameBlur(event) {
+        const newName = event.target.innerText.trim();
+        console.log('onNameBlur');
+        submitRename(event, newName);
+    }
+
+    function highlightSelector() {
+        selectorHighlighter.highlight(selector.scss);
+    }
+
+    function removeHighlighting() {
+        selectorHighlighter.removeHighlighting();
+    }
+
+    return (
+        <span
+            key={parameterName}
+            className={`parameter-value-wrap ${
+                status === undefined || status === 1 ? '' : status === 0 ? 'zero-results' : 'multiple-results'
+            }`}
+        >
+            <span className="parameter-name">{parameterName}:</span>
+            &nbsp;
             <span className="parameter-value">
-                &apos;
+                &quot;
                 <span
-                    onMouseEnter={() => this.highlightSelector()}
-                    onMouseLeave={() => this.removeHighlighting()}
-                    onDoubleClick={(event) => this.onRename(event)}
-                    onKeyDown={(event) => this.onNameKeyDown(event)}
-                    onBlur={(event) => this.onNameBlur(event)}
-                    className={` ${this.state.status === undefined || (this.state.status < 1 && 'invalid')}`}
-                    onClick={this.props.onEdit}
+                    onMouseEnter={() => highlightSelector()}
+                    onMouseLeave={() => removeHighlighting()}
+                    onDoubleClick={(event) => onRename(event)}
+                    onKeyDown={(event) => onNameKeyDown(event)}
+                    onBlur={(event) => onNameBlur(event)}
+                    onClick={onEdit}
                 >
-                    {`${this.props.selector.value}`}
+                    {`${selector.value}`}
                 </span>
-                &apos;
+                &quot;
             </span>
-        );
-    }
-}
+        </span>
+    );
+});
+
+export default Selector;

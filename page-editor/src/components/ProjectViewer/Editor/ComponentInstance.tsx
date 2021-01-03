@@ -33,6 +33,7 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
     const [isOpen, setIsOpen] = useState(false);
     const [isTypeSelected, setIsTypeSelected] = useState(false);
     const [isNameSelected, setIsNameSelected] = useState(false);
+    const [hasError, setHasError] = useState(false);
 
     useLayoutEffect(() => {
         popper = createPopper(typeRef.current, popupRef.current, {
@@ -175,6 +176,9 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
                     <JDISelectorsAttribute
                         attribute={component.initializationAttribute}
                         onEditSelector={(parameter, valueIndex) => editSelector(component, parameter, valueIndex)}
+                        onValidationError={() => {
+                            setHasError(true);
+                        }}
                     />
                 );
             }
@@ -214,6 +218,12 @@ const ComponentInstance: React.FC<Props> = observer(({ ideProxy, component, onSe
 
     return (
         <div className={`component-instance ${component.selected ? 'selected' : ''}`} onClick={selectComponent}>
+            {hasError && (
+                <svg className="warning-icon" width="14" height="14" viewBox="0 0 20 20" fill="red">
+                    <path d="M19.64 16.36L11.53 2.3A1.85 1.85 0 0 0 10 1.21 1.85 1.85 0 0 0 8.48 2.3L.36 16.36C-.48 17.81.21 19 1.88 19h16.24c1.67 0 2.36-1.19 1.52-2.64zM11 16H9v-2h2zm0-4H9V6h2z" />
+                </svg>
+            )}
+
             <span
                 className={`trigger type-name editing ${component.selected && isTypeSelected ? 'selected' : ''}`}
                 ref={typeRef}
