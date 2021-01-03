@@ -160,8 +160,9 @@ const ComponentInstance: React.FC<Props> = observer(
             if (!e.altKey && !e.ctrlKey && !e.shiftKey) {
                 if (e.key == 'ArrowLeft' && getElementCaretPosition(e.target) == 0) {
                     nameRef.current.contentEditable = false;
-                    typeRef.current.contentEditable = true;
-                    typeRef.current.focus();
+                    setCaretPosition(typeRef.current.textContent.length);
+                    e.preventDefault();
+                    return;
                 }
             }
 
