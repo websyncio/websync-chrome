@@ -7,6 +7,7 @@ import ComponentsContainer from 'mst/ComponentsContainer';
 import './ComponentInstancesTree.sass';
 import IIdeProxy from 'interfaces/IIdeProxy';
 import ComponentInstanceModel from 'mst/ComponentInstance';
+import { useState } from 'react';
 
 interface Props {
     ideProxy: IIdeProxy;
@@ -16,6 +17,7 @@ interface Props {
 const ComponentInstancesTree: React.FC<Props> = observer(({ ideProxy, pageObject }) => {
     const { projectStore, uiStore }: RootStore = useRootStore();
 
+    const [caretPosition, setCaretPosition] = useState(0);
     // function onRename(event, component) {
     //     if (event.target.contentEditable === true) {
     //         event.target.contentEditable = false;
@@ -76,7 +78,8 @@ const ComponentInstancesTree: React.FC<Props> = observer(({ ideProxy, pageObject
         });
     }
 
-    function selectComponent(component: ComponentInstanceModel, shift: number) {
+    function selectComponent(component: ComponentInstanceModel, shift: number, caretPosition: number) {
+        setCaretPosition(caretPosition);
         const index = pageObject.componentsInstances.indexOf(component);
         const newIndex = index + shift;
         // .first or last line
@@ -95,11 +98,6 @@ const ComponentInstancesTree: React.FC<Props> = observer(({ ideProxy, pageObject
 
     function onComponentKeyDown(e, component: ComponentInstanceModel) {
         if (!e.altKey && !e.ctrlKey && !e.shiftKey) {
-            if (e.key == 'ArrowDown') {
-                selectComponent(component, 1);
-            } else if (e.key == 'ArrowUp') {
-                selectComponent(component, -1);
-            }
         }
     }
 
@@ -111,7 +109,14 @@ const ComponentInstancesTree: React.FC<Props> = observer(({ ideProxy, pageObject
                         <ComponentInstance
                             ideProxy={ideProxy}
                             component={component}
+                            caretPosition={caretPosition}
                             onSelected={() => onComponentSelected(component)}
+                            onSelectNext={(caretPosition) => {
+                                selectComponent(component, 1, caretPosition);
+                            }}
+                            onSelectPrevious={(caretPosition) => {
+                                selectComponent(component, -1, caretPosition);
+                            }}
                         />
                     </li>,
                     // <ComponentInstancesList componentInstancesList={component.selectedPageType.componentsInstances}/>
