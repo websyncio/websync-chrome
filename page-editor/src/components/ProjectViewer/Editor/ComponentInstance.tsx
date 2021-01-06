@@ -15,10 +15,6 @@ import IIdeProxy from 'interfaces/IIdeProxy';
 import { observer } from 'mobx-react';
 import RootStore from 'mst/RootStore';
 import { useRootStore } from 'context';
-import { isType } from 'mobx-state-tree';
-import { SSL_OP_CIPHER_SERVER_PREFERENCE } from 'constants';
-import { boolean } from 'mobx-state-tree/dist/internal';
-
 interface Props {
     ideProxy: IIdeProxy;
     component: ComponentInstanceModel;
@@ -34,10 +30,12 @@ const ComponentInstance: React.FC<Props> = observer(
         const popupRef: any = React.createRef();
         const typeRef: RefObject<any> = React.createRef();
         const nameRef: any = React.createRef();
+        const spaceRef: any = React.createRef();
         let popper: any;
 
         const [isOpen, setIsOpen] = useState(false);
         const [hasError, setHasError] = useState(false);
+        const [showSpace, setShowSpace] = useState(true);
 
         useLayoutEffect(() => {
             popper = createPopper(typeRef.current, popupRef.current, {
@@ -63,6 +61,17 @@ const ComponentInstance: React.FC<Props> = observer(
             }
         }, [isOpen]);
 
+        function makeEditable(element) {
+            typeRef.current.contentEditable = element == typeRef.current;
+            //spaceRef.current.contentEditable = element==spaceRef.current;
+            nameRef.current.contentEditable = element == nameRef.current;
+            element.focus();
+        }
+
+        function makeNonEditable(element) {
+            element.contentEditable = false;
+        }
+
         function isActive(element): boolean {
             return window.document.activeElement === element;
         }
@@ -81,6 +90,7 @@ const ComponentInstance: React.FC<Props> = observer(
             const typeLength = typeRef.current.textContent.length;
             const nameLength = nameRef.current.textContent.length;
             if (position <= typeLength) {
+                nameRef.current.contentEditable = false;
                 typeRef.current.contentEditable = true;
                 typeRef.current.focus();
                 setElementCaretPosition(typeRef.current, position);
@@ -89,8 +99,7 @@ const ComponentInstance: React.FC<Props> = observer(
                 if (position > nameLength) {
                     position = nameLength;
                 }
-                nameRef.current.contentEditable = true;
-                nameRef.current.focus();
+                makeEditable(nameRef.current);
                 setElementCaretPosition(nameRef.current, position);
             }
         }
@@ -156,11 +165,175 @@ const ComponentInstance: React.FC<Props> = observer(
             throw new Error('Unable to calculate caret position.');
         }
 
-        function onNameKeyDown(e) {
+        function deleteSpace(caretShift = 0) {
+            setShowSpace(false);
+            const caretPosition = getCaretPosition();
+            typeRef.current.textContent += nameRef.current.textContent;
+            nameRef.current.textContent = '';
+            setCaretPosition(caretPosition + caretShift);
+        }
+
+        function addSpace() {
+            if (!nameRef.current.textContent) {
+                setShowSpace(true);
+                const caretPosition = getCaretPosition();
+                const text = typeRef.current.textContent;
+                typeRef.current.textContent = text.substring(0, caretPosition);
+                nameRef.current.textContent = text.substring(caretPosition);
+                setCaretPosition(caretPosition + 1);
+            }
+        }
+
+        function onKeyDown(e) {
             if (!e.altKey && !e.ctrlKey && !e.shiftKey) {
-                if (e.key == 'ArrowLeft' && getElementCaretPosition(e.target) == 0) {
+                if (e.key == 'ArrowDown') {
+                    onSelectNext(getCaretPosition());
+                    typeRef.current.contentEditable = false;
                     nameRef.current.contentEditable = false;
-                    setCaretPosition(typeRef.current.textContent.length);
+                    e.preventDefault();
+                } else if (e.key == 'ArrowUp') {
+                    onSelectPrevious(getCaretPosition());
+                    typeRef.current.contentEditable = false;
+                    nameRef.current.contentEditable = false;
+                    e.preventDefault();
+                }
+            }
+        }
+
+        function onTypeKeyDown(e) {
+            const isHomeKey = e.key == 'Home';
+            const isEndKey = e.key == 'End';
+            const isLeftArrow = e.key == 'ArrowLeft';
+            const isRightArrow = e.key == 'ArrowRight';
+            const isDelete = e.key == 'Delete';
+            const isEnd = getElementCaretPosition(e.target) == typeRef.current.textContent.length;
+            if (e.ctrlKey) {
+                if (e.shiftKey) {
+                    // SELECTION
+                    if (isRightArrow) {
+                        //setElementSelectionRange();
+                        //setElementCaretPosition(nameRef.current, nameRef.current.textContent.length);
+                        return;
+                    } else if (isLeftArrow) {
+                        //setElementSelectionRange();
+                        //setElementCaretPosition(nameRef.current, 0);
+                        return;
+                    }
+                } else {
+                    // NAVIGATION WITH CTRL
+                    if (isRightArrow) {
+                        if (isEnd) {
+                            setCaretPosition(
+                                typeRef.current.textContent.length + 1 + nameRef.current.textContent.length,
+                            );
+                            e.preventDefault();
+                        } else {
+                            setElementCaretPosition(typeRef.current, typeRef.current.textContent.length);
+                            e.preventDefault();
+                        }
+                        return;
+                    }
+                    if (isLeftArrow) {
+                        setElementCaretPosition(typeRef.current, 0);
+                        e.preventDefault();
+                        return;
+                    }
+
+                    // HOT KEYS WITH CTRL
+                    if (e.key === ' ') {
+                        setIsOpen(true);
+                        e.preventDefault();
+                    }
+                }
+            } else {
+                // NAVIGATION
+                if (isEnd) {
+                    if (isRightArrow) {
+                        setCaretPosition(typeRef.current.textContent.length + 1);
+                        e.preventDefault();
+                        return;
+                    } else if (isDelete) {
+                        deleteSpace();
+                        e.preventDefault();
+                        return;
+                    }
+                }
+                switch (e.key) {
+                    case 'Home':
+                        setCaretPosition(0);
+                        e.preventDefault();
+                        return;
+                    case 'End':
+                        setCaretPosition(typeRef.current.textContent.length + 1 + nameRef.current.textContent.length);
+                        e.preventDefault();
+                        return;
+                    case ' ':
+                        addSpace();
+                        e.preventDefault();
+                        return;
+                }
+            }
+        }
+
+        function onNameKeyDown(e) {
+            const isHomeKey = e.key == 'Home';
+            const isEndKey = e.key == 'End';
+            const isLeftArrow = e.key == 'ArrowLeft';
+            const isRightArrow = e.key == 'ArrowRight';
+            const isBackspace = e.key == 'Backspace';
+            const isStart = getElementCaretPosition(e.target) == 0;
+            if (e.shiftKey) {
+                // if(isStart && isLeftArrow){
+                //     component.setForDeletion(true);
+                //     setCaretPosition(typeRef.current.textContent.length);
+                //     e.preventDefault();
+                //     return;
+                // }
+                if (e.ctrlKey) {
+                    if (isRightArrow) {
+                        //setElementSelectionRange();
+                        //setElementCaretPosition(nameRef.current, nameRef.current.textContent.length);
+                        e.preventDefault();
+                        return;
+                    } else if (isLeftArrow) {
+                        //setElementSelectionRange();
+                        //setElementCaretPosition(nameRef.current, 0);
+                        e.preventDefault();
+                        return;
+                    }
+                }
+            } else if (e.ctrlKey) {
+                if (isRightArrow) {
+                    setElementCaretPosition(nameRef.current, nameRef.current.textContent.length);
+                    e.preventDefault();
+                    return;
+                } else if (isLeftArrow) {
+                    if (isStart) {
+                        setCaretPosition(0);
+                    } else {
+                        setElementCaretPosition(nameRef.current, 0);
+                    }
+                    e.preventDefault();
+                    return;
+                }
+            } else {
+                if (isStart) {
+                    if (isBackspace) {
+                        deleteSpace(-1);
+                        e.preventDefault();
+                        return;
+                    }
+                    if (isLeftArrow) {
+                        setCaretPosition(typeRef.current.textContent.length);
+                        e.preventDefault();
+                        return;
+                    }
+                } else if (isHomeKey) {
+                    setCaretPosition(0);
+                    e.preventDefault();
+                    return;
+                } else if (isEndKey) {
+                    setCaretPosition(typeRef.current.textContent.length + 1 + nameRef.current.textContent.length);
                     e.preventDefault();
                     return;
                 }
@@ -174,10 +347,15 @@ const ComponentInstance: React.FC<Props> = observer(
             if (e.key === 'Enter') {
                 submitRename(e, component, newName);
                 e.preventDefault();
-            } else if (e.key === 'Escape') {
+                return;
+            }
+            if (e.key === 'Escape') {
                 submitRename(e, component, null);
-            } else if (newName.length === 100) {
+                return;
+            }
+            if (newName.length === 100) {
                 e.preventDefault();
+                return;
             }
         }
 
@@ -237,53 +415,6 @@ const ComponentInstance: React.FC<Props> = observer(
             onSelected();
         }
 
-        function onTypeKeyDown(e) {
-            if (!e.altKey && !e.ctrlKey && !e.shiftKey) {
-                if (
-                    e.key == 'ArrowRight' &&
-                    getElementCaretPosition(typeRef.current) == typeRef.current.textContent.length
-                ) {
-                    typeRef.current.contentEditable = false;
-                    nameRef.current.contentEditable = true;
-                    nameRef.current.focus();
-                    e.preventDefault();
-                }
-            }
-            if (e.ctrlKey && e.key === ' ') {
-                setIsOpen(true);
-                // event.preventDefault();
-            }
-        }
-
-        function onKeyDown(e) {
-            if (!e.altKey && !e.ctrlKey && !e.shiftKey) {
-                if (e.key == 'ArrowDown') {
-                    onSelectNext(getCaretPosition());
-                    typeRef.current.contentEditable = false;
-                    nameRef.current.contentEditable = false;
-                    e.preventDefault();
-                } else if (e.key == 'ArrowUp') {
-                    onSelectPrevious(getCaretPosition());
-                    typeRef.current.contentEditable = false;
-                    nameRef.current.contentEditable = false;
-                    e.preventDefault();
-                }
-            }
-            if (e.ctrlKey && e.key === ' ') {
-                setIsOpen(true);
-                // event.preventDefault();
-            }
-        }
-
-        function makeEditable(e) {
-            e.target.contentEditable = true;
-            e.target.focus();
-        }
-
-        function makeNonEditable(e) {
-            e.target.contentEditable = false;
-        }
-
         return (
             <div
                 className={`component-instance ${component.selected ? 'selected' : ''} ${hasError ? 'has-error' : ''}`}
@@ -298,8 +429,8 @@ const ComponentInstance: React.FC<Props> = observer(
                     ref={typeRef}
                     spellCheck="false"
                     onKeyDown={onTypeKeyDown}
-                    onMouseDown={makeNonEditable}
-                    onClick={makeEditable}
+                    onMouseDown={(e) => makeNonEditable(e.target)}
+                    onClick={(e) => makeEditable(e.target)}
                     onBlur={onTypeBlur}
                 >
                     {getTypeName(component.componentType)}
@@ -322,7 +453,16 @@ const ComponentInstance: React.FC<Props> = observer(
                         )}
                     </span>
                 </Portal>
-                &nbsp;
+                {showSpace && (
+                    <span
+                        ref={spaceRef}
+                        className="space"
+                        // onMouseDown={e=>makeNonEditable(e.target)}
+                        // onClick={e=>makeEditable(e.target)}
+                    >
+                        &nbsp;
+                    </span>
+                )}
                 <div className="field-name-wrap">
                     <span
                         ref={nameRef}
@@ -332,8 +472,8 @@ const ComponentInstance: React.FC<Props> = observer(
                         // onDoubleClick={onRename}
                         onKeyDown={onNameKeyDown}
                         onBlur={onNameBlur}
-                        onClick={makeEditable}
-                        onMouseDown={makeNonEditable}
+                        onMouseDown={(e) => makeNonEditable(e.target)}
+                        onClick={(e) => makeEditable(e.target)}
                     >
                         {getName(component.id)}
                     </span>

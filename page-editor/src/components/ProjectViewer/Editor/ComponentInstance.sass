@@ -17,6 +17,9 @@
 .field-name
     text-decoration: none
 
+.field-name.empty:after
+    content: '<component name>'
+
 .field-name, .type-name
     cursor: text
     
@@ -34,4 +37,4 @@
 .component-instance.has-error
     >.error-icon
         display: inline
-    background-color: lavenderblush
+    //background-color: lavenderblush
