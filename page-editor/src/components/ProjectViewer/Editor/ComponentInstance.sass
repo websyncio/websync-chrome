@@ -17,13 +17,12 @@
 .field-name
     text-decoration: none
 
-.field-name.empty:after
-    content: '<component name>'
-
 .field-name, .type-name
     cursor: text
+    display: inline-block
+    min-width: 1px
     
-    &:focus
+    &:focus:not(:empty)
         background-color: rgb(226,230,214)
     &.invalid
         color: rgb(253,3 ,38)

@@ -15,6 +15,7 @@ import IIdeProxy from 'interfaces/IIdeProxy';
 import { observer } from 'mobx-react';
 import RootStore from 'mst/RootStore';
 import { useRootStore } from 'context';
+import { debug } from 'console';
 interface Props {
     ideProxy: IIdeProxy;
     component: ComponentInstanceModel;
@@ -79,20 +80,23 @@ const ComponentInstance: React.FC<Props> = observer(
         function setElementCaretPosition(element, position: number) {
             const range = document.createRange();
             range.selectNode(element);
-            range.setStart(element.childNodes[0], position);
-            range.collapse(true);
-            const selection = window.getSelection();
-            selection?.removeAllRanges();
-            selection?.addRange(range);
+            if (element.childNodes[0]) {
+                range.setStart(element.childNodes[0], position);
+                range.collapse(true);
+                const selection = window.getSelection();
+                selection?.removeAllRanges();
+                selection?.addRange(range);
+            }
         }
 
-        function setCaretPosition(position: number) {
+        function setCaretPosition(position: number, nameDisplayed: boolean) {
             const typeLength = typeRef.current.textContent.length;
             const nameLength = nameRef.current.textContent.length;
-            if (position <= typeLength) {
-                nameRef.current.contentEditable = false;
-                typeRef.current.contentEditable = true;
-                typeRef.current.focus();
+            if (position <= typeLength || !nameDisplayed) {
+                if (position > typeLength) {
+                    position = typeLength;
+                }
+                makeEditable(typeRef.current);
                 setElementCaretPosition(typeRef.current, position);
             } else {
                 position = position - typeLength - 1;
@@ -106,7 +110,7 @@ const ComponentInstance: React.FC<Props> = observer(
 
         useEffect(() => {
             if (component.selected && !isActive(typeRef.current) && !isActive(nameRef.current)) {
-                setCaretPosition(caretPosition);
+                setCaretPosition(caretPosition, showSpace);
             }
         }, [component.selected]);
 
@@ -170,17 +174,17 @@ const ComponentInstance: React.FC<Props> = observer(
             const caretPosition = getCaretPosition();
             typeRef.current.textContent += nameRef.current.textContent;
             nameRef.current.textContent = '';
-            setCaretPosition(caretPosition + caretShift);
+            setCaretPosition(caretPosition + caretShift, false);
         }
 
         function addSpace() {
-            if (!nameRef.current.textContent) {
+            if (typeRef.current.textContent && !nameRef.current.textContent) {
                 setShowSpace(true);
                 const caretPosition = getCaretPosition();
                 const text = typeRef.current.textContent;
                 typeRef.current.textContent = text.substring(0, caretPosition);
                 nameRef.current.textContent = text.substring(caretPosition);
-                setCaretPosition(caretPosition + 1);
+                setCaretPosition(caretPosition + 1, true);
             }
         }
 
@@ -201,8 +205,6 @@ const ComponentInstance: React.FC<Props> = observer(
         }
 
         function onTypeKeyDown(e) {
-            const isHomeKey = e.key == 'Home';
-            const isEndKey = e.key == 'End';
             const isLeftArrow = e.key == 'ArrowLeft';
             const isRightArrow = e.key == 'ArrowRight';
             const isDelete = e.key == 'Delete';
@@ -225,6 +227,7 @@ const ComponentInstance: React.FC<Props> = observer(
                         if (isEnd) {
                             setCaretPosition(
                                 typeRef.current.textContent.length + 1 + nameRef.current.textContent.length,
+                                showSpace,
                             );
                             e.preventDefault();
                         } else {
@@ -249,7 +252,7 @@ const ComponentInstance: React.FC<Props> = observer(
                 // NAVIGATION
                 if (isEnd) {
                     if (isRightArrow) {
-                        setCaretPosition(typeRef.current.textContent.length + 1);
+                        setCaretPosition(typeRef.current.textContent.length + 1, showSpace);
                         e.preventDefault();
                         return;
                     } else if (isDelete) {
@@ -260,11 +263,14 @@ const ComponentInstance: React.FC<Props> = observer(
                 }
                 switch (e.key) {
                     case 'Home':
-                        setCaretPosition(0);
+                        setCaretPosition(0, showSpace);
                         e.preventDefault();
                         return;
                     case 'End':
-                        setCaretPosition(typeRef.current.textContent.length + 1 + nameRef.current.textContent.length);
+                        setCaretPosition(
+                            typeRef.current.textContent.length + 1 + nameRef.current.textContent.length,
+                            showSpace,
+                        );
                         e.preventDefault();
                         return;
                     case ' ':
@@ -309,7 +315,7 @@ const ComponentInstance: React.FC<Props> = observer(
                     return;
                 } else if (isLeftArrow) {
                     if (isStart) {
-                        setCaretPosition(0);
+                        setCaretPosition(0, showSpace);
                     } else {
                         setElementCaretPosition(nameRef.current, 0);
                     }
@@ -324,16 +330,19 @@ const ComponentInstance: React.FC<Props> = observer(
                         return;
                     }
                     if (isLeftArrow) {
-                        setCaretPosition(typeRef.current.textContent.length);
+                        setCaretPosition(typeRef.current.textContent.length, showSpace);
                         e.preventDefault();
                         return;
                     }
                 } else if (isHomeKey) {
-                    setCaretPosition(0);
+                    setCaretPosition(0, showSpace);
                     e.preventDefault();
                     return;
                 } else if (isEndKey) {
-                    setCaretPosition(typeRef.current.textContent.length + 1 + nameRef.current.textContent.length);
+                    setCaretPosition(
+                        typeRef.current.textContent.length + 1 + nameRef.current.textContent.length,
+                        showSpace,
+                    );
                     e.preventDefault();
                     return;
                 }
@@ -454,12 +463,7 @@ const ComponentInstance: React.FC<Props> = observer(
                     </span>
                 </Portal>
                 {showSpace && (
-                    <span
-                        ref={spaceRef}
-                        className="space"
-                        // onMouseDown={e=>makeNonEditable(e.target)}
-                        // onClick={e=>makeEditable(e.target)}
-                    >
+                    <span ref={spaceRef} className="space">
                         &nbsp;
                     </span>
                 )}
