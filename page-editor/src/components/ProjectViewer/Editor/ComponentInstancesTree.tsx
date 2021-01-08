@@ -17,7 +17,7 @@ interface Props {
 const ComponentInstancesTree: React.FC<Props> = observer(({ ideProxy, pageObject }) => {
     const { projectStore, uiStore }: RootStore = useRootStore();
 
-    const [caretPosition, setCaretPosition] = useState(0);
+    const [caretPosition, setCaretPosition] = useState<number | null>(null);
     // function onRename(event, component) {
     //     if (event.target.contentEditable === true) {
     //         event.target.contentEditable = false;
@@ -71,6 +71,8 @@ const ComponentInstancesTree: React.FC<Props> = observer(({ ideProxy, pageObject
     // }
 
     function onComponentSelected(component: ComponentInstanceModel) {
+        setCaretPosition(null);
+        component.select();
         pageObject.componentsInstances.forEach((c) => {
             if (c !== component) {
                 c.deselect();
@@ -104,8 +106,11 @@ const ComponentInstancesTree: React.FC<Props> = observer(({ ideProxy, pageObject
     return (
         <div className="components-tree">
             <ul>
-                {pageObject.componentsInstances.map((component) => [
+                {pageObject.componentsInstances.map((component, index) => [
                     <li key={component.id} onKeyDown={(e) => onComponentKeyDown(e, component)}>
+                        <span className="line-prefix">
+                            <span className="line-index">{index + 1}</span>
+                        </span>
                         <ComponentInstance
                             ideProxy={ideProxy}
                             component={component}

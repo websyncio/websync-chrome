@@ -19,7 +19,7 @@ import { debug } from 'console';
 interface Props {
     ideProxy: IIdeProxy;
     component: ComponentInstanceModel;
-    caretPosition: number;
+    caretPosition: number | null;
     onSelected: () => void;
     onSelectNext: (caretPosition: number) => void;
     onSelectPrevious: (caretPosition: number) => void;
@@ -109,10 +109,18 @@ const ComponentInstance: React.FC<Props> = observer(
             }
         }
 
+        function getFullLength(): number {
+            let totalLength = typeRef.current.textContent.length;
+            if (showSpace) {
+                totalLength += 1 + nameRef.current.textContent.length;
+            }
+            return totalLength;
+        }
+
         useLayoutEffect(() => {
             if (component.selected) {
                 if (!isActive(typeRef.current) && !isActive(nameRef.current)) {
-                    setCaretPosition(caretPosition, showSpace);
+                    setCaretPosition(caretPosition == null ? getFullLength() : caretPosition, showSpace);
                 }
             } else {
                 if (!typeRef.current.textContent && !nameRef.current.textContent) {
@@ -433,18 +441,13 @@ const ComponentInstance: React.FC<Props> = observer(
             }
         }
 
-        function selectComponent() {
-            component.select();
-            onSelected();
-        }
-
         return (
             <div
                 className={`component-instance 
                     ${component.selected ? 'selected' : ''} 
                     ${hasError ? 'has-error' : ''} 
                     ${isDeleted ? 'deleted' : ''}`}
-                onClick={selectComponent}
+                onClick={onSelected}
                 onKeyDown={onKeyDown}
             >
                 <svg className="error-icon" width="14" height="14" viewBox="0 0 20 20" fill="red">
