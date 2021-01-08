@@ -16,6 +16,10 @@ export const PageTypeModel = types
             destroy(old);
             self.componentsInstances.splice(index, 0, updated);
         },
+        deleteComponentInstance(ci) {
+            self.componentsInstances.remove(ci);
+            destroy(ci);
+        },
     }));
 
 export default interface PageType extends Instance<typeof PageTypeModel> {}

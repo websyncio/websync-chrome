@@ -37,6 +37,7 @@ const ComponentInstance: React.FC<Props> = observer(
         const [isOpen, setIsOpen] = useState(false);
         const [hasError, setHasError] = useState(false);
         const [showSpace, setShowSpace] = useState(true);
+        const [isDeleted, setIsDeleted] = useState(false);
 
         useLayoutEffect(() => {
             popper = createPopper(typeRef.current, popupRef.current, {
@@ -108,11 +109,24 @@ const ComponentInstance: React.FC<Props> = observer(
             }
         }
 
-        useEffect(() => {
-            if (component.selected && !isActive(typeRef.current) && !isActive(nameRef.current)) {
-                setCaretPosition(caretPosition, showSpace);
+        useLayoutEffect(() => {
+            if (component.selected) {
+                if (!isActive(typeRef.current) && !isActive(nameRef.current)) {
+                    setCaretPosition(caretPosition, showSpace);
+                }
+            } else {
+                if (!typeRef.current.textContent && !nameRef.current.textContent) {
+                    setIsDeleted(true);
+                }
             }
         }, [component.selected]);
+
+        useLayoutEffect(() => {
+            if (isDeleted) {
+                // .delete after animation completed
+                setTimeout(() => component.delete(ideProxy), 300);
+            }
+        }, [isDeleted]);
 
         function togglePopup() {
             setIsOpen(!isOpen);
@@ -426,7 +440,10 @@ const ComponentInstance: React.FC<Props> = observer(
 
         return (
             <div
-                className={`component-instance ${component.selected ? 'selected' : ''} ${hasError ? 'has-error' : ''}`}
+                className={`component-instance 
+                    ${component.selected ? 'selected' : ''} 
+                    ${hasError ? 'has-error' : ''} 
+                    ${isDeleted ? 'deleted' : ''}`}
                 onClick={selectComponent}
                 onKeyDown={onKeyDown}
             >

@@ -36,6 +36,10 @@ export const ComponentInstanceModel = types.compose(
                 self.initializationAttribute.updateParameterValue(parameterName, parameterValueIndex, parameterValue);
                 IDEAConnection.instance().updateComponentInstance(self as ComponentInstance);
             },
+            delete(ideProxy) {
+                const pageType = getParentOfType(self, PageTypeModel);
+                pageType.deleteComponentInstance(self);
+            },
         })),
 );
 

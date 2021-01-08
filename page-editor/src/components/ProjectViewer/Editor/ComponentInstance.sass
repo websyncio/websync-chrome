@@ -2,14 +2,19 @@
 .component-instance
     font-size: 14px
     line-height: 14px
-    border: 2px solid rgba(0,0,0,0)
+    border-top: 2px solid rgba(0,0,0,0)
+    border-bottom: 2px solid rgba(0,0,0,0)
     color: #111
+    overflow: hidden
+    position: relative
 
     &.selected
-        border: 2px solid rgb(237,237,244)
+        border-top: 2px solid rgb(237,237,244)
+        border-bottom: 2px solid rgb(237,237,244)
         
 .type-name
     color: rgb(83, 145, 184)
+    margin-left: 23px
 
 .field-name-wrap
     display: inline-block
@@ -32,8 +37,25 @@
     margin: -1px 4px 0 4px
     vertical-align: top
     opacity: 0.7
+    position: absolute
 
 .component-instance.has-error
     >.error-icon
         display: inline
     //background-color: lavenderblush
+
+.component-instance.deleted
+    animation-iteration-count: 1
+    animation-name: delete-component-instance
+    animation-duration: 300ms
+    animation-timing-function: linear
+    animation-fill-mode: forwards
+
+@keyframes delete-component-instance
+    0%
+        opacity: 1
+        height: 18px
+    100%
+        opacity: 0
+        height: 0px
+        border: 0
