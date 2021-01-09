@@ -1,21 +1,39 @@
 
 .component-instance
-    font-size: 14px
-    line-height: 14px
-    border-top: 2px solid rgba(0,0,0,0)
-    border-bottom: 2px solid rgba(0,0,0,0)
+    font-size: 13px
+    line-height: 13px
     color: #111
     overflow: hidden
     position: relative
-    margin-left: 30px
+
+    .body-wrap
+        display: inline-block
+        margin-left: 45px
+        border-top: 2px solid rgba(0,0,0,0)
+        border-bottom: 2px solid rgba(0,0,0,0)
 
     &.selected
-        border-top: 2px solid rgb(237,237,244)
-        border-bottom: 2px solid rgb(237,237,244)
-        
+        .body-wrap
+            border-top: 2px solid rgb(237,237,244)
+            border-bottom: 2px solid rgb(237,237,244)
+
+
+    .line-prefix
+        position: absolute
+        width: 45px
+        border-right: 1px solid #999
+        text-align: right
+        user-select: none
+        font-size: 13px
+        line-height: 18px
+
+    .line-index
+        margin-right: 5px
+        color: cadetblue
+
 .type-name
     color: rgb(83, 145, 184)
-    margin-left: 23px
+    margin-left: 5px
 
 .field-name-wrap
     display: inline-block
@@ -27,6 +45,7 @@
     cursor: text
     display: inline-block
     min-width: 1px
+    line-height: 14px
     
     &:focus:not(:empty)
         background-color: rgb(226,230,214)
@@ -35,13 +54,13 @@
 
 .error-icon
     display: none
-    margin: -1px 4px 0 4px
+    float: left
+    margin: 2px 4px 0 10px
     vertical-align: top
     opacity: 0.7
-    position: absolute
 
 .component-instance.has-error
-    >.error-icon
+    .error-icon
         display: inline
     //background-color: lavenderblush
 

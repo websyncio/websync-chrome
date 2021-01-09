@@ -108,12 +108,10 @@ const ComponentInstancesTree: React.FC<Props> = observer(({ ideProxy, pageObject
             <ul>
                 {pageObject.componentsInstances.map((component, index) => [
                     <li key={component.id} onKeyDown={(e) => onComponentKeyDown(e, component)}>
-                        <span className="line-prefix">
-                            <span className="line-index">{index + 1}</span>
-                        </span>
                         <ComponentInstance
                             ideProxy={ideProxy}
                             component={component}
+                            index={index + 1}
                             caretPosition={caretPosition}
                             onSelected={() => onComponentSelected(component)}
                             onSelectNext={(caretPosition) => {

@@ -19,6 +19,7 @@ import { debug } from 'console';
 interface Props {
     ideProxy: IIdeProxy;
     component: ComponentInstanceModel;
+    index: number;
     caretPosition: number | null;
     onSelected: () => void;
     onSelectNext: (caretPosition: number) => void;
@@ -26,7 +27,7 @@ interface Props {
 }
 
 const ComponentInstance: React.FC<Props> = observer(
-    ({ ideProxy, component, caretPosition, onSelected, onSelectNext, onSelectPrevious }) => {
+    ({ ideProxy, component, index, caretPosition, onSelected, onSelectNext, onSelectPrevious }) => {
         const { projectStore, uiStore }: RootStore = useRootStore();
         const popupRef: any = React.createRef();
         const typeRef: RefObject<any> = React.createRef();
@@ -450,60 +451,65 @@ const ComponentInstance: React.FC<Props> = observer(
                 onClick={onSelected}
                 onKeyDown={onKeyDown}
             >
-                <svg className="error-icon" width="14" height="14" viewBox="0 0 20 20" fill="red">
-                    <path d="M19.64 16.36L11.53 2.3A1.85 1.85 0 0 0 10 1.21 1.85 1.85 0 0 0 8.48 2.3L.36 16.36C-.48 17.81.21 19 1.88 19h16.24c1.67 0 2.36-1.19 1.52-2.64zM11 16H9v-2h2zm0-4H9V6h2z" />
-                </svg>
-                <span
-                    className={`trigger type-name`}
-                    ref={typeRef}
-                    spellCheck="false"
-                    onKeyDown={onTypeKeyDown}
-                    onMouseDown={(e) => makeNonEditable(e.target)}
-                    onClick={(e) => makeEditable(e.target)}
-                    onBlur={onTypeBlur}
-                >
-                    {getTypeName(component.componentType)}
+                <span className="line-prefix">
+                    <svg className="error-icon" width="14" height="14" viewBox="0 0 20 20" fill="red">
+                        <path d="M19.64 16.36L11.53 2.3A1.85 1.85 0 0 0 10 1.21 1.85 1.85 0 0 0 8.48 2.3L.36 16.36C-.48 17.81.21 19 1.88 19h16.24c1.67 0 2.36-1.19 1.52-2.64zM11 16H9v-2h2zm0-4H9V6h2z" />
+                    </svg>
+                    <span className="line-index">{index}</span>
                 </span>
-                <Portal>
-                    <span className="popup__container" ref={popupRef}>
-                        {isOpen && (
-                            <FocusTrap
-                                focusTrapOptions={{
-                                    onDeactivate: togglePopup,
-                                    clickOutsideDeactivates: true,
-                                }}
-                            >
-                                <div className="popup">
-                                    <div tabIndex={0}>
-                                        <ComponentTypeSelector onSelected={editSelector} />
-                                    </div>
-                                </div>
-                            </FocusTrap>
-                        )}
-                    </span>
-                </Portal>
-                {showSpace && (
-                    <span ref={spaceRef} className="space">
-                        &nbsp;
-                    </span>
-                )}
-                <div className="field-name-wrap">
+                <span className="body-wrap">
                     <span
-                        ref={nameRef}
+                        className={`trigger type-name`}
+                        ref={typeRef}
                         spellCheck="false"
-                        className={`field-name`}
-                        title="Double Click to Edit Name"
-                        // onDoubleClick={onRename}
-                        onKeyDown={onNameKeyDown}
-                        onBlur={onNameBlur}
+                        onKeyDown={onTypeKeyDown}
                         onMouseDown={(e) => makeNonEditable(e.target)}
                         onClick={(e) => makeEditable(e.target)}
+                        onBlur={onTypeBlur}
                     >
-                        {getName(component.id)}
+                        {getTypeName(component.componentType)}
                     </span>
-                </div>
-                &nbsp;
-                {initializationAttribute(component.initializationAttribute)}
+                    <Portal>
+                        <span className="popup__container" ref={popupRef}>
+                            {isOpen && (
+                                <FocusTrap
+                                    focusTrapOptions={{
+                                        onDeactivate: togglePopup,
+                                        clickOutsideDeactivates: true,
+                                    }}
+                                >
+                                    <div className="popup">
+                                        <div tabIndex={0}>
+                                            <ComponentTypeSelector onSelected={editSelector} />
+                                        </div>
+                                    </div>
+                                </FocusTrap>
+                            )}
+                        </span>
+                    </Portal>
+                    {showSpace && (
+                        <span ref={spaceRef} className="space">
+                            &nbsp;
+                        </span>
+                    )}
+                    <div className="field-name-wrap">
+                        <span
+                            ref={nameRef}
+                            spellCheck="false"
+                            className={`field-name`}
+                            title="Double Click to Edit Name"
+                            // onDoubleClick={onRename}
+                            onKeyDown={onNameKeyDown}
+                            onBlur={onNameBlur}
+                            onMouseDown={(e) => makeNonEditable(e.target)}
+                            onClick={(e) => makeEditable(e.target)}
+                        >
+                            {getName(component.id)}
+                        </span>
+                    </div>
+                    &nbsp;
+                    {initializationAttribute(component.initializationAttribute)}
+                </span>
             </div>
         );
     },
