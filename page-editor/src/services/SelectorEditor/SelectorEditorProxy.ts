@@ -2,9 +2,11 @@ import Reactor from '../Reactor';
 
 export const MessageTypes = {
     UpdateComponentSelector: 'update-component-selector',
+    UpdateSelectorsList: 'update-selectors-list',
     ValidateSelector: 'validate-selector',
     HighlightSelector: 'highlight-selector',
     RemoveHighlighting: 'remove-highlighting',
+    RequestSelectorsList: 'request-selectors-list',
 };
 
 export default class SelectorEditorProxy {
@@ -16,6 +18,7 @@ export default class SelectorEditorProxy {
     constructor() {
         this.reactor = new Reactor();
         this.reactor.registerEvent(MessageTypes.UpdateComponentSelector);
+        this.reactor.registerEvent(MessageTypes.UpdateSelectorsList);
     }
 
     static instance() {

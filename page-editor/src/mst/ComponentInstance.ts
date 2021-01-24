@@ -17,6 +17,28 @@ export const ComponentInstanceModel = types.compose(
                 name: '',
             }),
         })
+        .views((self) => ({
+            get typeName() {
+                const arr = self.componentType.split('.');
+                return arr[arr.length - 1].trim();
+            },
+            get componentFieldName() {
+                const arr = self.id.split('.');
+                return arr[arr.length - 1].trim();
+            },
+            get rootSelector() {
+                if (self.initializationAttribute == null || !self.initializationAttribute.parameters.length) {
+                    return '';
+                }
+                if (!self.initializationAttribute.parameters[0].values.length) {
+                    throw new Error(
+                        `Initialization attribute '${self.initializationAttribute.name}' has no values for parameter '${self.initializationAttribute.parameters[0].name}'`,
+                    );
+                }
+
+                return self.initializationAttribute.parameters[0].values[0];
+            },
+        }))
         .actions((self) => ({
             rename(newName, ideProxy) {
                 self.name = newName;

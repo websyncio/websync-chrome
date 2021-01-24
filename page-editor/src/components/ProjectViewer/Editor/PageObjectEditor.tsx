@@ -2,20 +2,21 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { useRootStore } from 'context';
 import RootStore from 'mst/RootStore';
-import ComponentsContainer from 'mst/ComponentsContainer';
-import ComponentInstancesTree from './ComponentInstancesTree';
+import IComponentsContainer from 'mst/ComponentsContainer';
+import ComponentInstancesList from './ComponentInstancesList';
 import IIdeProxy from 'interfaces/IIdeProxy';
+import ComponentsContainer from './ComponentsContainer';
 
 interface Props {
     ideProxy: IIdeProxy;
-    pageObject: ComponentsContainer;
+    pageObject: IComponentsContainer;
 }
 
 const PageObjectEditor: React.FC<Props> = observer(({ ideProxy, pageObject }) => {
     const { projectStore, uiStore }: RootStore = useRootStore();
     return (
         <div id="pageObjectEditor" className="flex-auto">
-            <ComponentInstancesTree ideProxy={ideProxy} pageObject={pageObject} />
+            <ComponentsContainer ideProxy={ideProxy} pageObject={pageObject} />
         </div>
     );
 });

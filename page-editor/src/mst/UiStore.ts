@@ -3,6 +3,7 @@ import IdeConnection, { IdeConnectionModel } from './IdeConnection';
 import { PageTypeModel } from './PageType';
 import PageInstance, { PageInstanceModel } from './PageInstance';
 import PageType from 'mst/PageType';
+import { ComponentInstanceModel } from 'mst/ComponentInstance';
 import WebSite, { WebSiteModel } from './WebSite';
 
 export const UiStoreModel = types
@@ -14,7 +15,7 @@ export const UiStoreModel = types
         editedPageObjects: types.array(types.reference(PageTypeModel)),
         // selectedWebSite: types.safeReference(WebSiteModel),
         // selectedPageType: types.safeReference(PageTypeModel),s
-        // editedComponentType: types.maybeNull(ComponentTypeModel),
+        blankComponents: types.array(ComponentInstanceModel),
     })
     .views((self) => ({
         get selectedPageObject() {
@@ -65,6 +66,20 @@ export const UiStoreModel = types
         },
         removeEditedPageObject(pageObject: PageType) {
             self.editedPageObjects.remove(pageObject);
+        },
+        generateBlankComponents(selectors) {
+            // TODO: extract to framework components provider
+            self.blankComponents = selectors.map((s) =>
+                ComponentInstanceModel.create({
+                    id: 'blank' + Math.random() + '.' + s.name,
+                    componentType: 'Text',
+                    name: s.name,
+                    initializationAttribute: {
+                        name: 'UI',
+                        parameters: [{ values: [s.selector] }],
+                    },
+                }),
+            );
         },
     }));
 

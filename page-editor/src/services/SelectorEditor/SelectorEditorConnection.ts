@@ -9,12 +9,38 @@ export default class SelectorEditorConnection {
             MessageTypes.UpdateComponentSelector,
             this.onUdpateComponenetSelector,
         );
+        SelectorEditorProxy.instance().addListener(MessageTypes.UpdateSelectorsList, this.generateBlankComponents);
     }
 
     static init() {
         if (SelectorEditorConnection._inst === undefined) {
             SelectorEditorConnection._inst = new SelectorEditorConnection();
+            SelectorEditorConnection._inst.generateBlankComponents([
+                {
+                    name: 'SearchInput',
+                    selector: '#search',
+                },
+                {
+                    name: 'SendButton',
+                    selector: "[type='submit']",
+                },
+                {
+                    name: 'CancelButton',
+                    selector: "button['Cancel']",
+                },
+            ]);
+            //SelectorEditorConnection._inst.requestSelectorsList();
         }
+    }
+
+    requestSelectorsList() {
+        SelectorEditorProxy.instance().sendMessage(MessageTypes.RequestSelectorsList, null, (event) => {
+            this.generateBlankComponents(event.data);
+        });
+    }
+
+    generateBlankComponents(data) {
+        RootStore.uiStore.generateBlankComponents(data);
     }
 
     onUdpateComponenetSelector(data) {
