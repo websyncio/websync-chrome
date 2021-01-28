@@ -7,6 +7,7 @@ import ComponentInstance from './ComponentInstance';
 import BlankComponentInstance from './BlankComponentInstance';
 import RootStore from 'mst/RootStore';
 import { useRootStore } from 'context';
+import './ComponentsContainer.sass';
 
 interface Props {
     ideProxy: IIdeProxy;
@@ -23,11 +24,18 @@ const ComponentsContainer: React.FC<Props> = observer(({ ideProxy, pageObject })
                 componentInstances={pageObject.componentsInstances}
                 componentView={ComponentInstance}
             />
-            <ComponentInstancesList
-                ideProxy={ideProxy}
-                componentInstances={uiStore.blankComponents}
-                componentView={BlankComponentInstance}
-            />
+            <div className="blank-components">
+                <div className="blank-components-header">
+                    {/* <span className="title">New Components</span> */}
+                    {/* &nbsp; */}
+                    Specify type and name, then click Add button or press Ctrl+Enter
+                </div>
+                <ComponentInstancesList
+                    ideProxy={ideProxy}
+                    componentInstances={uiStore.blankComponents}
+                    componentView={BlankComponentInstance}
+                />
+            </div>
         </div>
     );
 });

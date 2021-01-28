@@ -26,7 +26,9 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
                     ${isDeleted ? 'deleted' : ''}`}
                 onClick={onSelected}
             >
-                <span className="line-prefix"></span>
+                {/* <span className="line-prefix">
+                    <span className="line-index">{index}</span>
+                </span> */}
                 <span className="body-wrap">
                     <TypeNameEditor
                         component={component}
@@ -35,7 +37,7 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
                         onSelectNext={onSelectNext}
                         onSelectPrevious={onSelectPrevious}
                     />
-                    &nbsp;&lt;&nbsp;
+                    <span className="separator">&nbsp;&lt;&nbsp;</span>
                     <span className="root-selector">&quot;{component.rootSelector}&quot;</span>
                     {/* {initializationAttribute(component.initializationAttribute)} */}
                 </span>
