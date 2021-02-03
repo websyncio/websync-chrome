@@ -4,7 +4,7 @@ WebSync for Chrome
 Developer Guide
 ------------
 
-1. Install NodeJS
+1. Install NodeJS (https://nodejs.org/dist/latest-v12.x/)
 2. Clone repository
 3. Run <kbd>npm run configure</kbd> in root folder
 4. Run <kbd>npm install -g ember-cli</kbd>
