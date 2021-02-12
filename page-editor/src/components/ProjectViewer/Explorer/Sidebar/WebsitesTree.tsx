@@ -5,6 +5,7 @@ import PageInstance from 'mst/PageInstance';
 import './WebSitesTree.sass';
 import RootStore from 'mst/RootStore';
 import { useRootStore } from 'context';
+import TreeOutline from 'components/TreeOutline/TreeOutline';
 
 interface Props {
     websites: WebSite[];
@@ -50,7 +51,7 @@ const WebSitesTree: React.FC<Props> = observer(({ websites, onSelected }) => {
                     }`}
                     onClick={() => onSelected(website, null)}
                 >
-                    <div className="expand-icon" onClick={() => expand(website)} />
+                    <TreeOutline onClick={() => expand(website)} expanded={website.expanded} />
                     <span className="name">{website.name}</span>
                 </li>
                 {website.expanded && pageList(website)}

@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
 import { useRootStore } from 'context';
 import RootStore from 'mst/RootStore';
 import './Header.sass';
 import PageType from 'mst/PageType';
+import CloseButton from 'components/CloseButton/CloseButton';
 
 interface Props {}
 
 const Header: React.FC<Props> = observer(() => {
     const rootStore: RootStore = useRootStore();
-    const { projectStore, uiStore } = rootStore;
+    const { uiStore } = rootStore;
 
     function goBackToProjectSelector() {
         rootStore.clearProject();
@@ -23,7 +24,7 @@ const Header: React.FC<Props> = observer(() => {
                 onClick={() => uiStore.selectPageObject(po)}
             >
                 <span>{po.name}</span>
-                <span className="close-icon" onClick={() => uiStore.removeEditedPageObject(po)} />
+                <CloseButton onClick={() => uiStore.removeEditedPageObject(po)} />
             </div>
         ));
     }

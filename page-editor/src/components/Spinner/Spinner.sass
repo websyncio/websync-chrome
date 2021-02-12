@@ -1,0 +1,23 @@
+$accent-color: #1A73E8;
+
+.spinner
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+
+.spinner:after
+  content: " ";
+  display: block;
+  width: 32px;
+  height: 32px;
+  margin: 4px;
+  border-radius: 50%;
+  border: 3px solid $accent-color;
+  border-color: $accent-color transparent $accent-color transparent;
+  animation: spinning 1.2s linear infinite;
+
+@keyframes spinning
+  0%
+    transform: rotate(0deg);
+  100%
+    transform: rotate(360deg);
