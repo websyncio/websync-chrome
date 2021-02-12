@@ -6,14 +6,14 @@ import IIdeProxy from 'interfaces/IIdeProxy';
 import ProjectExplorer from './Explorer/Explorer';
 import ProjectViewerHeader from './Header/Header';
 import PageObjectEditor from './Editor/PageObjectEditor';
-import Explorer from './Explorer/Explorer';
+// import Explorer from './Explorer/Explorer';
 
 interface Props {
     ideProxy: IIdeProxy;
 }
 
 const ProjectViewer: React.FC<Props> = observer(({ ideProxy }) => {
-    const { projectStore, uiStore }: RootStore = useRootStore();
+    const { uiStore }: RootStore = useRootStore();
     return (
         <div id="projectViewer" className="full-height">
             <ProjectViewerHeader />

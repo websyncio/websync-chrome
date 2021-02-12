@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react';
 import React from 'react';
+import Spinner from 'components/Spinner/Spinner';
 
 interface Props {
     projectName: string;
@@ -11,7 +12,7 @@ const IdeProject: React.FC<Props> = observer(({ projectName, isSelected, onProje
     return (
         <div key={projectName} className="ide-project" onClick={onProjectSelected}>
             {projectName}
-            {isSelected && <span>loading...</span>}
+            {isSelected && <Spinner />}
         </div>
     );
 });

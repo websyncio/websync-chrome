@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
 import WebSite from 'mst/WebSite';
 import './WebSitesTree.sass';
+import TreeOutline from 'components/TreeOutline/TreeOutline';
 
 type Props = {
     website: WebSite;
@@ -32,6 +33,7 @@ const WebSiteTreeItem: React.FC<Props> = observer(({ website, onSelected }) => {
                 className={`website ${website.expanded ? 'expanded' : ''} ${website.selected ? 'selected' : ''}`}
             >
                 <div className="expand-icon" onClick={expand} />
+                <TreeOutline expanded={website.expanded} />
                 <span className="name" onClick={() => onSelected(website)}>
                     {website.name}
                 </span>
