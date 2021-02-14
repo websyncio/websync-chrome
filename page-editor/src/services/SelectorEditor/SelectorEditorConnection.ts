@@ -28,6 +28,10 @@ export default class SelectorEditorConnection {
                     name: 'CancelButton',
                     selector: "button['Cancel']",
                 },
+                {
+                    name: '',
+                    selector: "button['Cancel']",
+                },
             ]);
             //SelectorEditorConnection._inst.requestSelectorsList();
         }

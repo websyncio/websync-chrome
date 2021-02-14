@@ -1,0 +1,25 @@
+.type-name
+    color: rgb(83, 145, 184)
+    margin-left: 5px
+
+.field-name-wrap
+    display: inline-block
+
+.field-name
+    text-decoration: none
+
+.field-name, .type-name
+    cursor: text
+    display: inline-block
+    min-width: 1px
+    line-height: 14px
+    
+    &:focus:not(:empty)
+        background-color: rgb(226,230,214)
+    &.invalid
+        color: rgb(253,3 ,38)
+    
+.component-attr-placeholder
+    color: #999
+    font-size: 12px
+    user-select: none

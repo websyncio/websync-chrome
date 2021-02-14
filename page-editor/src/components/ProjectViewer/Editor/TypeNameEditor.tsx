@@ -3,11 +3,13 @@ import Portal from 'components/Portal';
 import FocusTrap from 'focus-trap-react';
 import { observer } from 'mobx-react';
 import ComponentInstanceModel from 'mst/ComponentInstance';
-import React, { RefObject, useEffect, useLayoutEffect, useState } from 'react';
+import React, { DOMElement, RefObject, useEffect, useLayoutEffect, useState } from 'react';
 import ComponentTypeSelector from './ComponentTypeSelector';
+import './TypeNameEditor.sass';
 
 interface Props {
     component: ComponentInstanceModel;
+    showPlaceholders: boolean;
     caretPosition: number | null;
     onDeleted: () => void;
     onSelectNext: (caretPosition: number) => void;
@@ -15,13 +17,17 @@ interface Props {
 }
 
 const TypeNameEditor: React.FC<Props> = observer(
-    ({ component, caretPosition, onDeleted, onSelectNext, onSelectPrevious }) => {
+    ({ component, showPlaceholders, caretPosition, onDeleted, onSelectNext, onSelectPrevious }) => {
+        const typePlaceholder = '<set type>';
+        const namePlaceholder = '<set name>';
         const popupRef: any = React.createRef();
         const typeRef: RefObject<any> = React.createRef();
         const spaceRef: any = React.createRef();
         const nameRef: any = React.createRef();
         const [showSpace, setShowSpace] = useState(true);
         const [isOpen, setIsOpen] = useState(false);
+        const [showTypePlaceholder, setShowTypePlaceholder] = useState(showPlaceholders && !component.typeName.length);
+        const [showNamePlaceholder, setShowNamePlaceholder] = useState(showPlaceholders && !component.name.length);
         let popper: any;
 
         useLayoutEffect(() => {
@@ -48,8 +54,12 @@ const TypeNameEditor: React.FC<Props> = observer(
             }
         }, [isOpen]);
 
+        function getTypeLength(): number {
+            return showTypePlaceholder ? typePlaceholder.length : typeRef.current.textContent.length;
+        }
+
         function getFullLength(): number {
-            let totalLength = typeRef.current.textContent.length;
+            let totalLength = getTypeLength();
             if (showSpace) {
                 totalLength += 1 + nameRef.current.textContent.length;
             }
@@ -82,6 +92,9 @@ const TypeNameEditor: React.FC<Props> = observer(
         function setCaretPosition(position: number, nameDisplayed: boolean) {
             const typeLength = typeRef.current.textContent.length;
             const nameLength = nameRef.current.textContent.length;
+            if (showTypePlaceholder) {
+                position = position < typePlaceholder.length ? 0 : position - typePlaceholder.length;
+            }
             if (position <= typeLength || !nameDisplayed) {
                 if (position > typeLength) {
                     position = typeLength;
@@ -104,7 +117,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                     setCaretPosition(caretPosition == null ? getFullLength() : caretPosition, showSpace);
                 }
             } else {
-                if (!typeRef.current.textContent && !nameRef.current.textContent) {
+                if (!showPlaceholders && !typeRef.current.textContent && !nameRef.current.textContent) {
                     onDeleted(); //setIsDeleted(true);
                 }
             }
@@ -126,7 +139,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                 return getElementCaretPosition(typeRef.current);
             }
             if (isActive(nameRef.current)) {
-                return typeRef.current.textContent.length + 1 + getElementCaretPosition(nameRef.current);
+                return getTypeLength() + 1 + getElementCaretPosition(nameRef.current);
             }
             throw new Error('Unable to calculate caret position.');
         }
@@ -184,10 +197,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                     // NAVIGATION WITH CTRL
                     if (isRightArrow) {
                         if (isEnd) {
-                            setCaretPosition(
-                                typeRef.current.textContent.length + 1 + nameRef.current.textContent.length,
-                                showSpace,
-                            );
+                            setCaretPosition(getTypeLength() + 1 + nameRef.current.textContent.length, showSpace);
                             e.preventDefault();
                         } else {
                             setElementCaretPosition(typeRef.current, typeRef.current.textContent.length);
@@ -211,7 +221,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                 // NAVIGATION
                 if (isEnd) {
                     if (isRightArrow) {
-                        setCaretPosition(typeRef.current.textContent.length + 1, showSpace);
+                        setCaretPosition(getTypeLength() + 1, showSpace);
                         e.preventDefault();
                         return;
                     } else if (isDelete) {
@@ -226,10 +236,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                         e.preventDefault();
                         return;
                     case 'End':
-                        setCaretPosition(
-                            typeRef.current.textContent.length + 1 + nameRef.current.textContent.length,
-                            showSpace,
-                        );
+                        setCaretPosition(getTypeLength() + 1 + nameRef.current.textContent.length, showSpace);
                         e.preventDefault();
                         return;
                     case ' ':
@@ -289,7 +296,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                         return;
                     }
                     if (isLeftArrow) {
-                        setCaretPosition(typeRef.current.textContent.length, showSpace);
+                        setCaretPosition(getTypeLength(), showSpace);
                         e.preventDefault();
                         return;
                     }
@@ -298,10 +305,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                     e.preventDefault();
                     return;
                 } else if (isEndKey) {
-                    setCaretPosition(
-                        typeRef.current.textContent.length + 1 + nameRef.current.textContent.length,
-                        showSpace,
-                    );
+                    setCaretPosition(getTypeLength() + 1 + nameRef.current.textContent.length, showSpace);
                     e.preventDefault();
                     return;
                 }
@@ -365,6 +369,13 @@ const TypeNameEditor: React.FC<Props> = observer(
             console.log('onComponentTypeSelected not implemlemented');
         }
 
+        function setPlaceholder(element, setShowPlaceholder: (boolean) => void) {
+            if (!showPlaceholders) {
+                return;
+            }
+            setShowPlaceholder(!element.textContent.length);
+        }
+
         return (
             <span onKeyDown={onKeyDown}>
                 <span
@@ -372,12 +383,18 @@ const TypeNameEditor: React.FC<Props> = observer(
                     ref={typeRef}
                     spellCheck="false"
                     onKeyDown={onTypeKeyDown}
+                    onKeyUp={(e) => setPlaceholder(e.target, setShowTypePlaceholder)}
                     onMouseDown={(e) => makeNonEditable(e.target)}
                     onClick={(e) => makeEditable(e.target)}
                     onBlur={onTypeBlur}
                 >
                     {component.typeName}
                 </span>
+                {showTypePlaceholder && (
+                    <span className="component-attr-placeholder" onClick={(e) => makeEditable(typeRef.current)}>
+                        {typePlaceholder}
+                    </span>
+                )}
                 <Portal>
                     <span className="popup__container" ref={popupRef}>
                         {isOpen && (
@@ -409,12 +426,18 @@ const TypeNameEditor: React.FC<Props> = observer(
                         title="Double Click to Edit Name"
                         // onDoubleClick={onRename}
                         onKeyDown={onNameKeyDown}
+                        onKeyUp={(e) => setPlaceholder(e.target, setShowNamePlaceholder)}
                         onBlur={onNameBlur}
                         onMouseDown={(e) => makeNonEditable(e.target)}
                         onClick={(e) => makeEditable(e.target)}
                     >
                         {component.componentFieldName}
                     </span>
+                    {showNamePlaceholder && (
+                        <span className="component-attr-placeholder" onClick={(e) => makeEditable(nameRef.current)}>
+                            {namePlaceholder}
+                        </span>
+                    )}
                 </div>
             </span>
         );

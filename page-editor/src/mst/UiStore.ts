@@ -72,7 +72,7 @@ export const UiStoreModel = types
             self.blankComponents = selectors.map((s) =>
                 ComponentInstanceModel.create({
                     id: 'blank' + Math.random() + '.' + s.name,
-                    componentType: 'Text',
+                    componentType: '',
                     name: s.name,
                     initializationAttribute: {
                         name: 'UI',

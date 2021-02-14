@@ -88,6 +88,7 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                 <span className="body-wrap">
                     <TypeNameEditor
                         component={component}
+                        showPlaceholders={false}
                         caretPosition={caretPosition}
                         onDeleted={onDeleted}
                         onSelectNext={onSelectNext}
