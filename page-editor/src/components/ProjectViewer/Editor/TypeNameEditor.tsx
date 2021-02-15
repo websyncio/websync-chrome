@@ -244,6 +244,9 @@ const TypeNameEditor: React.FC<Props> = observer(
                         addSpace();
                         e.preventDefault();
                         return;
+                    case 'Enter':
+                        e.preventDefault();
+                        return;
                 }
             }
         }
@@ -334,7 +337,7 @@ const TypeNameEditor: React.FC<Props> = observer(
 
         function onKeyDown(e) {
             if (!e.altKey && !e.ctrlKey && !e.shiftKey) {
-                if (e.key == 'ArrowDown') {
+                if (e.key == 'ArrowDown' || e.key == 'Enter') {
                     if (onSelectNext(getCaretPosition())) {
                         typeRef.current.contentEditable = false;
                         nameRef.current.contentEditable = false;
