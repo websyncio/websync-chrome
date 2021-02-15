@@ -10,6 +10,7 @@ import { InitializationAttributes } from 'services/JDI';
 import { observer } from 'mobx-react';
 import TypeNameEditor from './TypeNameEditor';
 import ComponentInstanceProps from './ComponentInstanceProps';
+import { isConditionalExpression } from 'typescript';
 
 const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
     ({ ideProxy, component, index, caretPosition, onSelected, onSelectNext, onSelectPrevious }) => {
@@ -71,6 +72,10 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
             setIsDeleted(true);
         }
 
+        function onChange(componentType: string, componentName: string) {
+            console.log('update type and name for component model and ide');
+        }
+
         return (
             <div
                 className={`component-instance 
@@ -93,6 +98,7 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                         onDeleted={onDeleted}
                         onSelectNext={onSelectNext}
                         onSelectPrevious={onSelectPrevious}
+                        onChange={onChange}
                     />
                     &nbsp;
                     {initializationAttribute(component.initializationAttribute)}

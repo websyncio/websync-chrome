@@ -7,6 +7,7 @@ import './BlankComponentInstance.sass';
 const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
     ({ ideProxy, component, index, caretPosition, onSelected, onSelectNext, onSelectPrevious }) => {
         const [isDeleted, setIsDeleted] = useState(false);
+        const [isAllSet, setIsAllSet] = useState(!!component.typeName.length && !!component.componentFieldName.length);
 
         useLayoutEffect(() => {
             if (isDeleted) {
@@ -17,6 +18,14 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
 
         function onDeleted() {
             setIsDeleted(true);
+        }
+
+        function onChange(componentType: string, componentName: string) {
+            setIsAllSet(!!componentType.length && !!componentName.length);
+        }
+
+        function addComponent(e) {
+            e.stopPropagation();
         }
 
         return (
@@ -37,10 +46,18 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
                         onDeleted={onDeleted}
                         onSelectNext={onSelectNext}
                         onSelectPrevious={onSelectPrevious}
+                        onChange={onChange}
                     />
                     <span className="separator">&nbsp;&lt;&nbsp;</span>
                     <span className="root-selector">&quot;{component.rootSelector}&quot;</span>
                     {/* {initializationAttribute(component.initializationAttribute)} */}
+                    <span
+                        className={`add-component-button action-button ${isAllSet ? 'active' : ''}`}
+                        title={`${isAllSet ? 'Add component to page object (Ctrl+Enter)' : 'Specify type and name'}`}
+                        onClick={addComponent}
+                    >
+                        Add
+                    </span>
                 </span>
             </div>
         );

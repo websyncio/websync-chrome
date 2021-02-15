@@ -40,16 +40,21 @@ export const ComponentInstanceModel = types.compose(
             },
         }))
         .actions((self) => ({
+            setComponentType(newComponentType) {
+                self.componentType = newComponentType;
+            },
             rename(newName, ideProxy) {
                 self.name = newName;
-                ideProxy.updateComponentInstance(self);
+                if (ideProxy) {
+                    ideProxy.updateComponentInstance(self);
 
-                // have to update id by creating new object and replacing the old one with it
-                const lastDot = self.id.lastIndexOf('.');
-                const newId = self.id.substring(0, lastDot + 1) + newName;
-                const pageType = getParentOfType(self, PageTypeModel);
-                const updated = { ...getSnapshot(self), id: newId };
-                pageType.updateComponentInstance(self, updated);
+                    // have to update id by creating new object and replacing the old one with it
+                    const lastDot = self.id.lastIndexOf('.');
+                    const newId = self.id.substring(0, lastDot + 1) + newName;
+                    const pageType = getParentOfType(self, PageTypeModel);
+                    const updated = { ...getSnapshot(self), id: newId };
+                    pageType.updateComponentInstance(self, updated);
+                }
             },
             updateInitializationParameter(parameterName, parameterValueIndex, parameterValue) {
                 if (!self.initializationAttribute) {

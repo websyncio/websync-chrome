@@ -14,10 +14,11 @@ interface Props {
     onDeleted: () => void;
     onSelectNext: (caretPosition: number) => void;
     onSelectPrevious: (caretPosition: number) => void;
+    onChange: (componentType: string, componentName: string) => void;
 }
 
 const TypeNameEditor: React.FC<Props> = observer(
-    ({ component, showPlaceholders, caretPosition, onDeleted, onSelectNext, onSelectPrevious }) => {
+    ({ component, showPlaceholders, caretPosition, onDeleted, onSelectNext, onSelectPrevious, onChange }) => {
         const typePlaceholder = '<set type>';
         const namePlaceholder = '<set name>';
         const popupRef: any = React.createRef();
@@ -376,6 +377,13 @@ const TypeNameEditor: React.FC<Props> = observer(
             setShowPlaceholder(!element.textContent.length);
         }
 
+        function onAttributeChange(attributeElement, setShowPlaceholder) {
+            setPlaceholder(attributeElement, setShowPlaceholder);
+            // component.setComponentType(typeRef.current.textContent);
+            // component.rename(nameRef.current.textContent, null);
+            onChange(typeRef.current.textContent, nameRef.current.textContent);
+        }
+
         return (
             <span onKeyDown={onKeyDown}>
                 <span
@@ -383,7 +391,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                     ref={typeRef}
                     spellCheck="false"
                     onKeyDown={onTypeKeyDown}
-                    onKeyUp={(e) => setPlaceholder(e.target, setShowTypePlaceholder)}
+                    onKeyUp={(e) => onAttributeChange(e.target, setShowTypePlaceholder)}
                     onMouseDown={(e) => makeNonEditable(e.target)}
                     onClick={(e) => makeEditable(e.target)}
                     onBlur={onTypeBlur}
@@ -426,7 +434,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                         title="Double Click to Edit Name"
                         // onDoubleClick={onRename}
                         onKeyDown={onNameKeyDown}
-                        onKeyUp={(e) => setPlaceholder(e.target, setShowNamePlaceholder)}
+                        onKeyUp={(e) => onAttributeChange(e.target, setShowNamePlaceholder)}
                         onBlur={onNameBlur}
                         onMouseDown={(e) => makeNonEditable(e.target)}
                         onClick={(e) => makeEditable(e.target)}
