@@ -337,8 +337,14 @@ const TypeNameEditor: React.FC<Props> = observer(
 
         function onKeyDown(e) {
             if (!e.altKey && !e.ctrlKey && !e.shiftKey) {
-                if (e.key == 'ArrowDown' || e.key == 'Enter') {
+                if (e.key == 'ArrowDown') {
                     if (onSelectNext(getCaretPosition())) {
+                        typeRef.current.contentEditable = false;
+                        nameRef.current.contentEditable = false;
+                    }
+                    e.preventDefault();
+                } else if (e.key == 'Enter') {
+                    if (onSelectNext(0)) {
                         typeRef.current.contentEditable = false;
                         nameRef.current.contentEditable = false;
                     }
