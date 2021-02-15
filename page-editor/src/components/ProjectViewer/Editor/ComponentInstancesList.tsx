@@ -14,13 +14,15 @@ interface Props {
     ideProxy: IIdeProxy;
     componentInstances: IComponentInstance[];
     componentView: React.ComponentType<ComponentInstanceProps>;
+    onSelectNext?: () => boolean;
+    onSelectPrevious?: () => boolean;
 }
 
 const ComponentInstancesList: React.FC<Props> = observer(
-    ({ ideProxy, componentInstances, componentView: ComponentView }) => {
+    ({ ideProxy, componentInstances, componentView: ComponentView, onSelectPrevious, onSelectNext }) => {
         const { projectStore, uiStore }: RootStore = useRootStore();
 
-        const [caretPosition, setCaretPosition] = useState<number | null>(null);
+        const [caretPosition, setCaretPosition] = useState<number | null>(0);
         // function onRename(event, component) {
         //     if (event.target.contentEditable === true) {
         //         event.target.contentEditable = false;
@@ -83,13 +85,22 @@ const ComponentInstancesList: React.FC<Props> = observer(
             });
         }
 
-        function selectComponent(component: IComponentInstance, shift: number, caretPosition: number) {
+        function selectComponent(component: IComponentInstance, shift: number, caretPosition: number): boolean {
             setCaretPosition(caretPosition);
             const index = componentInstances.indexOf(component);
             const newIndex = index + shift;
             // .first or last line
-            if (newIndex < 0 || newIndex > componentInstances.length - 1) {
-                return;
+            if (newIndex < 0) {
+                if (onSelectPrevious) {
+                    return onSelectPrevious();
+                }
+                return false;
+            }
+            if (newIndex > componentInstances.length - 1) {
+                if (onSelectNext) {
+                    return onSelectNext();
+                }
+                return false;
             }
             // .select next component
             componentInstances.forEach((c, i) => {
@@ -99,6 +110,7 @@ const ComponentInstancesList: React.FC<Props> = observer(
                     c.deselect();
                 }
             });
+            return true;
         }
 
         function onComponentKeyDown(e, component: IComponentInstance) {
@@ -118,10 +130,10 @@ const ComponentInstancesList: React.FC<Props> = observer(
                                 caretPosition={caretPosition}
                                 onSelected={() => onComponentSelected(component)}
                                 onSelectNext={(caretPosition) => {
-                                    selectComponent(component, 1, caretPosition);
+                                    return selectComponent(component, 1, caretPosition);
                                 }}
                                 onSelectPrevious={(caretPosition) => {
-                                    selectComponent(component, -1, caretPosition);
+                                    return selectComponent(component, -1, caretPosition);
                                 }}
                             />
                             {/* <ComponentInstance

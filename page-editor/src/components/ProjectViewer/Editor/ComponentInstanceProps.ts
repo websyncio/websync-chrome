@@ -7,6 +7,6 @@ export default interface ComponentInstanceProps {
     index: number;
     caretPosition: number | null;
     onSelected: () => void;
-    onSelectNext: (caretPosition: number) => void;
-    onSelectPrevious: (caretPosition: number) => void;
+    onSelectNext: (caretPosition: number) => boolean;
+    onSelectPrevious: (caretPosition: number) => boolean;
 }

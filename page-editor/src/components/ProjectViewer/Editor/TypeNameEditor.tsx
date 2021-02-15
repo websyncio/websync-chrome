@@ -12,8 +12,8 @@ interface Props {
     showPlaceholders: boolean;
     caretPosition: number | null;
     onDeleted: () => void;
-    onSelectNext: (caretPosition: number) => void;
-    onSelectPrevious: (caretPosition: number) => void;
+    onSelectNext: (caretPosition: number) => boolean;
+    onSelectPrevious: (caretPosition: number) => boolean;
     onChange: (componentType: string, componentName: string) => void;
 }
 
@@ -335,14 +335,16 @@ const TypeNameEditor: React.FC<Props> = observer(
         function onKeyDown(e) {
             if (!e.altKey && !e.ctrlKey && !e.shiftKey) {
                 if (e.key == 'ArrowDown') {
-                    onSelectNext(getCaretPosition());
-                    typeRef.current.contentEditable = false;
-                    nameRef.current.contentEditable = false;
+                    if (onSelectNext(getCaretPosition())) {
+                        typeRef.current.contentEditable = false;
+                        nameRef.current.contentEditable = false;
+                    }
                     e.preventDefault();
                 } else if (e.key == 'ArrowUp') {
-                    onSelectPrevious(getCaretPosition());
-                    typeRef.current.contentEditable = false;
-                    nameRef.current.contentEditable = false;
+                    if (onSelectPrevious(getCaretPosition())) {
+                        typeRef.current.contentEditable = false;
+                        nameRef.current.contentEditable = false;
+                    }
                     e.preventDefault();
                 }
             }
