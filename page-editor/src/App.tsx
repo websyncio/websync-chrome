@@ -1,10 +1,9 @@
 import React, { Component, useLayoutEffect } from 'react';
 import 'styles/App.sass';
-import PageType from './models/PageType';
+
 import 'semantic-ui-css/semantic.min.css';
 import { observer } from 'mobx-react';
 
-import Website from 'models/Website';
 import IIdeProxy from 'interfaces/IIdeProxy';
 import IDEAConnection from 'services/IDE/IDEAConnection';
 import ProjectSelector from 'components/ProjectSelector/ProjectSelector';
@@ -12,14 +11,6 @@ import ProjectViewer from 'components/ProjectViewer/ProjectViewer';
 import RootStore from 'mst/RootStore';
 import { useRootStore } from 'context';
 import SelectorEditorConnection from 'services/SelectorEditor/SelectorEditorConnection';
-
-type AppState = {
-    module: string;
-    pageTypes: Array<PageType>;
-    selectedPageType?: PageType;
-    websites: Array<Website>;
-    selectedWebsite?: Website;
-};
 
 const App: React.FC = observer(() => {
     const ideProxies: IIdeProxy[] = [IDEAConnection.instance()];

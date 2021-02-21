@@ -1,12 +1,12 @@
 import React, { Component, useEffect, useState } from 'react';
-import SelectorModel from 'models/Selector';
+import ISelector from 'mst/Selector';
 import SelectorValidator from 'services/SelectorEditor/SelectorValidator';
 import SelectorHighlighter from 'services/SelectorEditor/SelectorHighlighter';
 import { observer } from 'mobx-react';
 
 interface Props {
     parameterName: string | null;
-    selector: SelectorModel;
+    selector: ISelector;
     onEdit: () => void;
     onValidationError: () => void;
 }

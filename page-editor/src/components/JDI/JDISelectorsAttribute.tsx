@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import AttributeModel from 'mst/Attribute';
 import ParameterModel from 'mst/Parameter';
 import { observer } from 'mobx-react';
-import { Scss } from 'components/ScssBuilder';
 import Selector from 'components/ProjectViewer/Editor/Selector';
-import SelectorModel from 'models/Selector';
 import './JDIAttribute.sass';
+import { SelectorModel } from 'mst/Selector';
 
 interface JDISelectorsAttributeProps {
     attribute: AttributeModel;
@@ -23,7 +22,10 @@ const JDISelectorsAttribute: React.FC<JDISelectorsAttributeProps> = ({
     }
 
     function getSelector(value: string) {
-        return new SelectorModel(attribute.name, value);
+        return SelectorModel.create({
+            type: attribute.name,
+            value: value,
+        });
     }
 
     const valuesList = (parameter: ParameterModel) => {

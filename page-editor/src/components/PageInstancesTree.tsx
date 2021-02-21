@@ -1,5 +1,4 @@
 import React from 'react';
-import PageInstance from 'components/PageInstance';
 import 'styles/ComponentInstancesTree.sass';
 import { useRootStore } from 'context';
 import RootStore from 'mst/RootStore';
