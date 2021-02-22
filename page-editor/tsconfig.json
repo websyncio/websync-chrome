@@ -3,6 +3,7 @@
     "baseUrl": "./src",
     "target": "es5",
     "lib": [
+      "es6",
       "dom",
       "dom.iterable",
       "esnext"
@@ -21,7 +22,9 @@
     "noEmit": true,
     "jsx": "react",
     "sourceMap": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "types": ["reflect-metadata"],
+    "emitDecoratorMetadata": true
   },
   "include": [
     "src"
