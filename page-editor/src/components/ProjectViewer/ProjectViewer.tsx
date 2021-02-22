@@ -3,8 +3,8 @@ import { observer } from 'mobx-react';
 import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
 import IIdeProxy from 'connections/IDE/IIdeConnection';
-import ProjectExplorer from './Explorer/Explorer';
-import ProjectViewerHeader from './Header/Header';
+import ProjectExplorer from '../ProjectExplorer/ProjectExplorer';
+import ProjectViewerHeader from '../ProjectViewerHeader/ProjectViewerHeader';
 import PageObjectEditor from '../PageObjectEditor/PageObjectEditor';
 // import Explorer from './Explorer/Explorer';
 

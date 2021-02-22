@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
-import './Header.sass';
+import './ProjectViewerHeader.sass';
 import PageType from 'entities/mst/PageType';
 import CloseButton from 'components-common/CloseButton/CloseButton';
 

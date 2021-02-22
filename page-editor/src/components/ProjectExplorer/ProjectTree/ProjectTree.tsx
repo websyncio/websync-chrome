@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import WebSite from 'entities/mst/WebSite';
 import PageInstance from 'entities/mst/PageInstance';
-import './WebSitesTree.sass';
+import './ProjectTree.sass';
 import RootStore from 'entities/mst/RootStore';
 import { useRootStore } from 'context';
 import TreeOutline from 'components-common/TreeOutline/TreeOutline';
