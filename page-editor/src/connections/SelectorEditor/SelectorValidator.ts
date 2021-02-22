@@ -1,6 +1,6 @@
 import SelectorEditorProxy from './SelectorEditorProxy';
 import { MessageTypes } from './SelectorEditorProxy';
-import { Scss } from 'components/ScssBuilder';
+import { Scss } from 'utils/ScssBuilder';
 export const SELECTOR_VALIDATED = 'selector-validated';
 
 // https://stackoverflow.com/questions/27383224/chrome-extension-long-lived-message-connection-how-to-use-callback-functions

@@ -1,4 +1,4 @@
-import { Scss } from 'components/ScssBuilder';
+import { Scss } from 'utils/ScssBuilder';
 import { types, Instance } from 'mobx-state-tree';
 
 export const SelectorModel = types

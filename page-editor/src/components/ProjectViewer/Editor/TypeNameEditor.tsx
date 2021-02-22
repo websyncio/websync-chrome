@@ -1,5 +1,5 @@
 import { createPopper } from '@popperjs/core';
-import Portal from 'components/Portal';
+import Portal from 'components-common/Portal';
 import FocusTrap from 'focus-trap-react';
 import { observer } from 'mobx-react';
 import ComponentInstanceModel from 'entities/mst/ComponentInstance';
