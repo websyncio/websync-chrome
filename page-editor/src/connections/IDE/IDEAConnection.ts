@@ -1,10 +1,10 @@
 import WebsocketConnection, { Events } from './WebsocketConnection';
 import { RootStore } from '../../context';
-import IIdeProxy from 'interfaces/IIdeProxy';
+import IIdeProxy from 'connections/IDE/IIdeProxy';
 import { destroy, getParent, Instance, cast } from 'mobx-state-tree';
-import ProjectStore, { ProjectStoreModel } from 'mst/ProjectStore';
-import UIStore from 'mst/UiStore';
-import ComponentInstance from 'mst/ComponentInstance';
+import ProjectStore, { ProjectStoreModel } from 'entities/mst/ProjectStore';
+import UIStore from 'entities/mst/UiStore';
+import ComponentInstance from 'entities/mst/ComponentInstance';
 
 export default class IDEAConnection implements IIdeProxy {
     connection: WebsocketConnection;

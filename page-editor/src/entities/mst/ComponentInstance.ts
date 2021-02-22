@@ -2,7 +2,7 @@ import { types, Instance, getSnapshot, getParent, hasParent, getParentOfType, ca
 import { AttributeModel } from './Attribute';
 import { ComponentTypeModel } from './ComponentType';
 import { PageTypeModel } from './PageType';
-import IDEAConnection from 'services/IDE/IDEAConnection';
+import IDEAConnection from 'connections/IDE/IDEAConnection';
 import { SelectableModel } from './Selectable';
 
 export const ComponentInstanceModel = types.compose(

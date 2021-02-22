@@ -1,11 +1,11 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import WebSite from 'mst/WebSite';
-import PageInstance from 'mst/PageInstance';
+import WebSite from 'entities/mst/WebSite';
+import PageInstance from 'entities/mst/PageInstance';
 import './WebSitesTree.sass';
-import RootStore from 'mst/RootStore';
+import RootStore from 'entities/mst/RootStore';
 import { useRootStore } from 'context';
-import TreeOutline from 'components/TreeOutline/TreeOutline';
+import TreeOutline from 'components-common/TreeOutline/TreeOutline';
 
 interface Props {
     websites: WebSite[];

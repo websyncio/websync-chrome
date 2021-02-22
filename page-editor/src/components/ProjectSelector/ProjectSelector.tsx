@@ -1,9 +1,9 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { useRootStore } from 'context';
-import RootStore from 'mst/RootStore';
-import IIdeProxy from 'interfaces/IIdeProxy';
-import IdeConnection from 'mst/IdeConnection';
+import RootStore from 'entities/mst/RootStore';
+import IIdeProxy from 'connections/IDE/IIdeProxy';
+import IdeConnection from 'entities/mst/IdeConnection';
 import IdeProject from './IdeProject';
 import './ProjectSelector.sass';
 

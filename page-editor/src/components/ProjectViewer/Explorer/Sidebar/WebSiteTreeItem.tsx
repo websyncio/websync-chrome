@@ -1,8 +1,8 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import WebSite from 'mst/WebSite';
+import WebSite from 'entities/mst/WebSite';
 import './WebSitesTree.sass';
-import TreeOutline from 'components/TreeOutline/TreeOutline';
+import TreeOutline from 'components-common/TreeOutline/TreeOutline';
 
 type Props = {
     website: WebSite;

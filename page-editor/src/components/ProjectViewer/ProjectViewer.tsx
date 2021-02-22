@@ -1,8 +1,8 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { useRootStore } from 'context';
-import RootStore from 'mst/RootStore';
-import IIdeProxy from 'interfaces/IIdeProxy';
+import RootStore from 'entities/mst/RootStore';
+import IIdeProxy from 'connections/IDE/IIdeProxy';
 import ProjectExplorer from './Explorer/Explorer';
 import ProjectViewerHeader from './Header/Header';
 import PageObjectEditor from './Editor/PageObjectEditor';

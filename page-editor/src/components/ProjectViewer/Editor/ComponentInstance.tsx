@@ -1,12 +1,11 @@
 import React, { useLayoutEffect, useState } from 'react';
-import IComponentInstance from 'mst/ComponentInstance';
-import AttributeModel from 'mst/Attribute';
-import ParameterModel from 'mst/Parameter';
+import IComponentInstance from 'entities/mst/ComponentInstance';
+import AttributeModel from 'entities/mst/Attribute';
+import ParameterModel from 'entities/mst/Parameter';
 import JDISelectorsAttribute from '../../JDI/JDISelectorsAttribute';
-import SelectorEditorProxy from 'services/SelectorEditor/SelectorEditorProxy';
-import 'styles/Popup.sass';
+import SelectorEditorProxy from 'connections/SelectorEditor/SelectorEditorProxy';
 import './ComponentInstance.sass';
-import { InitializationAttributes } from 'services/JDI';
+import { InitializationAttributes } from 'supported-frameworks/JDI';
 import { observer } from 'mobx-react';
 import TypeNameEditor from './TypeNameEditor';
 import ComponentInstanceProps from './ComponentInstanceProps';

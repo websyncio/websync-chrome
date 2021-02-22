@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import WebSite from 'mst/WebSite';
+import WebSite from 'entities/mst/WebSite';
 
 interface Props {
     website: WebSite;

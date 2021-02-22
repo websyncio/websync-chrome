@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import ComponentType from 'mst/ComponentType';
+import ComponentType from 'entities/mst/ComponentType';
 import { useRootStore } from 'context';
-import RootStore from 'mst/RootStore';
+import RootStore from 'entities/mst/RootStore';
 import { observer } from 'mobx-react';
 import './ComponentTypeSelector.sass';
 

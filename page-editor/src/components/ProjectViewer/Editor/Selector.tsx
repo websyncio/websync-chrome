@@ -1,7 +1,7 @@
 import React, { Component, useEffect, useState } from 'react';
-import ISelector from 'mst/Selector';
-import SelectorValidator from 'services/SelectorEditor/SelectorValidator';
-import SelectorHighlighter from 'services/SelectorEditor/SelectorHighlighter';
+import ISelector from 'entities/mst/Selector';
+import SelectorValidator from 'connections/SelectorEditor/SelectorValidator';
+import SelectorHighlighter from 'connections/SelectorEditor/SelectorHighlighter';
 import { observer } from 'mobx-react';
 
 interface Props {

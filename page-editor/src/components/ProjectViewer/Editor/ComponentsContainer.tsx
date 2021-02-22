@@ -1,12 +1,12 @@
-import IIdeProxy from 'interfaces/IIdeProxy';
+import IIdeProxy from 'connections/IDE/IIdeProxy';
 import React from 'react';
-import IComponentsContainer from 'mst/ComponentsContainer';
-import IComponentInstance from 'mst/ComponentInstance';
+import IComponentsContainer from 'entities/mst/ComponentsContainer';
+import IComponentInstance from 'entities/mst/ComponentInstance';
 import { observer } from 'mobx-react';
 import ComponentInstancesList from './ComponentInstancesList';
 import ComponentInstance from './ComponentInstance';
 import BlankComponentInstance from './BlankComponentInstance';
-import RootStore from 'mst/RootStore';
+import RootStore from 'entities/mst/RootStore';
 import { useRootStore } from 'context';
 import './ComponentsContainer.sass';
 

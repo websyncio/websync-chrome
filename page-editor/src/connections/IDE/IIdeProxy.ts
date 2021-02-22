@@ -1,4 +1,4 @@
-import ComponentInstanceModel from 'mst/ComponentInstance';
+import ComponentInstanceModel from 'entities/mst/ComponentInstance';
 
 export default interface IdeProxy {
     type: string;

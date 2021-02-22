@@ -1,7 +1,7 @@
 import React from 'react';
 import 'styles/ComponentInstancesTree.sass';
 import { useRootStore } from 'context';
-import RootStore from 'mst/RootStore';
+import RootStore from 'entities/mst/RootStore';
 import { observer } from 'mobx-react';
 
 export default observer(() => {

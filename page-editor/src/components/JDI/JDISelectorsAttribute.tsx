@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import AttributeModel from 'mst/Attribute';
-import ParameterModel from 'mst/Parameter';
+import AttributeModel from 'entities/mst/Attribute';
+import ParameterModel from 'entities/mst/Parameter';
 import { observer } from 'mobx-react';
 import Selector from 'components/ProjectViewer/Editor/Selector';
 import './JDIAttribute.sass';
-import { SelectorModel } from 'mst/Selector';
+import { SelectorModel } from 'entities/mst/Selector';
 
 interface JDISelectorsAttributeProps {
     attribute: AttributeModel;

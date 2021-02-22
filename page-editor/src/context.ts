@@ -1,5 +1,5 @@
 import React from 'react';
-import RootStoreType, { RootStoreModel } from 'mst/RootStore';
+import RootStoreType, { RootStoreModel } from 'entities/mst/RootStore';
 
 const createStore = (): RootStoreType => {
     return RootStoreModel.create();

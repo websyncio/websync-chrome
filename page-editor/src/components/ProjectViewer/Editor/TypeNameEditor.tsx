@@ -2,7 +2,7 @@ import { createPopper } from '@popperjs/core';
 import Portal from 'components/Portal';
 import FocusTrap from 'focus-trap-react';
 import { observer } from 'mobx-react';
-import ComponentInstanceModel from 'mst/ComponentInstance';
+import ComponentInstanceModel from 'entities/mst/ComponentInstance';
 import React, { DOMElement, RefObject, useEffect, useLayoutEffect, useState } from 'react';
 import ComponentTypeSelector from './ComponentTypeSelector';
 import './TypeNameEditor.sass';

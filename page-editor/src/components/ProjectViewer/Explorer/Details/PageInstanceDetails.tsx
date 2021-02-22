@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import PageInstance from 'mst/PageInstance';
+import PageInstance from 'entities/mst/PageInstance';
 
 interface Props {
     pageInstance: PageInstance;

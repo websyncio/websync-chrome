@@ -2,7 +2,7 @@ import React from 'react';
 // import { useRootStore } from 'context';
 import { observer } from 'mobx-react';
 // import RootStore from 'mst/RootStore';
-import PageInstance from 'mst/PageInstance';
+import PageInstance from 'entities/mst/PageInstance';
 
 interface Props {
     pages: PageInstance[];

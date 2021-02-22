@@ -1,10 +1,10 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { useRootStore } from 'context';
-import RootStore from 'mst/RootStore';
+import RootStore from 'entities/mst/RootStore';
 import './Header.sass';
-import PageType from 'mst/PageType';
-import CloseButton from 'components/CloseButton/CloseButton';
+import PageType from 'entities/mst/PageType';
+import CloseButton from 'components-common/CloseButton/CloseButton';
 
 interface Props {}
 

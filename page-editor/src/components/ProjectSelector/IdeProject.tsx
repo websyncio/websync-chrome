@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react';
 import React from 'react';
-import Spinner from 'components/Spinner/Spinner';
+import Spinner from 'components-common/Spinner/Spinner';
 
 interface Props {
     projectName: string;

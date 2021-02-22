@@ -3,11 +3,11 @@ import ComponentInstance from './ComponentInstance';
 import ComponentInstanceProps from './ComponentInstanceProps';
 import { observer } from 'mobx-react';
 import { useRootStore } from 'context';
-import RootStore from 'mst/RootStore';
-import ComponentsContainer from 'mst/ComponentsContainer';
+import RootStore from 'entities/mst/RootStore';
+import ComponentsContainer from 'entities/mst/ComponentsContainer';
 import './ComponentInstancesList.sass';
-import IIdeProxy from 'interfaces/IIdeProxy';
-import IComponentInstance from 'mst/ComponentInstance';
+import IIdeProxy from 'connections/IDE/IIdeProxy';
+import IComponentInstance from 'entities/mst/ComponentInstance';
 import { useState } from 'react';
 
 interface Props {

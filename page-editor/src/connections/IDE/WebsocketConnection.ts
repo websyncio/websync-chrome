@@ -1,5 +1,5 @@
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
-import Reactor from '../Reactor';
+import Reactor from '../../utils/Reactor';
 
 export const Events = {
     onopen: 'onopen',

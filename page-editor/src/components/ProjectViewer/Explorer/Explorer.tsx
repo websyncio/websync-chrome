@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import { useRootStore } from 'context';
-import RootStore from 'mst/RootStore';
+import RootStore from 'entities/mst/RootStore';
 import WebsitesTree from './Sidebar/WebsitesTree';
-import WebSite from 'mst/WebSite';
-import PageInstance from 'mst/PageInstance';
+import WebSite from 'entities/mst/WebSite';
+import PageInstance from 'entities/mst/PageInstance';
 import './Explorer.sass';
 import WebSiteDetails from './Details/WebSiteDetails';
 import PageInstanceDetails from './Details/PageInstanceDetails';
-import Selectable from 'mst/Selectable';
+import Selectable from 'entities/mst/Selectable';
 
 interface Props {}
 

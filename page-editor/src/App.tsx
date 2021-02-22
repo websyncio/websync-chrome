@@ -1,16 +1,16 @@
 import React, { Component, useLayoutEffect } from 'react';
-import 'styles/App.sass';
+import 'App.sass';
 
 import 'semantic-ui-css/semantic.min.css';
 import { observer } from 'mobx-react';
 
-import IIdeProxy from 'interfaces/IIdeProxy';
-import IDEAConnection from 'services/IDE/IDEAConnection';
+import IIdeProxy from 'connections/IDE/IIdeProxy';
+import IDEAConnection from 'connections/IDE/IDEAConnection';
 import ProjectSelector from 'components/ProjectSelector/ProjectSelector';
 import ProjectViewer from 'components/ProjectViewer/ProjectViewer';
-import RootStore from 'mst/RootStore';
+import RootStore from 'entities/mst/RootStore';
 import { useRootStore } from 'context';
-import SelectorEditorConnection from 'services/SelectorEditor/SelectorEditorConnection';
+import SelectorEditorConnection from 'connections/SelectorEditor/SelectorEditorConnection';
 
 const App: React.FC = observer(() => {
     const ideProxies: IIdeProxy[] = [IDEAConnection.instance()];
