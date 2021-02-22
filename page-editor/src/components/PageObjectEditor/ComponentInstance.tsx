@@ -9,7 +9,7 @@ import { InitializationAttributes } from 'supported-frameworks/JDIInitialization
 import { observer } from 'mobx-react';
 import TypeNameEditor from './TypeNameEditor';
 import ComponentInstanceProps from './ComponentInstanceProps';
-import { isConditionalExpression } from 'typescript';
+import { DependencyContainer } from 'inversify.config';
 
 const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
     ({ ideProxy, component, index, caretPosition, onSelected, onSelectNext, onSelectPrevious }) => {
