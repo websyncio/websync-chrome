@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+import { injectable } from 'inversify';
 import Reactor from '../utils/Reactor';
 
 export const MessageTypes = {
@@ -9,28 +11,16 @@ export const MessageTypes = {
     RequestSelectorsList: 'request-selectors-list',
 };
 
+@injectable()
 export default class SelectorEditorProxy {
     reactor: Reactor;
     acknowledgments: { [id: string]: Function } = {};
-
-    private static _inst: SelectorEditorProxy | undefined;
 
     constructor() {
         this.reactor = new Reactor();
         this.reactor.registerEvent(MessageTypes.UpdateComponentSelector);
         this.reactor.registerEvent(MessageTypes.UpdateSelectorsList);
-    }
-
-    static instance() {
-        if (SelectorEditorProxy._inst === undefined) {
-            SelectorEditorProxy._inst = new SelectorEditorProxy();
-            window.addEventListener(
-                'message',
-                SelectorEditorProxy._inst.receiveMessage.bind(SelectorEditorProxy._inst),
-                false,
-            );
-        }
-        return SelectorEditorProxy._inst;
+        window.addEventListener('message', this.receiveMessage.bind(this), false);
     }
 
     receiveMessage(event) {

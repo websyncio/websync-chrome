@@ -3,19 +3,20 @@ import IComponentInstance from 'entities/mst/ComponentInstance';
 import AttributeModel from 'entities/mst/Attribute';
 import ParameterModel from 'entities/mst/Parameter';
 import JDISelectorsAttribute from '../JDI/JDISelectorsAttribute';
-import SelectorEditorProxy from 'connections/SelectorEditorConnection';
-import './ComponentInstance.sass';
 import { InitializationAttributes } from 'supported-frameworks/JDIInitializationAttributes';
 import { observer } from 'mobx-react';
 import TypeNameEditor from './TypeNameEditor';
 import ComponentInstanceProps from './ComponentInstanceProps';
-import { DependencyContainer } from 'inversify.config';
+import { DependencyContainer, TYPES } from 'inversify.config';
+import { SelectorsBagService } from 'services/SelectorsBagService';
+import './ComponentInstance.sass';
 
 const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
     ({ ideProxy, component, index, caretPosition, onSelected, onSelectNext, onSelectPrevious }) => {
         const [hasError, setHasError] = useState(false);
-
         const [isDeleted, setIsDeleted] = useState(false);
+
+        const selectorsBagService = DependencyContainer.get<SelectorsBagService>(TYPES.SelectorsBagService);
 
         useLayoutEffect(() => {
             if (isDeleted) {
@@ -40,15 +41,14 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
         //     selection?.addRange(range);
         // }
 
-        const editSelector = (component: IComponentInstance, parameter: ParameterModel, valueIndex: number) => {
-            SelectorEditorProxy.instance().sendMessage('edit-component-selector', {
+        const editSelector = (component: IComponentInstance, parameter: ParameterModel, valueIndex: number) =>
+            selectorsBagService.editSelector({
                 componentId: component.id,
                 componentName: component.name,
                 parameterName: parameter.name,
                 parameterValueIndex: valueIndex,
                 selector: parameter.values[valueIndex],
             });
-        };
 
         function initializationAttribute(attribute: AttributeModel) {
             if (attribute) {

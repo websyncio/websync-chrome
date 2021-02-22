@@ -1,44 +1,42 @@
+import 'reflect-metadata';
+import { inject, injectable } from 'inversify';
 import { RootStore } from '../context';
-import SelectorEditorProxy, { MessageTypes } from '../connections/SelectorEditorConnection';
+import SelectorEditorConnection, { MessageTypes } from '../connections/SelectorEditorConnection';
+import { TYPES } from 'inversify.config';
 
-export default class SelectorEditorConnection {
-    private static _inst: SelectorEditorConnection | undefined;
-
-    constructor() {
-        SelectorEditorProxy.instance().addListener(
-            MessageTypes.UpdateComponentSelector,
-            this.onUdpateComponenetSelector,
-        );
-        SelectorEditorProxy.instance().addListener(MessageTypes.UpdateSelectorsList, this.generateBlankComponents);
+@injectable()
+export class SelectorsBagService {
+    constructor(@inject(TYPES.SelectorEditorConnection) private selectorEditorConnection: SelectorEditorConnection) {
+        selectorEditorConnection.addListener(MessageTypes.UpdateComponentSelector, this.onUdpateComponenetSelector);
+        selectorEditorConnection.addListener(MessageTypes.UpdateSelectorsList, this.generateBlankComponents);
+        this.generateBlankComponents([
+            {
+                name: 'SearchInput',
+                selector: '#search',
+            },
+            {
+                name: 'SendButton',
+                selector: "[type='submit']",
+            },
+            {
+                name: 'CancelButton',
+                selector: "button['Cancel']",
+            },
+            {
+                name: '',
+                selector: "button['Cancel']",
+            },
+        ]);
     }
 
-    static init() {
-        if (SelectorEditorConnection._inst === undefined) {
-            SelectorEditorConnection._inst = new SelectorEditorConnection();
-            SelectorEditorConnection._inst.generateBlankComponents([
-                {
-                    name: 'SearchInput',
-                    selector: '#search',
-                },
-                {
-                    name: 'SendButton',
-                    selector: "[type='submit']",
-                },
-                {
-                    name: 'CancelButton',
-                    selector: "button['Cancel']",
-                },
-                {
-                    name: '',
-                    selector: "button['Cancel']",
-                },
-            ]);
-            //SelectorEditorConnection._inst.requestSelectorsList();
-        }
+    // TODO: create model for selector
+    //{ componentId: string; componentName: string; parameterName: string | null; parameterValueIndex: number; selector: string; }
+    editSelector(selector) {
+        this.selectorEditorConnection.sendMessage('edit-component-selector', selector);
     }
 
     requestSelectorsList() {
-        SelectorEditorProxy.instance().sendMessage(MessageTypes.RequestSelectorsList, null, (event) => {
+        this.selectorEditorConnection.sendMessage(MessageTypes.RequestSelectorsList, null, (event) => {
             this.generateBlankComponents(event.data);
         });
     }

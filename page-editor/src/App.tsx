@@ -10,15 +10,15 @@ import ProjectSelector from 'components/ProjectSelector/ProjectSelector';
 import ProjectViewer from 'components/ProjectViewer/ProjectViewer';
 import RootStore from 'entities/mst/RootStore';
 import { useRootStore } from 'context';
-import SelectorEditorConnection from 'services/SelectorsBagService';
+// import SelectorsBagService from 'services/SelectorsBagService';
 
 const App: React.FC = observer(() => {
     const ideProxies: IIdeProxy[] = [IDEAConnection.instance()];
     const { projectStore, uiStore }: RootStore = useRootStore();
 
-    useLayoutEffect(() => {
-        SelectorEditorConnection.init();
-    }, []);
+    // useLayoutEffect(() => {
+    //     SelectorsBagService.init();
+    // }, []);
 
     // SelectorEditorProxy.instance().addListener(
     //     MessageTypes.UpdateComponentSelector,

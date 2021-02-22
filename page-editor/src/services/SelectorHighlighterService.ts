@@ -1,13 +1,19 @@
-import SelectorEditorProxy from '../connections/SelectorEditorConnection';
+import 'reflect-metadata';
+import { injectable, inject } from 'inversify';
+import { TYPES } from 'inversify.config';
+import SelectorEditorConnection from '../connections/SelectorEditorConnection';
 import { MessageTypes } from '../connections/SelectorEditorConnection';
 
 // https://stackoverflow.com/questions/27383224/chrome-extension-long-lived-message-connection-how-to-use-callback-functions
+@injectable()
 export default class SelectorHighlighter {
+    constructor(@inject(TYPES.SelectorEditorConnection) private selectorEditorConnection: SelectorEditorConnection) {}
+
     highlight(selector: any) {
-        SelectorEditorProxy.instance().sendMessage(MessageTypes.HighlightSelector, selector);
+        this.selectorEditorConnection.sendMessage(MessageTypes.HighlightSelector, selector);
     }
 
     removeHighlighting() {
-        SelectorEditorProxy.instance().sendMessage(MessageTypes.RemoveHighlighting);
+        this.selectorEditorConnection.sendMessage(MessageTypes.RemoveHighlighting);
     }
 }
