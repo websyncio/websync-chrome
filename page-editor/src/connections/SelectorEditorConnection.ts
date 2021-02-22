@@ -1,4 +1,4 @@
-import Reactor from '../../utils/Reactor';
+import Reactor from '../utils/Reactor';
 
 export const MessageTypes = {
     UpdateComponentSelector: 'update-component-selector',

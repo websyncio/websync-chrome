@@ -1,4 +1,4 @@
-import IIdeProxy from 'connections/IDE/IIdeProxy';
+import IIdeProxy from 'connections/IDE/IIdeConnection';
 
 export default class IDEConnectionsManager {
     ideProxies: IIdeProxy[] = [];

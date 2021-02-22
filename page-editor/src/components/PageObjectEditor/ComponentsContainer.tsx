@@ -1,4 +1,4 @@
-import IIdeProxy from 'connections/IDE/IIdeProxy';
+import IIdeProxy from 'connections/IDE/IIdeConnection';
 import React from 'react';
 import IComponentsContainer from 'entities/mst/ComponentsContainer';
 import IComponentInstance from 'entities/mst/ComponentInstance';

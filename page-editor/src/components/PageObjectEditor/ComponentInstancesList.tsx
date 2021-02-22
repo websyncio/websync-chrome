@@ -6,7 +6,7 @@ import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
 import ComponentsContainer from 'entities/mst/ComponentsContainer';
 import './ComponentInstancesList.sass';
-import IIdeProxy from 'connections/IDE/IIdeProxy';
+import IIdeProxy from 'connections/IDE/IIdeConnection';
 import IComponentInstance from 'entities/mst/ComponentInstance';
 import { useState } from 'react';
 

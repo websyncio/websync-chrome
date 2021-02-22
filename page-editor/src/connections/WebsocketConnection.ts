@@ -1,5 +1,5 @@
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
-import Reactor from '../../utils/Reactor';
+import Reactor from '../utils/Reactor';
 
 export const Events = {
     onopen: 'onopen',
@@ -59,13 +59,10 @@ export default class IdeConnection {
 
     onOpen() {
         this.reactor.dispatchEvent(Events.onopen);
-        // this.setState({ modules: [] });
-        // this.setState({ isConnected: isConnection });
     }
 
     onClose() {
         this.reactor.dispatchEvent(Events.onclosed);
-        // this.setState({ isConnected: isConnection });
     }
 
     onMessage(e) {
@@ -76,47 +73,5 @@ export default class IdeConnection {
         } catch (e) {
             console.log('Can not parse message: ', e);
         }
-
-        // try {
-        //     // const message = JSON.parse(e.data, Message.reviver);
-        //     const message = JSON.parse(e.data);
-        //     if (message.hasOwnProperty('status') && message.status !== 0) {
-        //         console.log('error occured:', message.error);
-        //         return;
-        //     }
-        //     switch (message.type) {
-        //         case 'get-modules-response':
-        //             console.log('Modules received: ', message.data);
-        //             // return this.setState({ modules: message.data });
-        //         case 'get-module-response':
-        //             console.log('Module received: ', message.data);
-        //             //const webSession = WebSession.fromJSON(message.data);
-        //             //this.setState({ selected: webSession.module });
-        //             //this.props.onSelectedProject(webSession);
-        //             // this.onProjectMetadataReceived(message.data);
-        //             break;
-        //         case 'show-page':
-        //             console.log('page is opened:', message.className);
-        //             // return this.props.onSelectedPageChange(null, message.className);
-        //         case 'update-component':
-        //             // this.props.onComponentUpdated(message.data);
-        //             return;
-        //         case 'update-page':
-        //             console.log('page is updated:', message.data);
-        //             // this.props.onPageUpdated(message.data);
-        //             return;
-        //         default:
-        //             console.log('no message type, ignored: ', e.data);
-        //             return;
-        //     }
-        // } catch (ex) {
-        //     console.log('Message received "' + e.data + '"');
-        //     console.log(ex);
-        // }
     }
-
-    getProjectWebSession = (module: string) => {
-        // this.setState({ selected: module });
-        this.send(JSON.stringify({ type: 'get-module', moduleName: module }));
-    };
 }

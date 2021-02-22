@@ -1,5 +1,5 @@
-import SelectorEditorProxy from './SelectorEditorProxy';
-import { MessageTypes } from './SelectorEditorProxy';
+import SelectorEditorProxy from '../connections/SelectorEditorConnection';
+import { MessageTypes } from '../connections/SelectorEditorConnection';
 import { Scss } from 'utils/ScssBuilder';
 export const SELECTOR_VALIDATED = 'selector-validated';
 

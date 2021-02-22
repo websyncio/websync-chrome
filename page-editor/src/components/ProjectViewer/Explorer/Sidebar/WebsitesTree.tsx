@@ -14,7 +14,7 @@ interface Props {
 }
 
 const WebSitesTree: React.FC<Props> = observer(({ websites, onSelected }) => {
-    const { projectStore, uiStore }: RootStore = useRootStore();
+    const { uiStore }: RootStore = useRootStore();
 
     function expand(website: WebSite) {
         website.toggleExpanded();

@@ -4,7 +4,7 @@ import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
 import IComponentsContainer from 'entities/mst/ComponentsContainer';
 import ComponentInstancesList from './ComponentInstancesList';
-import IIdeProxy from 'connections/IDE/IIdeProxy';
+import IIdeProxy from 'connections/IDE/IIdeConnection';
 import ComponentsContainer from './ComponentsContainer';
 
 interface Props {

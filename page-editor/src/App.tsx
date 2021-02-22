@@ -4,13 +4,13 @@ import 'App.sass';
 import 'semantic-ui-css/semantic.min.css';
 import { observer } from 'mobx-react';
 
-import IIdeProxy from 'connections/IDE/IIdeProxy';
+import IIdeProxy from 'connections/IDE/IIdeConnection';
 import IDEAConnection from 'connections/IDE/IDEAConnection';
 import ProjectSelector from 'components/ProjectSelector/ProjectSelector';
 import ProjectViewer from 'components/ProjectViewer/ProjectViewer';
 import RootStore from 'entities/mst/RootStore';
 import { useRootStore } from 'context';
-import SelectorEditorConnection from 'connections/SelectorEditor/SelectorEditorConnection';
+import SelectorEditorConnection from 'services/SelectorsBagService';
 
 const App: React.FC = observer(() => {
     const ideProxies: IIdeProxy[] = [IDEAConnection.instance()];

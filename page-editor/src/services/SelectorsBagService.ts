@@ -1,5 +1,5 @@
-import { RootStore } from '../../context';
-import SelectorEditorProxy, { MessageTypes } from './SelectorEditorProxy';
+import { RootStore } from '../context';
+import SelectorEditorProxy, { MessageTypes } from '../connections/SelectorEditorConnection';
 
 export default class SelectorEditorConnection {
     private static _inst: SelectorEditorConnection | undefined;

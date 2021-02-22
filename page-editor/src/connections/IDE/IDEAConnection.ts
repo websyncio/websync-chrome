@@ -1,9 +1,6 @@
-import WebsocketConnection, { Events } from './WebsocketConnection';
+import WebsocketConnection, { Events } from '../WebsocketConnection';
 import { RootStore } from '../../context';
-import IIdeProxy from 'connections/IDE/IIdeProxy';
-import { destroy, getParent, Instance, cast } from 'mobx-state-tree';
-import ProjectStore, { ProjectStoreModel } from 'entities/mst/ProjectStore';
-import UIStore from 'entities/mst/UiStore';
+import IIdeProxy from 'connections/IDE/IIdeConnection';
 import ComponentInstance from 'entities/mst/ComponentInstance';
 
 export default class IDEAConnection implements IIdeProxy {
@@ -36,11 +33,13 @@ export default class IDEAConnection implements IIdeProxy {
     }
 
     onOpen() {
+        // TODO: move to service
         RootStore.uiStore.addIdeConnection(this.type);
         this.requestProjects();
     }
 
     onClosed() {
+        // TODO: move to service
         RootStore.uiStore.removeIdeConnection(this.type);
     }
 
@@ -56,10 +55,12 @@ export default class IDEAConnection implements IIdeProxy {
     }
 
     onProjectDataReceived(projectData: any) {
+        // TODO: move to service
         RootStore.setProjectData(this.type, projectData);
     }
 
     onProjectsReceived(projectsList) {
+        // TODO: move to service
         RootStore.uiStore.setProjectsList(this.type, projectsList);
     }
 

@@ -1,7 +1,7 @@
 import { types, Instance, destroy, getSnapshot } from 'mobx-state-tree';
 import { ComponentsContainerModel } from './ComponentsContainer';
 import ComponentInstance, { ComponentInstanceModel } from './ComponentInstance';
-import IdeProxy from 'connections/IDE/IIdeProxy';
+import IIdeConnection from 'connections/IDE/IIdeConnection';
 
 export const PageTypeModel = types
     .compose(
