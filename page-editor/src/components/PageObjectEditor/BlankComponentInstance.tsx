@@ -5,14 +5,14 @@ import TypeNameEditor from './TypeNameEditor';
 import './BlankComponentInstance.sass';
 
 const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
-    ({ ideProxy, component, index, caretPosition, onSelected, onSelectNext, onSelectPrevious }) => {
+    ({ component, index, caretPosition, onSelected, onSelectNext, onSelectPrevious }) => {
         const [isDeleted, setIsDeleted] = useState(false);
         const [isAllSet, setIsAllSet] = useState(!!component.typeName.length && !!component.componentFieldName.length);
 
         useLayoutEffect(() => {
             if (isDeleted) {
                 // .delete after animation completed
-                setTimeout(() => component.delete(ideProxy), 300);
+                setTimeout(() => component.delete(), 300);
             }
         }, [isDeleted]);
 
@@ -35,9 +35,6 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
                     ${isDeleted ? 'deleted' : ''}`}
                 onClick={onSelected}
             >
-                {/* <span className="line-prefix">
-                    <span className="line-index">{index}</span>
-                </span> */}
                 <span className="body-wrap">
                     <TypeNameEditor
                         component={component}

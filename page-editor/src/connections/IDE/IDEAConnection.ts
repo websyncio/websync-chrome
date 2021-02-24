@@ -1,9 +1,12 @@
+import 'reflect-metadata';
+import { inject, injectable } from 'inversify';
 import WebsocketConnection, { Events } from '../WebsocketConnection';
-import { RootStore } from '../../context';
-import IIdeProxy from 'connections/IDE/IIdeConnection';
+import { RootStore } from 'context';
+import IIdeConnection from 'connections/IDE/IIdeConnection';
 import ComponentInstance from 'entities/mst/ComponentInstance';
 
-export default class IDEAConnection implements IIdeProxy {
+@injectable()
+export default class IDEAConnection implements IIdeConnection {
     connection: WebsocketConnection;
     type = 'IDEA';
 

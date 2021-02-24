@@ -2,7 +2,6 @@ import IIdeProxy from 'connections/IDE/IIdeConnection';
 import IComponentInstance from 'entities/mst/ComponentInstance';
 
 export default interface ComponentInstanceProps {
-    ideProxy: IIdeProxy;
     component: IComponentInstance;
     index: number;
     caretPosition: number | null;

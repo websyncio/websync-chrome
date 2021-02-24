@@ -10,18 +10,20 @@ import ComponentInstanceProps from './ComponentInstanceProps';
 import { DependencyContainer, TYPES } from 'inversify.config';
 import { SelectorsBagService } from 'services/SelectorsBagService';
 import './ComponentInstance.sass';
+import ISynchronizationService from 'services/IProjectSynchronizationService';
 
 const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
-    ({ ideProxy, component, index, caretPosition, onSelected, onSelectNext, onSelectPrevious }) => {
+    ({ component, index, caretPosition, onSelected, onSelectNext, onSelectPrevious }) => {
         const [hasError, setHasError] = useState(false);
         const [isDeleted, setIsDeleted] = useState(false);
 
         const selectorsBagService = DependencyContainer.get<SelectorsBagService>(TYPES.SelectorsBagService);
+        const synchronizationService = DependencyContainer.get<ISynchronizationService>(TYPES.SynchronizationService);
 
         useLayoutEffect(() => {
             if (isDeleted) {
                 // .delete after animation completed
-                setTimeout(() => component.delete(ideProxy), 300);
+                setTimeout(() => synchronizationService.deleteComponentInstance(component), 300);
             }
         }, [isDeleted]);
 

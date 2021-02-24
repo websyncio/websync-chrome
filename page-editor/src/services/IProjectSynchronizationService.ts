@@ -1,4 +1,7 @@
+import ComponentInstance from 'entities/mst/ComponentInstance';
+
 export default interface IProjectSynchronizationService {
+    deleteComponentInstance(component: ComponentInstance): void;
     // createSite();
     // createPageType();
     // createComponentType();

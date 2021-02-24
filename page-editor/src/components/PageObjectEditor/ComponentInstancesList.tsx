@@ -1,10 +1,8 @@
 import React from 'react';
-import ComponentInstance from './ComponentInstance';
 import ComponentInstanceProps from './ComponentInstanceProps';
 import { observer } from 'mobx-react';
 import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
-import ComponentsContainer from 'entities/mst/ComponentsContainer';
 import './ComponentInstancesList.sass';
 import IIdeProxy from 'connections/IDE/IIdeConnection';
 import IComponentInstance from 'entities/mst/ComponentInstance';
@@ -124,7 +122,6 @@ const ComponentInstancesList: React.FC<Props> = observer(
                     {componentInstances.map((component, index) => [
                         <li key={component.id} onKeyDown={(e) => onComponentKeyDown(e, component)}>
                             <ComponentView
-                                ideProxy={ideProxy}
                                 component={component}
                                 index={index + 1}
                                 caretPosition={caretPosition}
@@ -136,19 +133,6 @@ const ComponentInstancesList: React.FC<Props> = observer(
                                     return selectComponent(component, -1, caretPosition);
                                 }}
                             />
-                            {/* <ComponentInstance
-                            ideProxy={ideProxy}
-                            component={component}
-                            index={index + 1}
-                            caretPosition={caretPosition}
-                            onSelected={() => onComponentSelected(component)}
-                            onSelectNext={(caretPosition) => {
-                                selectComponent(component, 1, caretPosition);
-                            }}
-                            onSelectPrevious={(caretPosition) => {
-                                selectComponent(component, -1, caretPosition);
-                            }}
-                        /> */}
                         </li>,
                         // <ComponentInstancesList componentInstancesList={component.selectedPageType.componentsInstances}/>
                     ])}

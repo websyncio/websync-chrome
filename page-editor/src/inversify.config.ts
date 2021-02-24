@@ -6,19 +6,19 @@ import { SelectorsBagService } from 'services/SelectorsBagService';
 import SelectorEditorConnection from 'connections/SelectorEditorConnection';
 import SelectorValidator from 'services/SelectorValidatorService';
 import SelectorHighlighter from 'services/SelectorHighlighterService';
+import IDEAConnection from 'connections/IDE/IDEAConnection';
 
 export const TYPES = {
-    ProjectSynchronizationService: Symbol.for('ProjectSynchronizationService'),
+    SynchronizationService: Symbol.for('ProjectSynchronizationService'),
     SelectorsBagService: Symbol.for('SelectorsBagService'),
     SelectorEditorConnection: Symbol.for('SelectorEditorConnection'),
     SelectorValidator: Symbol.for('SelectorValidator'),
     SelectorHighlighter: Symbol.for('SelectorHighlighter'),
+    IDEAConnection: Symbol.for('IDEAConnection'),
 };
 
 export const DependencyContainer = new Container();
-DependencyContainer.bind<IProjectSynchronizationService>(TYPES.ProjectSynchronizationService)
-    .to(JDISynchronizationService)
-    .inSingletonScope();
+
 DependencyContainer.bind<SelectorEditorConnection>(TYPES.SelectorEditorConnection)
     .to(SelectorEditorConnection)
     .inSingletonScope();
@@ -41,5 +41,14 @@ DependencyContainer.bind<SelectorHighlighter>(TYPES.SelectorHighlighter)
     .toDynamicValue(() => {
         const connection = DependencyContainer.get<SelectorEditorConnection>(TYPES.SelectorEditorConnection);
         return new SelectorHighlighter(connection);
+    })
+    .inSingletonScope();
+
+DependencyContainer.bind<IDEAConnection>(TYPES.IDEAConnection).to(IDEAConnection).inSingletonScope();
+
+DependencyContainer.bind<JDISynchronizationService>(TYPES.SynchronizationService)
+    .toDynamicValue(() => {
+        const connection = DependencyContainer.get<IDEAConnection>(TYPES.IDEAConnection);
+        return new JDISynchronizationService(connection);
     })
     .inSingletonScope();

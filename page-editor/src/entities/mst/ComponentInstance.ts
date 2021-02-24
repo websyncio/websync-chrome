@@ -1,4 +1,14 @@
-import { types, Instance, getSnapshot, getParent, hasParent, getParentOfType, cast, clone } from 'mobx-state-tree';
+import {
+    types,
+    Instance,
+    getSnapshot,
+    getParent,
+    hasParent,
+    getParentOfType,
+    cast,
+    clone,
+    destroy,
+} from 'mobx-state-tree';
 import { AttributeModel } from './Attribute';
 import { ComponentTypeModel } from './ComponentType';
 import { PageTypeModel } from './PageType';
@@ -63,7 +73,7 @@ export const ComponentInstanceModel = types.compose(
                 self.initializationAttribute.updateParameterValue(parameterName, parameterValueIndex, parameterValue);
                 IDEAConnection.instance().updateComponentInstance(self as ComponentInstance);
             },
-            delete(ideProxy) {
+            delete() {
                 const pageType = getParentOfType(self, PageTypeModel);
                 pageType.deleteComponentInstance(self);
             },

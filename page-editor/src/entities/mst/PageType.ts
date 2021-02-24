@@ -1,7 +1,5 @@
 import { types, Instance, destroy, getSnapshot } from 'mobx-state-tree';
 import { ComponentsContainerModel } from './ComponentsContainer';
-import ComponentInstance, { ComponentInstanceModel } from './ComponentInstance';
-import IIdeConnection from 'connections/IDE/IIdeConnection';
 
 export const PageTypeModel = types
     .compose(
@@ -17,7 +15,6 @@ export const PageTypeModel = types
             self.componentsInstances.splice(index, 0, updated);
         },
         deleteComponentInstance(ci) {
-            self.componentsInstances.remove(ci);
             destroy(ci);
         },
     }));
