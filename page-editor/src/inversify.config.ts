@@ -1,12 +1,13 @@
 import 'reflect-metadata';
 import { Container } from 'inversify';
-import IProjectSynchronizationService from 'services/IProjectSynchronizationService';
+import ISynchronizationService from 'services/ISynchronizationService';
 import JDISynchronizationService from 'supported-frameworks/JDISynchronizationService';
 import { SelectorsBagService } from 'services/SelectorsBagService';
 import SelectorEditorConnection from 'connections/SelectorEditorConnection';
 import SelectorValidator from 'services/SelectorValidatorService';
 import SelectorHighlighter from 'services/SelectorHighlighterService';
 import IDEAConnection from 'connections/IDE/IDEAConnection';
+import ISelectorsBagService from 'services/ISelectorsBagService';
 
 export const TYPES = {
     SynchronizationService: Symbol.for('ProjectSynchronizationService'),
@@ -23,7 +24,7 @@ DependencyContainer.bind<SelectorEditorConnection>(TYPES.SelectorEditorConnectio
     .to(SelectorEditorConnection)
     .inSingletonScope();
 
-DependencyContainer.bind<SelectorsBagService>(TYPES.SelectorsBagService)
+DependencyContainer.bind<ISelectorsBagService>(TYPES.SelectorsBagService)
     .toDynamicValue(() => {
         const connection = DependencyContainer.get<SelectorEditorConnection>(TYPES.SelectorEditorConnection);
         return new SelectorsBagService(connection);
@@ -46,7 +47,7 @@ DependencyContainer.bind<SelectorHighlighter>(TYPES.SelectorHighlighter)
 
 DependencyContainer.bind<IDEAConnection>(TYPES.IDEAConnection).to(IDEAConnection).inSingletonScope();
 
-DependencyContainer.bind<JDISynchronizationService>(TYPES.SynchronizationService)
+DependencyContainer.bind<ISynchronizationService>(TYPES.SynchronizationService)
     .toDynamicValue(() => {
         const connection = DependencyContainer.get<IDEAConnection>(TYPES.IDEAConnection);
         return new JDISynchronizationService(connection);

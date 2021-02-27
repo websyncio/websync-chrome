@@ -2,7 +2,7 @@ import IDEAConnection from 'connections/IDE/IDEAConnection';
 import ComponentInstance from 'entities/mst/ComponentInstance';
 import { injectable, inject } from 'inversify';
 import { TYPES } from 'inversify.config';
-import IProjectSynchronizerService from 'services/IProjectSynchronizationService';
+import IProjectSynchronizerService from 'services/ISynchronizationService';
 import { RootStore } from 'context';
 
 @injectable()

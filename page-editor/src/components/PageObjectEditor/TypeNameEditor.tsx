@@ -10,7 +10,7 @@ import './TypeNameEditor.sass';
 interface Props {
     component: ComponentInstanceModel;
     showPlaceholders: boolean;
-    caretPosition: number | null;
+    initialCaretPosition: number | null;
     onDeleted: () => void;
     onSelectNext: (caretPosition: number) => boolean;
     onSelectPrevious: (caretPosition: number) => boolean;
@@ -18,7 +18,7 @@ interface Props {
 }
 
 const TypeNameEditor: React.FC<Props> = observer(
-    ({ component, showPlaceholders, caretPosition, onDeleted, onSelectNext, onSelectPrevious, onChange }) => {
+    ({ component, showPlaceholders, initialCaretPosition, onDeleted, onSelectNext, onSelectPrevious, onChange }) => {
         const typePlaceholder = '<set type>';
         const namePlaceholder = '<set name>';
         const popupRef: any = React.createRef();
@@ -29,6 +29,7 @@ const TypeNameEditor: React.FC<Props> = observer(
         const [isOpen, setIsOpen] = useState(false);
         const [showTypePlaceholder, setShowTypePlaceholder] = useState(showPlaceholders && !component.typeName.length);
         const [showNamePlaceholder, setShowNamePlaceholder] = useState(showPlaceholders && !component.name.length);
+        const [actualCaretPosition, setActualCaretPosition] = useState(0);
         let popper: any;
 
         useLayoutEffect(() => {
@@ -115,7 +116,7 @@ const TypeNameEditor: React.FC<Props> = observer(
         useLayoutEffect(() => {
             if (component.selected) {
                 if (!isActive(typeRef.current) && !isActive(nameRef.current)) {
-                    setCaretPosition(caretPosition == null ? getFullLength() : caretPosition, showSpace);
+                    setCaretPosition(initialCaretPosition == null ? getFullLength() : initialCaretPosition, showSpace);
                 }
             } else {
                 if (!showPlaceholders && !typeRef.current.textContent && !nameRef.current.textContent) {
@@ -123,6 +124,10 @@ const TypeNameEditor: React.FC<Props> = observer(
                 }
             }
         }, [component.selected]);
+
+        useLayoutEffect(() => {
+            setCaretPosition(actualCaretPosition, showSpace);
+        }, [actualCaretPosition]);
 
         function getElementCaretPosition(editableElement) {
             const sel = window.getSelection();
@@ -392,6 +397,7 @@ const TypeNameEditor: React.FC<Props> = observer(
             setPlaceholder(attributeElement, setShowPlaceholder);
             // component.setComponentType(typeRef.current.textContent);
             // component.rename(nameRef.current.textContent, null);
+            setActualCaretPosition(getCaretPosition());
             onChange(typeRef.current.textContent, nameRef.current.textContent);
         }
 

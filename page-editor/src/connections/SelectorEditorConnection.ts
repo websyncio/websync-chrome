@@ -9,6 +9,7 @@ export const MessageTypes = {
     HighlightSelector: 'highlight-selector',
     RemoveHighlighting: 'remove-highlighting',
     RequestSelectorsList: 'request-selectors-list',
+    EditSelector: 'edit-selector',
 };
 
 @injectable()

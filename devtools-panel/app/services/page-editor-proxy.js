@@ -2,7 +2,8 @@ import Service from '@ember/service';
 import Reactor from './reactor';
 
 export const MessageTypes = {
-	EditComponentSelector: 'edit-component-selector',
+	UpdateComponentsBag: 'update-components-bag',
+	EditSelector: 'edit-selector',
 	UpdateComponentSelector: 'update-component-selector',
 	ValidateSelector: 'validate-selector',
 	HighlightSelector: 'highlight-selector',
@@ -17,7 +18,7 @@ export default Service.extend({
 	reactor: Ember.inject.service(),
 
 	init(){
-		this.get('reactor').registerEvent(MessageTypes.EditComponentSelector);
+		this.get('reactor').registerEvent(MessageTypes.EditSelector);
 	},
 	start(){
 		window.addEventListener("message", this.receiveMessage.bind(this), false);
@@ -32,7 +33,10 @@ export default Service.extend({
 			case MessageTypes.ValidateSelector:
 				this.validateSelector(event);
 				break;
-			case MessageTypes.EditComponentSelector:
+			case MessageTypes.UpdateComponentsBag:
+				this.updateComponentsBag(event);
+				break;
+			case MessageTypes.EditSelector:
 				this.editComponentSelector(event);
 				break;
 			case MessageTypes.HighlightSelector:
@@ -52,9 +56,12 @@ export default Service.extend({
 	removeHighlighting(){
 		this.get('selectorHighlighter').removeHighlighting();
 	},
+	updateComponentsBag(event){
+		throw new Error("Not implemented");
+	},
 	editComponentSelector(event){
 		this.get('reactor').dispatchEvent(
-			MessageTypes.EditComponentSelector,
+			MessageTypes.EditSelector,
 			event.data.data
 		);
 	},

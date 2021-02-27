@@ -3,9 +3,11 @@ import { inject, injectable } from 'inversify';
 import { RootStore } from '../context';
 import SelectorEditorConnection, { MessageTypes } from '../connections/SelectorEditorConnection';
 import { TYPES } from 'inversify.config';
+import ISelectorsBagService from './ISelectorsBagService';
+import ComponentInstance from 'entities/mst/ComponentInstance';
 
 @injectable()
-export class SelectorsBagService {
+export class SelectorsBagService implements ISelectorsBagService {
     constructor(@inject(TYPES.SelectorEditorConnection) private selectorEditorConnection: SelectorEditorConnection) {
         selectorEditorConnection.addListener(MessageTypes.UpdateComponentSelector, this.onUdpateComponenetSelector);
         selectorEditorConnection.addListener(MessageTypes.UpdateSelectorsList, this.generateBlankComponents);
@@ -29,10 +31,32 @@ export class SelectorsBagService {
         ]);
     }
 
+    deleteComponent(component: ComponentInstance) {
+        component.delete();
+        this.updateComponentsBag();
+    }
+
+    updateComponentName(component: ComponentInstance, newComponentName: string) {
+        component.setName(newComponentName);
+        this.updateComponentsBag();
+    }
+
+    updateComponentType(component: ComponentInstance, componentType: string) {
+        component.setComponentType(componentType);
+    }
+
+    private updateComponentsBag() {
+        const componentsData = RootStore.uiStore.blankComponents.map((c) => ({
+            componentId: c.id,
+            componentName: c.name,
+        }));
+        this.selectorEditorConnection.sendMessage(MessageTypes.UpdateSelectorsList, componentsData);
+    }
+
     // TODO: create model for selector
     //{ componentId: string; componentName: string; parameterName: string | null; parameterValueIndex: number; selector: string; }
     editSelector(selector) {
-        this.selectorEditorConnection.sendMessage('edit-component-selector', selector);
+        this.selectorEditorConnection.sendMessage(MessageTypes.EditSelector, selector);
     }
 
     requestSelectorsList() {

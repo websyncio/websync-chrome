@@ -3,11 +3,14 @@ import { observer } from 'mobx-react';
 import ComponentInstanceProps from './ComponentInstanceProps';
 import TypeNameEditor from './TypeNameEditor';
 import './BlankComponentInstance.sass';
+import { DependencyContainer, TYPES } from 'inversify.config';
+import ISelectorsBagService from 'services/ISelectorsBagService';
 
 const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
     ({ component, index, caretPosition, onSelected, onSelectNext, onSelectPrevious }) => {
         const [isDeleted, setIsDeleted] = useState(false);
         const [isAllSet, setIsAllSet] = useState(!!component.typeName.length && !!component.componentFieldName.length);
+        const selectorBagService = DependencyContainer.get<ISelectorsBagService>(TYPES.SelectorsBagService);
 
         useLayoutEffect(() => {
             if (isDeleted) {
@@ -17,10 +20,19 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
         }, [isDeleted]);
 
         function onDeleted() {
+            selectorBagService.deleteComponent(component);
             setIsDeleted(true);
         }
 
         function onChange(componentType: string, componentName: string) {
+            if (component.componentType !== componentType) {
+                selectorBagService.updateComponentType(component, componentType);
+            }
+            if (component.name != componentName) {
+                selectorBagService.updateComponentName(component, componentName);
+            }
+
+            // Should we implement more complex validation here?
             setIsAllSet(!!componentType.length && !!componentName.length);
         }
 
@@ -39,7 +51,7 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
                     <TypeNameEditor
                         component={component}
                         showPlaceholders={true}
-                        caretPosition={caretPosition}
+                        initialCaretPosition={caretPosition}
                         onDeleted={onDeleted}
                         onSelectNext={onSelectNext}
                         onSelectPrevious={onSelectPrevious}

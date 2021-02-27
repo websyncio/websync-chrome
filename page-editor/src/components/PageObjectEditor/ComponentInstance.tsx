@@ -10,7 +10,7 @@ import ComponentInstanceProps from './ComponentInstanceProps';
 import { DependencyContainer, TYPES } from 'inversify.config';
 import { SelectorsBagService } from 'services/SelectorsBagService';
 import './ComponentInstance.sass';
-import ISynchronizationService from 'services/IProjectSynchronizationService';
+import ISynchronizationService from 'services/ISynchronizationService';
 
 const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
     ({ component, index, caretPosition, onSelected, onSelectNext, onSelectPrevious }) => {
@@ -95,7 +95,7 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                     <TypeNameEditor
                         component={component}
                         showPlaceholders={false}
-                        caretPosition={caretPosition}
+                        initialCaretPosition={caretPosition}
                         onDeleted={onDeleted}
                         onSelectNext={onSelectNext}
                         onSelectPrevious={onSelectPrevious}
