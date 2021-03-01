@@ -10,10 +10,10 @@ export default class SelectorHighlighter {
     constructor(@inject(TYPES.SelectorEditorConnection) private selectorEditorConnection: SelectorEditorConnection) {}
 
     highlight(selector: any) {
-        this.selectorEditorConnection.sendMessage(MessageTypes.HighlightSelector, selector);
+        this.selectorEditorConnection.postMessage(MessageTypes.HighlightSelector, selector);
     }
 
     removeHighlighting() {
-        this.selectorEditorConnection.sendMessage(MessageTypes.RemoveHighlighting);
+        this.selectorEditorConnection.postMessage(MessageTypes.RemoveHighlighting);
     }
 }

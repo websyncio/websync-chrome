@@ -19,7 +19,7 @@ export default class SelectorValidator {
     }
 
     validate(selector: Scss, callback: Function) {
-        this.selectorEditorConnection.sendMessage(MessageTypes.ValidateSelector, selector, (event) => {
+        this.selectorEditorConnection.postMessage(MessageTypes.ValidateSelector, selector, (event) => {
             this.callback(event, callback);
         });
     }

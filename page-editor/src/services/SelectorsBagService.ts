@@ -9,22 +9,26 @@ import ComponentInstance from 'entities/mst/ComponentInstance';
 @injectable()
 export class SelectorsBagService implements ISelectorsBagService {
     constructor(@inject(TYPES.SelectorEditorConnection) private selectorEditorConnection: SelectorEditorConnection) {
-        selectorEditorConnection.addListener(MessageTypes.UpdateComponentSelector, this.onUdpateComponenetSelector);
-        selectorEditorConnection.addListener(MessageTypes.UpdateSelectorsList, this.generateBlankComponents);
+        selectorEditorConnection.addListener(MessageTypes.SelectorUpdated, this.onSelectorUpdated);
+        selectorEditorConnection.addListener(MessageTypes.SelectorsListUpdated, this.generateBlankComponents);
         this.generateBlankComponents([
             {
+                id: '1.SearchInput',
                 name: 'SearchInput',
                 selector: '#search',
             },
             {
+                id: '2.SendButton',
                 name: 'SendButton',
                 selector: "[type='submit']",
             },
             {
+                id: '3.CancelButton',
                 name: 'CancelButton',
                 selector: "button['Cancel']",
             },
             {
+                id: '4.',
                 name: '',
                 selector: "button['Cancel']",
             },
@@ -50,18 +54,20 @@ export class SelectorsBagService implements ISelectorsBagService {
             componentId: c.id,
             componentName: c.name,
         }));
-        this.selectorEditorConnection.sendMessage(MessageTypes.UpdateSelectorsList, componentsData);
+        this.selectorEditorConnection.postMessage(MessageTypes.SelectorsListUpdated, componentsData);
     }
 
     // TODO: create model for selector
     //{ componentId: string; componentName: string; parameterName: string | null; parameterValueIndex: number; selector: string; }
     editSelector(selector) {
-        this.selectorEditorConnection.sendMessage(MessageTypes.EditSelector, selector);
+        this.selectorEditorConnection.postMessage(MessageTypes.EditSelector, selector);
     }
 
     requestSelectorsList() {
-        this.selectorEditorConnection.sendMessage(MessageTypes.RequestSelectorsList, null, (event) => {
-            this.generateBlankComponents(event.data);
+        this.selectorEditorConnection.postMessage(MessageTypes.GetSelectorsList, null, (event) => {
+            if (event.data) {
+                this.generateBlankComponents(event.data);
+            }
         });
     }
 
@@ -69,7 +75,7 @@ export class SelectorsBagService implements ISelectorsBagService {
         RootStore.uiStore.generateBlankComponents(data);
     }
 
-    onUdpateComponenetSelector(data) {
+    onSelectorUpdated(data) {
         console.log('update component selector in projectStore here', data);
         if (!RootStore.uiStore.selectedPageObject) {
             throw new Error('No selected page object to update.');

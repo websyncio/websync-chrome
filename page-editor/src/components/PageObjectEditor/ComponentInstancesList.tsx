@@ -1,15 +1,11 @@
 import React from 'react';
 import ComponentInstanceProps from './ComponentInstanceProps';
 import { observer } from 'mobx-react';
-import { useRootStore } from 'context';
-import RootStore from 'entities/mst/RootStore';
 import './ComponentInstancesList.sass';
-import IIdeProxy from 'connections/IDE/IIdeConnection';
 import IComponentInstance from 'entities/mst/ComponentInstance';
 import { useState } from 'react';
 
 interface Props {
-    ideProxy: IIdeProxy;
     componentInstances: IComponentInstance[];
     componentView: React.ComponentType<ComponentInstanceProps>;
     onSelectNext?: () => boolean;
@@ -17,9 +13,7 @@ interface Props {
 }
 
 const ComponentInstancesList: React.FC<Props> = observer(
-    ({ ideProxy, componentInstances, componentView: ComponentView, onSelectPrevious, onSelectNext }) => {
-        const { projectStore, uiStore }: RootStore = useRootStore();
-
+    ({ componentInstances, componentView: ComponentView, onSelectPrevious, onSelectNext }) => {
         const [caretPosition, setCaretPosition] = useState<number | null>(0);
         // function onRename(event, component) {
         //     if (event.target.contentEditable === true) {

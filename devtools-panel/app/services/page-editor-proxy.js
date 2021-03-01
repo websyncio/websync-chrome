@@ -2,12 +2,16 @@ import Service from '@ember/service';
 import Reactor from './reactor';
 
 export const MessageTypes = {
-	UpdateComponentsBag: 'update-components-bag',
 	EditSelector: 'edit-selector',
-	UpdateComponentSelector: 'update-component-selector',
 	ValidateSelector: 'validate-selector',
 	HighlightSelector: 'highlight-selector',
-	RemoveHighlighting: 'remove-highlighting'
+	RemoveHighlighting: 'remove-highlighting',
+	
+	GetSelectorsList: 'get-selectors-list',
+	UpdateSelectorName: 'update-selector-name',
+	
+	SelectorUpdated: 'component-selector-updated',
+	SelectorsListUpdated: 'selectors-list-updated'
 };
 
 export default Service.extend({
@@ -19,9 +23,15 @@ export default Service.extend({
 
 	init(){
 		this.get('reactor').registerEvent(MessageTypes.EditSelector);
+		this.get('reactor').registerEvent(MessageTypes.GetSelectorsList);
 	},
-	start(){
-		window.addEventListener("message", this.receiveMessage.bind(this), false);
+	start(isAuxilliary){
+		let sourceName = isAuxilliary?'selector-editor-main':'selector-editor-auxilliary';
+		this.set('sourceName', sourceName);
+		
+		let backgroundConnection = chrome.runtime.connect();
+	    backgroundConnection.onMessage.addListener(this.receiveMessage.bind(this));
+	    this.set('backgroundConnection', backgroundConnection);
 	},
 	receiveMessage(event){
 		// Do we trust the sender of this message?
@@ -33,9 +43,6 @@ export default Service.extend({
 			case MessageTypes.ValidateSelector:
 				this.validateSelector(event);
 				break;
-			case MessageTypes.UpdateComponentsBag:
-				this.updateComponentsBag(event);
-				break;
 			case MessageTypes.EditSelector:
 				this.editComponentSelector(event);
 				break;
@@ -44,6 +51,12 @@ export default Service.extend({
 				break;
 			case MessageTypes.RemoveHighlighting:
 				this.removeHighlighting();
+				break;
+			case MessageTypes.GetSelectorsList:
+				this.getSelectorsList(event);
+				break;
+			case MessageTypes.UpdateSelectorName:
+				this.updateSelectorName(event);
 				break;
 			default:
 				console.log("Page edito proxy received message of unknown type.", event.data.type);
@@ -56,8 +69,14 @@ export default Service.extend({
 	removeHighlighting(){
 		this.get('selectorHighlighter').removeHighlighting();
 	},
-	updateComponentsBag(event){
+	updateSelectorName(event){
 		throw new Error("Not implemented");
+	},
+	getSelectorsList(){
+		this.get('reactor').dispatchEvent(
+			MessageTypes.GetSelectorsList,
+			event.data.data
+		);
 	},
 	editComponentSelector(event){
 		this.get('reactor').dispatchEvent(
@@ -96,17 +115,32 @@ export default Service.extend({
 		}, event.origin);
 	},
 	postMessage(type, data){
-		pageEditor.contentWindow.postMessage({
+		this.get('backgroundConnection').postMessage({
+			source: this.get('sourceName'),
+			tabId: chrome.devtools.inspectedWindow.tabId,
 			type: type,
 			data: data
-		}, "*");
+		});
+
+		// pageEditor.contentWindow.postMessage({
+		// 	type: type,
+		// 	data: data
+		// }, "*");
 	},
 	addListener(messageType, listener){
 		this.get('reactor').addEventListener(messageType, listener);
 	},
-	updateComponentSelector(componentId, parameterName, parameterValueIndex, newSelector){
+	updateSelectorsList(selectors){
+		let data = selectors.map(s=>({
+			id: Math.random()+'',
+			name: s.name,
+			selector: s.value
+		}));
+		this.postMessage(MessageTypes.SelectorsListUpdated, data);
+	},
+	updateSelector(componentId, parameterName, parameterValueIndex, newSelector){
 		this.postMessage(
-			MessageTypes.UpdateComponentSelector,
+			MessageTypes.SelectorUpdated,
 			{
 				componentId: componentId,
 				parameterName: parameterName,
