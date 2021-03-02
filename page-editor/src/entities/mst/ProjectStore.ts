@@ -25,7 +25,7 @@ export const ProjectStoreModel = types
             return self.webSites.find((ws) => ws.selected);
         },
         get selectedPageInstance(): PageInstance | null {
-            return self.webSites.reduce((result, ws) => result.concat(ws.pageInstances), []).find((pi) => pi.selected);
+            return self.webSites.flatMap((ws) => ws.pageInstances).find((pi) => pi.selected);
         },
         get frameworkComponentTypes(): ComponentType[] {
             return self.componentTypes.filter((ct) => !ct.isCustom).sort(compareComponentTypes);

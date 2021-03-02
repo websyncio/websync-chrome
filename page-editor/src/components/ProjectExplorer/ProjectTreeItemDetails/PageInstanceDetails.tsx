@@ -7,6 +7,7 @@ interface Props {
 }
 
 const PageInstanceDetails: React.FC<Props> = observer(({ pageInstance }) => {
+    console.log('PageInstanceDetails', pageInstance);
     return (
         <div className="details-wrap">
             <div className="pageinstance-name">
