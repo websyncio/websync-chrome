@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { inject, injectable } from 'inversify';
 import { RootStore } from '../context';
-import SelectorEditorConnection, { MessageTypes } from '../connections/SelectorEditorConnection';
+import SelectorEditorConnection, { MessageTargets, MessageTypes } from '../connections/SelectorEditorConnection';
 import { TYPES } from 'inversify.config';
 import ISelectorsBagService from './ISelectorsBagService';
 import ComponentInstance from 'entities/mst/ComponentInstance';
@@ -64,11 +64,16 @@ export class SelectorsBagService implements ISelectorsBagService {
     }
 
     requestSelectorsList() {
-        this.selectorEditorConnection.postMessage(MessageTypes.GetSelectorsList, null, (event) => {
-            if (event.data) {
-                this.generateBlankComponents(event.data);
-            }
-        });
+        this.selectorEditorConnection.postMessage(
+            MessageTypes.GetSelectorsList,
+            null,
+            MessageTargets.SelectorEditorMain,
+            (event) => {
+                if (event.data) {
+                    this.generateBlankComponents(event.data);
+                }
+            },
+        );
     }
 
     generateBlankComponents(data) {

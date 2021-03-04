@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { injectable, inject } from 'inversify';
-import SelectorEditorConnection, { MessageTypes } from '../connections/SelectorEditorConnection';
+import SelectorEditorConnection, { MessageTargets, MessageTypes } from '../connections/SelectorEditorConnection';
 import { Scss } from 'utils/ScssBuilder';
 import { TYPES } from 'inversify.config';
 export const SELECTOR_VALIDATED = 'selector-validated';
@@ -19,9 +19,14 @@ export default class SelectorValidator {
     }
 
     validate(selector: Scss, callback: Function) {
-        this.selectorEditorConnection.postMessage(MessageTypes.ValidateSelector, selector, (event) => {
-            this.callback(event, callback);
-        });
+        this.selectorEditorConnection.postMessage(
+            MessageTypes.ValidateSelector,
+            selector,
+            MessageTargets.SelectorEditorAuxilliary,
+            (event) => {
+                this.callback(event, callback);
+            },
+        );
     }
     callback(data, onValidated) {
         const validationData = {

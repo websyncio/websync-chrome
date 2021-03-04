@@ -26,23 +26,24 @@ export default Ember.Controller.extend({
 	init(){
 		this._super(...arguments);
 		console.log("Init ConvertController...");
-		this.configurePageEditor();
 
+		chrome.devtools.panels.elements.onSelectionChanged.addListener(this.locateInspectedElement.bind(this));
+    	this.set('withPageEditor', this.getParamValue('withPageEditor')==='true');
+
+		this.configurePageEditor();
+		
 		Ember.run.schedule("afterRender", this, function() {
       		this.focusInput();
       		this.locateInspectedElement();
       		resizeHandlerFrame.onresize = this.adjustLayout.bind(this);
       		this.bindSourceInputEvents();
     	});
-
-    	chrome.devtools.panels.elements.onSelectionChanged.addListener(this.locateInspectedElement.bind(this));
-    	this.set('withPageEditor', this.getParamValue('withpageeditor')==='true');
 	},
 	configurePageEditor(){
 		let pageEditor = this.get('pageEditorProxy'); 
 		pageEditor.addListener(MessageTypes.EditSelector, this.onEditComponentSelector.bind(this));
 		pageEditor.addListener(MessageTypes.GetSelectorsList, this.onSelectorsListUpdated.bind(this));
-		pageEditor.start(this.get('withpageeditor'));
+		pageEditor.start(this.get('withPageEditor'));
 	},
 	bindSourceInputEvents(){
 		let element = this.getInputElement();
@@ -458,7 +459,8 @@ export default Ember.Controller.extend({
 		}
 	},
 	onSelectorsListUpdated: Ember.observer('selectors.@each', function(){
-		this.get('pageEditorProxy').updateSelectorsList(this.get('selectors'));
+		console.log('onSelectorsListUpdated observer was fired.');
+		//this.get('pageEditorProxy').updateSelectorsList(this.get('selectors'));
 	}),
 	actions:{
 		copySelectorStart(isXpath){

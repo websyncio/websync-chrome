@@ -4,6 +4,7 @@ import { injectable } from 'inversify';
 import Reactor from '../utils/Reactor';
 
 export const MessageTypes = {
+    InitConnection: 'init',
     EditSelector: 'edit-selector',
     ValidateSelector: 'validate-selector',
     HighlightSelector: 'highlight-selector',
@@ -16,11 +17,17 @@ export const MessageTypes = {
     SelectorsListUpdated: 'selectors-list-updated',
 };
 
+export const MessageTargets = {
+    SelectorEditorMain: 'selector-editor-main',
+    SelectorEditorAuxilliary: 'selector-editor-auxilliary',
+};
+
 @injectable()
 export default class SelectorEditorProxy {
     reactor: Reactor;
     acknowledgments: { [id: string]: Function } = {};
     backgroundConnection: chrome.runtime.Port;
+    sourceName = 'page-editor';
 
     constructor() {
         this.reactor = new Reactor();
@@ -29,6 +36,8 @@ export default class SelectorEditorProxy {
 
         this.backgroundConnection = chrome.runtime.connect();
         this.backgroundConnection.onMessage.addListener(this.receiveMessage.bind(this));
+        // we need to send tabId to identify connection in background page
+        this.postMessage(MessageTypes.InitConnection);
     }
 
     receiveMessage(event) {
@@ -46,7 +55,12 @@ export default class SelectorEditorProxy {
         }
     }
 
-    postMessage(type, data: any = undefined, callback: Function | undefined = undefined) {
+    postMessage(
+        type,
+        data: any = undefined,
+        target: string | undefined = undefined,
+        callback: Function | undefined = undefined,
+    ) {
         let address: string | undefined = undefined;
         if (callback) {
             // this variable will be unique callback idetifier
@@ -57,6 +71,9 @@ export default class SelectorEditorProxy {
         }
 
         this.backgroundConnection.postMessage({
+            tabId: chrome.devtools.inspectedWindow.tabId,
+            source: this.sourceName,
+            target: target,
             acknowledgment: address,
             type: type,
             data: data,

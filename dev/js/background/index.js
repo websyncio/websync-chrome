@@ -13,26 +13,26 @@ export const Sources = {
 };
 
 
-var connections = [];
+var connections = {};
 chrome.runtime.onConnect.addListener(function (port) {
   let storeConnection = function(tabId, sourceName, port){
     if(!connections[tabId]){
       connections[tabId] = {};
     }
-    if(!connections[tabId][sourceName]){
+    // if(!connections[tabId][sourceName]){
       connections[tabId][sourceName] = port;
-      console.log(sourceName + ' connected.');
-    }
+      console.log(sourceName + ' for tab ' + tabId + ' connected.');
+    // }
   }
 
   let deleteConnection = function(){
     let tabs = Object.keys(connections);
-    let sources = Object.keys(sources);
+    let sources = Object.keys(Sources);
     for (var i=0; i < tabs.length; i++) {
       let tabConnections = connections[tabs[i]];
-      for (var i = sources.length - 1; i >= 0; i--) {
-        if (tabConnections[sources[i]] == port) {
-          console.log(sources[i] + ' disconnected.');
+      for (var j = sources.length - 1; j >= 0; j--) {
+        if (tabConnections[sources[j]] == port) {
+          console.log(sources[j] + ' for tab '+ tabs[i]+' disconnected.');
           delete connections[tabs[i]]
           return;
         }
@@ -43,25 +43,32 @@ chrome.runtime.onConnect.addListener(function (port) {
   var listener = function (message, senderPort, sendResponse) {
     if(!message.tabId){
       console.error("Tab Id is not specified in the message.");
+      return;
     }
     if(!message.source){
       console.error("Source is not specified in the message.");
+      return;
     }
     console.log('Received message from ' + message.source + ' for tab ' + message.tabId + '.');
 
-    storeConnection(message.tabId, message.source, port);
     console.trace('port===senderPort', port===senderPort);
+
+    if(message.type=='init'){
+      storeConnection(message.tabId, message.source, port);
+      return;
+    }
 
     if(message.target){
       // Relay message to target
-      if(!connections[message.tabId][message.target]){
+      if(!connections[message.tabId] || !connections[message.tabId][message.target]){
         console.error('No connection to '+ message.target);
+        return;
       }
       console.log('Relaying the message from ' + message.source + ' to ' + (message.target||'all receivers') + ' in tab ' + message.tabId + '.');
       connections[message.tabId][message.target].postMessage(message);
     }else{
       // Relay message to all except for source itself
-      let sources = Object.keys(sources);
+      let sources = Object.keys(Sources);
       for (var i = sources.length - 1; i >= 0; i--) {
         let target = sources[i];
         if(target==message.source){
@@ -72,15 +79,17 @@ chrome.runtime.onConnect.addListener(function (port) {
       };
     }
   }
-});
 
   // Listen to messages sent from Selector Editor
-//   port.onMessage.addListener(listener);
-//   port.onDisconnect.addListener(function(port) {
-//     port.onMessage.removeListener(listener);
-//     deleteConnection(port);
-//   });
-// });
+  port.onMessage.addListener(listener);
+
+  // Stop listening and remove connection
+  port.onDisconnect.addListener(function(port) {
+      port.onMessage.removeListener(listener);
+      deleteConnection(port);
+  });
+
+});
 
 // Receive message from content script and relay to the devTools page for the
 // current tab

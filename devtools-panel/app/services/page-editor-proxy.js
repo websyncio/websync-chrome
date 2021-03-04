@@ -2,6 +2,7 @@ import Service from '@ember/service';
 import Reactor from './reactor';
 
 export const MessageTypes = {
+	InitConnection: 'init',
 	EditSelector: 'edit-selector',
 	ValidateSelector: 'validate-selector',
 	HighlightSelector: 'highlight-selector',
@@ -26,106 +27,87 @@ export default Service.extend({
 		this.get('reactor').registerEvent(MessageTypes.GetSelectorsList);
 	},
 	start(isAuxilliary){
-		let sourceName = isAuxilliary?'selector-editor-main':'selector-editor-auxilliary';
+		let sourceName = isAuxilliary?'selector-editor-auxilliary':'selector-editor-main';
 		this.set('sourceName', sourceName);
 		
 		let backgroundConnection = chrome.runtime.connect();
 	    backgroundConnection.onMessage.addListener(this.receiveMessage.bind(this));
 	    this.set('backgroundConnection', backgroundConnection);
+	    this.postMessage(MessageTypes.InitConnection);
 	},
-	receiveMessage(event){
-		// Do we trust the sender of this message?
-	  	if (!chrome.runtime.getURL("").startsWith(event.origin)){
-	    	return;
-		}
-
-		switch(event.data.type){
+	receiveMessage(message){
+		switch(message.type){
 			case MessageTypes.ValidateSelector:
-				this.validateSelector(event);
+				this.validateSelector(message);
 				break;
 			case MessageTypes.EditSelector:
-				this.editComponentSelector(event);
+				this.editComponentSelector(message);
 				break;
 			case MessageTypes.HighlightSelector:
-				this.highlightSelector(event);
+				this.highlightSelector(message);
 				break;
 			case MessageTypes.RemoveHighlighting:
 				this.removeHighlighting();
 				break;
 			case MessageTypes.GetSelectorsList:
-				this.getSelectorsList(event);
+				this.getSelectorsList(message);
 				break;
 			case MessageTypes.UpdateSelectorName:
-				this.updateSelectorName(event);
+				this.updateSelectorName(message);
 				break;
 			default:
 				console.log("Page edito proxy received message of unknown type.", event.data.type);
 		}
 	},
-	highlightSelector(event){
-		let selector = this.getSelector(event);
+	highlightSelector(message){
+		let selector = this.getSelector(message.data);
 		this.get('selectorHighlighter').highlight(selector);
 	},
 	removeHighlighting(){
 		this.get('selectorHighlighter').removeHighlighting();
 	},
-	updateSelectorName(event){
+	updateSelectorName(message){
 		throw new Error("Not implemented");
 	},
-	getSelectorsList(){
+	getSelectorsList(message){
 		this.get('reactor').dispatchEvent(
 			MessageTypes.GetSelectorsList,
-			event.data.data
+			message.data
 		);
 	},
-	editComponentSelector(event){
+	editComponentSelector(message){
 		this.get('reactor').dispatchEvent(
 			MessageTypes.EditSelector,
-			event.data.data
+			message.data
 		);
 	},
-	validateSelector(event){
+	validateSelector(message){
 		try{
-			let selector = this.getSelector(event);
+			let selector = this.getSelector(message.data);
 			this.get('selectorValidator').validate(selector, function(result, isException){
-				this.postResult(event, result, isException);
+				this.postMessage(MessageTypes.ValidateSelector, result, isException, message.acknowledgment, message.source);
 			}.bind(this));
 		}
 		catch(e){
-			this.postResult(event, null, true);
+			this.postMessage(MessageTypes.ValidateSelector, null, true, acknowledgment, message.source);
 		}
 	},
-	getSelector(event) {
-		let selector = event.data.data;
+	getSelector(selector) {
 		if (selector.scss) {
 			selector = this.get('scssParser').parse(selector.scss);
 		}
 		return selector;
 	},
-	postResult(event, result, isException){
-		// Assuming you've verified the origin of the received message (which
-		// you must do in any case), a convenient idiom for replying to a
-		// message is to call postMessage on event.source and provide
-		// event.origin as the targetOrigin.
-		event.source.postMessage({
-			acknowledgment: event.data.acknowledgment,
-			type: event.data.type,
-			result: result,
-			isException: isException
-		}, event.origin);
-	},
-	postMessage(type, data){
+	postMessage(type, data, isException, acknowledgment, target){
 		this.get('backgroundConnection').postMessage({
 			source: this.get('sourceName'),
 			tabId: chrome.devtools.inspectedWindow.tabId,
 			type: type,
-			data: data
+			data: data,
+			isException: isException,
+			acknowledgment: acknowledgment,
+			target: target
 		});
-
-		// pageEditor.contentWindow.postMessage({
-		// 	type: type,
-		// 	data: data
-		// }, "*");
 	},
 	addListener(messageType, listener){
 		this.get('reactor').addEventListener(messageType, listener);
