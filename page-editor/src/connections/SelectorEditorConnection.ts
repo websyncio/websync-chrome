@@ -40,16 +40,17 @@ export default class SelectorEditorProxy {
         this.postMessage(MessageTypes.InitConnection);
     }
 
-    receiveMessage(event) {
-        const callback = event.data.acknowledgment && this.acknowledgments[event.data.acknowledgment];
+    receiveMessage(message) {
+        console.log(message);
+        const callback = message.acknowledgment && this.acknowledgments[message.acknowledgment];
         if (callback) {
-            callback(event.data);
-            delete this.acknowledgments[event.data.acknowledgment];
+            callback(message);
+            delete this.acknowledgments[message.acknowledgment];
         } else {
             // . it is not a callback
-            switch (event.data.type) {
+            switch (message.type) {
                 case MessageTypes.SelectorUpdated:
-                    this.reactor.dispatchEvent(MessageTypes.SelectorUpdated, event.data.data);
+                    this.reactor.dispatchEvent(MessageTypes.SelectorUpdated, message.data);
                     break;
             }
         }

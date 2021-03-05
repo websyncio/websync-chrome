@@ -28,16 +28,16 @@ export default class SelectorValidator {
             },
         );
     }
-    callback(data, onValidated) {
+    callback(message, onValidated) {
         const validationData = {
             isValid: false,
             count: 0,
             displayedCount: 0,
         };
-        if (!data.isException) {
+        if (!message.isException) {
             validationData.isValid = true;
-            validationData.count = this.getNodesCount(data.result, false);
-            validationData.displayedCount = this.getNodesCount(data.result, true);
+            validationData.count = this.getNodesCount(message.data, false);
+            validationData.displayedCount = this.getNodesCount(message.data, true);
         }
         onValidated(validationData);
     }
