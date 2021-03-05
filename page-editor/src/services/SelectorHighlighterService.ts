@@ -20,6 +20,7 @@ export default class SelectorHighlighter {
     removeHighlighting() {
         this.selectorEditorConnection.postMessage(
             MessageTypes.RemoveHighlighting,
+            null,
             MessageTargets.SelectorEditorAuxilliary,
         );
     }

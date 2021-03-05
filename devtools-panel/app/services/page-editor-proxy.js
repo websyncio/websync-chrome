@@ -11,9 +11,15 @@ export const MessageTypes = {
 	GetSelectorsList: 'get-selectors-list',
 	UpdateSelectorName: 'update-selector-name',
 	
-	SelectorUpdated: 'component-selector-updated',
+	SelectorUpdated: 'selector-updated',
 	SelectorsListUpdated: 'selectors-list-updated'
 };
+
+export const MessageTargets = {
+	SelectorEditorMain: 'selector-editor-main',
+	SelectorEditorAuxilliary: 'selector-editor-auxilliary',
+	PageEditor: 'page-editor'
+}
 
 export default Service.extend({
 	scssParser: Ember.inject.service(),
@@ -27,7 +33,7 @@ export default Service.extend({
 		this.get('reactor').registerEvent(MessageTypes.GetSelectorsList);
 	},
 	start(isAuxilliary){
-		let sourceName = isAuxilliary?'selector-editor-auxilliary':'selector-editor-main';
+		let sourceName = isAuxilliary?MessageTargets.SelectorEditorAuxilliary:SelectorEditor.SelectorEditorMain;
 		this.set('sourceName', sourceName);
 		
 		let backgroundConnection = chrome.runtime.connect();
@@ -36,6 +42,7 @@ export default Service.extend({
 	    this.postMessage(MessageTypes.InitConnection);
 	},
 	receiveMessage(message){
+		console.log(message);
 		switch(message.type){
 			case MessageTypes.ValidateSelector:
 				this.validateSelector(message);
@@ -85,11 +92,11 @@ export default Service.extend({
 		try{
 			let selector = this.getSelector(message.data);
 			this.get('selectorValidator').validate(selector, function(result, isException){
-				this.postMessage(MessageTypes.ValidateSelector, result, isException, message.acknowledgment, message.source);
+				this.postMessage(MessageTypes.ValidateSelector, result, message.source, isException, message.acknowledgment);
 			}.bind(this));
 		}
 		catch(e){
-			this.postMessage(MessageTypes.ValidateSelector, null, true, acknowledgment, message.source);
+			this.postMessage(MessageTypes.ValidateSelector, null, message.source, true, acknowledgment);
 		}
 	},
 	getSelector(selector) {
@@ -98,7 +105,7 @@ export default Service.extend({
 		}
 		return selector;
 	},
-	postMessage(type, data, isException, acknowledgment, target){
+	postMessage(type, data, target, isException, acknowledgment){
 		this.get('backgroundConnection').postMessage({
 			source: this.get('sourceName'),
 			tabId: chrome.devtools.inspectedWindow.tabId,
@@ -118,7 +125,7 @@ export default Service.extend({
 			name: s.name,
 			selector: s.value
 		}));
-		this.postMessage(MessageTypes.SelectorsListUpdated, data);
+		this.postMessage(MessageTypes.SelectorsListUpdated, data, MessageTargets.PageEditor);
 	},
 	updateSelector(componentId, parameterName, parameterValueIndex, newSelector){
 		this.postMessage(
@@ -128,6 +135,7 @@ export default Service.extend({
 				parameterName: parameterName,
 				parameterValueIndex: parameterValueIndex,
 				selector: newSelector
-			});
+			},
+			MessageTargets.PageEditor);
 	}
 });

@@ -51,7 +51,7 @@ chrome.runtime.onConnect.addListener(function (port) {
     }
     console.log('Received message from ' + message.source + ' for tab ' + message.tabId + '.');
 
-    console.trace('port===senderPort', port===senderPort);
+    console.trace(message);
 
     if(message.type=='init'){
       storeConnection(message.tabId, message.source, port);
