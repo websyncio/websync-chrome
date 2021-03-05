@@ -42,7 +42,7 @@ export default Ember.Controller.extend({
 	configurePageEditor(){
 		let pageEditor = this.get('pageEditorProxy'); 
 		pageEditor.addListener(MessageTypes.EditSelector, this.onEditComponentSelector.bind(this));
-		pageEditor.addListener(MessageTypes.GetSelectorsList, this.onSelectorsListUpdated.bind(this));
+		pageEditor.addListener(MessageTypes.GetSelectorsList, this.updateSelectorsList.bind(this));
 		pageEditor.start(this.get('withPageEditor'));
 	},
 	bindSourceInputEvents(){
@@ -458,10 +458,13 @@ export default Ember.Controller.extend({
 			}.bind(this), 2500);
 		}
 	},
-	onSelectorsListUpdated: Ember.observer('selectors.@each', function(){
+	selectorsListUpdatedObserver: Ember.observer('selectors.@each.name','selectors.@each.selector', function(){
 		console.log('onSelectorsListUpdated observer was fired.');
-		//this.get('pageEditorProxy').updateSelectorsList(this.get('selectors'));
+		this.updateSelectorsList();
 	}),
+	updateSelectorsList(){
+		this.get('pageEditorProxy').updateSelectorsList(this.get('selectors'));
+	},
 	actions:{
 		copySelectorStart(isXpath){
 			this.getSelectorRootElement(isXpath).addClass('selected');

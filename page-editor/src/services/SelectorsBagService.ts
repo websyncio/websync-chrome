@@ -13,17 +13,17 @@ export class SelectorsBagService implements ISelectorsBagService {
         selectorEditorConnection.addListener(MessageTypes.SelectorsListUpdated, this.generateBlankComponents);
         this.generateBlankComponents([
             {
-                id: '1.SearchInput',
+                id: '1',
                 name: 'SearchInput',
                 selector: '#search',
             },
             {
-                id: '2.SendButton',
+                id: '2',
                 name: 'SendButton',
                 selector: "[type='submit']",
             },
             {
-                id: '3.CancelButton',
+                id: '3',
                 name: 'CancelButton',
                 selector: "button['Cancel']",
             },

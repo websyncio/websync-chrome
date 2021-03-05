@@ -41,7 +41,7 @@ export default class SelectorEditorProxy {
     }
 
     receiveMessage(message) {
-        console.log(message);
+        console.log('selector-editor-connection received', message);
         const callback = message.acknowledgment && this.acknowledgments[message.acknowledgment];
         if (callback) {
             callback(message);
@@ -51,6 +51,9 @@ export default class SelectorEditorProxy {
             switch (message.type) {
                 case MessageTypes.SelectorUpdated:
                     this.reactor.dispatchEvent(MessageTypes.SelectorUpdated, message.data);
+                    break;
+                case MessageTypes.SelectorsListUpdated:
+                    this.reactor.dispatchEvent(MessageTypes.SelectorsListUpdated, message.data);
                     break;
             }
         }

@@ -33,7 +33,7 @@ export default Service.extend({
 		this.get('reactor').registerEvent(MessageTypes.GetSelectorsList);
 	},
 	start(isAuxilliary){
-		let sourceName = isAuxilliary?MessageTargets.SelectorEditorAuxilliary:SelectorEditor.SelectorEditorMain;
+		let sourceName = isAuxilliary?MessageTargets.SelectorEditorAuxilliary:MessageTargets.SelectorEditorMain;
 		this.set('sourceName', sourceName);
 		
 		let backgroundConnection = chrome.runtime.connect();
@@ -42,7 +42,7 @@ export default Service.extend({
 	    this.postMessage(MessageTypes.InitConnection);
 	},
 	receiveMessage(message){
-		console.log(message);
+		console.log('page-editor-proxy received', message);
 		switch(message.type){
 			case MessageTypes.ValidateSelector:
 				this.validateSelector(message);
@@ -121,9 +121,9 @@ export default Service.extend({
 	},
 	updateSelectorsList(selectors){
 		let data = selectors.map(s=>({
-			id: Math.random()+'',
+			id: Math.random(),
 			name: s.name,
-			selector: s.value
+			selector: s.selector.scss
 		}));
 		this.postMessage(MessageTypes.SelectorsListUpdated, data, MessageTargets.PageEditor);
 	},
