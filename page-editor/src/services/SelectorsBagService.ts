@@ -37,24 +37,30 @@ export class SelectorsBagService implements ISelectorsBagService {
 
     deleteComponent(component: ComponentInstance) {
         component.delete();
-        this.updateComponentsBag();
+        this.updateSelectorsList();
     }
 
     updateComponentName(component: ComponentInstance, newComponentName: string) {
         component.setName(newComponentName);
-        this.updateComponentsBag();
+        this.updateSelectorsList();
     }
 
     updateComponentType(component: ComponentInstance, componentType: string) {
         component.setComponentType(componentType);
+        this.updateSelectorsList();
     }
 
-    private updateComponentsBag() {
+    private updateSelectorsList() {
         const componentsData = RootStore.uiStore.blankComponents.map((c) => ({
-            componentId: c.id,
-            componentName: c.name,
+            id: c.id,
+            name: c.componentFieldName,
+            type: c.componentType,
         }));
-        this.selectorEditorConnection.postMessage(MessageTypes.SelectorsListUpdated, componentsData);
+        this.selectorEditorConnection.postMessage(
+            MessageTypes.SelectorsListUpdated,
+            componentsData,
+            MessageTargets.SelectorEditorMain,
+        );
     }
 
     // TODO: create model for selector

@@ -68,7 +68,7 @@ chrome.runtime.onConnect.addListener(function (port) {
       connections[message.tabId][message.target].postMessage(message);
     }else{
       // Relay message to all except for source itself
-      let sources = Object.keys(Sources);
+      let sources = Object.values(Sources);
       for (var i = sources.length - 1; i >= 0; i--) {
         let target = sources[i];
         if(target==message.source){

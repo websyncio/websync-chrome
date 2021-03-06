@@ -68,11 +68,10 @@ export const UiStoreModel = types
             self.editedPageObjects.remove(pageObject);
         },
         generateBlankComponents(selectors) {
-            // TODO: extract to framework components provider
             self.blankComponents = selectors.map((s) =>
                 ComponentInstanceModel.create({
                     id: s.id,
-                    componentType: '',
+                    componentType: s.type,
                     name: s.name,
                     isBlank: true,
                     initializationAttribute: {

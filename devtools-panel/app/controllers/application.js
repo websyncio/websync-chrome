@@ -42,7 +42,9 @@ export default Ember.Controller.extend({
 	configurePageEditor(){
 		let pageEditor = this.get('pageEditorProxy'); 
 		pageEditor.addListener(MessageTypes.EditSelector, this.onEditComponentSelector.bind(this));
-		pageEditor.addListener(MessageTypes.GetSelectorsList, this.updateSelectorsList.bind(this));
+		pageEditor.addListener(MessageTypes.GetSelectorsList, this.sendSelectorsList.bind(this));
+		pageEditor.addListener(MessageTypes.SelectorsListUpdated, this.onUpdateSelectorsList.bind(this));
+		
 		pageEditor.start(this.get('withPageEditor'));
 	},
 	bindSourceInputEvents(){
@@ -369,6 +371,7 @@ export default Ember.Controller.extend({
 	addToList(){
 		if(this.get('inputValue')){
 			let componentSelector = ComponentSelector.create({
+				id: Math.random()+'',
 				name: this.generateSelectorName(),
 				selector: this.getSelector(),
 				elementsCount: this.get('status'),
@@ -408,7 +411,7 @@ export default Ember.Controller.extend({
 				componentId,
 				parameterName, 
 				parameterValueIndex,
-				this.getSelector().css
+				this.getSelector().scss
 			);
 			this.set('componentSelectorToUpdate', null);
 			this.setInputValue('');
@@ -469,10 +472,25 @@ export default Ember.Controller.extend({
 	},
 	selectorsListUpdatedObserver: Ember.observer('selectors.@each.name','selectors.@each.selector', function(){
 		console.log('onSelectorsListUpdated observer was fired.');
-		this.updateSelectorsList();
+		this.sendSelectorsList();
 	}),
-	updateSelectorsList(){
-		this.get('pageEditorProxy').updateSelectorsList(this.get('selectors'));
+	sendSelectorsList(){
+		this.get('pageEditorProxy').sendSelectorsList(this.get('selectors'));
+	},
+	onUpdateSelectorsList(updatedSelectors){
+		let selectors = this.get('selectors');
+		for (var i = updatedSelectors.length - 1; i >= 0; i--){
+			let selector = selectors.find(s=>s.id===updatedSelectors[i].id);
+			if(selector){
+				selector.set('name', updatedSelectors[i].name);
+				selector.set('type', updatedSelectors[i].type);
+			}else{
+				console.error('Unknown selector ' + updatedSelectors[i].name);
+			}
+		};
+		let updatedSelectorIds = updatedSelectors.map(s=>s.id);
+		let removedSelectors = selectors.filter(s=>updatedSelectorIds.indexOf(s.id)===-1);
+		selectors.removeObjects(removedSelectors);
 	},
 	actions:{
 		copySelectorStart(isXpath){

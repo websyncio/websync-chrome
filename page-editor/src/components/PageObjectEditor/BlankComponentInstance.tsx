@@ -5,12 +5,16 @@ import TypeNameEditor from './TypeNameEditor';
 import './BlankComponentInstance.sass';
 import { DependencyContainer, TYPES } from 'inversify.config';
 import ISelectorsBagService from 'services/ISelectorsBagService';
+import SelectorHighlighter from 'services/SelectorHighlighterService';
 
 const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
     ({ component, index, caretPosition, onSelected, onSelectNext, onSelectPrevious }) => {
         const [isDeleted, setIsDeleted] = useState(false);
         const [isAllSet, setIsAllSet] = useState(!!component.typeName.length && !!component.componentFieldName.length);
         const selectorBagService = DependencyContainer.get<ISelectorsBagService>(TYPES.SelectorsBagService);
+        const selectorHighlighter: SelectorHighlighter = DependencyContainer.get<SelectorHighlighter>(
+            TYPES.SelectorHighlighter,
+        );
 
         useLayoutEffect(() => {
             if (isDeleted) {
@@ -24,20 +28,34 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
             setIsDeleted(true);
         }
 
-        function onChange(componentType: string, componentName: string) {
-            if (component.componentType !== componentType) {
-                selectorBagService.updateComponentType(component, componentType);
+        function onChange(componentTypeName: string, componentFieldName: string) {
+            if (component.typeName !== componentTypeName) {
+                selectorBagService.updateComponentType(component, componentTypeName);
             }
-            if (component.name != componentName) {
-                selectorBagService.updateComponentName(component, componentName);
+            if (component.componentFieldName != componentFieldName) {
+                selectorBagService.updateComponentName(component, componentFieldName);
             }
 
             // Should we implement more complex validation here?
-            setIsAllSet(!!componentType.length && !!componentName.length);
+            if (!componentTypeName) {
+                console.log('componentTypeName', componentTypeName);
+            }
+            if (!componentFieldName) {
+                console.log('componentFieldName', componentFieldName);
+            }
+            setIsAllSet(!!componentTypeName.length && !!componentFieldName.length);
         }
 
         function addComponent(e) {
             e.stopPropagation();
+        }
+
+        function highlightSelector() {
+            selectorHighlighter.highlight(component.rootSelector);
+        }
+
+        function removeHighlighting() {
+            selectorHighlighter.removeHighlighting();
         }
 
         return (
@@ -58,7 +76,13 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
                         onChange={onChange}
                     />
                     <span className="separator">&nbsp;&lt;&nbsp;</span>
-                    <span className="root-selector">&quot;{component.rootSelector}&quot;</span>
+                    <span
+                        className="root-selector"
+                        onMouseEnter={() => highlightSelector()}
+                        onMouseLeave={() => removeHighlighting()}
+                    >
+                        &quot;{component.rootSelector}&quot;
+                    </span>
                     {/* {initializationAttribute(component.initializationAttribute)} */}
                     <span
                         className={`add-component-button action-button ${isAllSet ? 'active' : ''}`}

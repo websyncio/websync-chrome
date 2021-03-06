@@ -30,8 +30,11 @@ export const ComponentInstanceModel = types.compose(
         })
         .views((self) => ({
             get typeName() {
-                const arr = self.componentType.split('.');
-                return arr[arr.length - 1].trim();
+                if (self.componentType) {
+                    const arr = self.componentType.split('.');
+                    return arr[arr.length - 1].trim();
+                }
+                return '';
             },
             get componentFieldName() {
                 if (self.isBlank) {

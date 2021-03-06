@@ -9,10 +9,9 @@ export const MessageTypes = {
 	RemoveHighlighting: 'remove-highlighting',
 	
 	GetSelectorsList: 'get-selectors-list',
-	UpdateSelectorName: 'update-selector-name',
 	
 	SelectorUpdated: 'selector-updated',
-	SelectorsListUpdated: 'selectors-list-updated'
+	SelectorsListUpdated: 'selectors-list-updated',
 };
 
 export const MessageTargets = {
@@ -31,6 +30,7 @@ export default Service.extend({
 	init(){
 		this.get('reactor').registerEvent(MessageTypes.EditSelector);
 		this.get('reactor').registerEvent(MessageTypes.GetSelectorsList);
+		this.get('reactor').registerEvent(MessageTypes.SelectorsListUpdated);
 	},
 	start(isAuxilliary){
 		let sourceName = isAuxilliary?MessageTargets.SelectorEditorAuxilliary:MessageTargets.SelectorEditorMain;
@@ -59,8 +59,8 @@ export default Service.extend({
 			case MessageTypes.GetSelectorsList:
 				this.getSelectorsList(message);
 				break;
-			case MessageTypes.UpdateSelectorName:
-				this.updateSelectorName(message);
+			case MessageTypes.SelectorsListUpdated:
+				this.updateSelectorList(message);
 				break;
 			default:
 				console.log("Page edito proxy received message of unknown type.", event.data.type);
@@ -73,13 +73,15 @@ export default Service.extend({
 	removeHighlighting(){
 		this.get('selectorHighlighter').removeHighlighting();
 	},
-	updateSelectorName(message){
-		throw new Error("Not implemented");
+	updateSelectorList(message){
+		this.get('reactor').dispatchEvent(
+			MessageTypes.SelectorsListUpdated,
+			message.data
+		);
 	},
 	getSelectorsList(message){
 		this.get('reactor').dispatchEvent(
-			MessageTypes.GetSelectorsList,
-			message.data
+			MessageTypes.GetSelectorsList
 		);
 	},
 	editComponentSelector(message){
@@ -119,10 +121,11 @@ export default Service.extend({
 	addListener(messageType, listener){
 		this.get('reactor').addEventListener(messageType, listener);
 	},
-	updateSelectorsList(selectors){
+	sendSelectorsList(selectors){
 		let data = selectors.map(s=>({
-			id: Math.random(),
+			id: s.id,
 			name: s.name,
+			type: s.type,
 			selector: s.selector.scss
 		}));
 		this.postMessage(MessageTypes.SelectorsListUpdated, data, MessageTargets.PageEditor);
