@@ -71,9 +71,10 @@ export const UiStoreModel = types
             // TODO: extract to framework components provider
             self.blankComponents = selectors.map((s) =>
                 ComponentInstanceModel.create({
-                    id: s.id + '.' + s.name,
+                    id: s.id,
                     componentType: '',
-                    name: '',
+                    name: s.name,
+                    isBlank: true,
                     initializationAttribute: {
                         name: 'UI',
                         parameters: [{ values: [s.selector] }],

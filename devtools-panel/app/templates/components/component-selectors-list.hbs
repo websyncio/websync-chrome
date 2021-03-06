@@ -27,6 +27,7 @@
 							<span class="name {{if selector.nameIsEdited "editing"}}" 
 									contenteditable="{{selector.nameIsEdited}}" 
 									{{action "onNameKeydown" selector on="keyDown" bubbles=false preventDefault=false allowedKeys="shift"}}
+									{{action "onNameBeforeInput" selector on="keyPress" bubbles=false preventDefault=false}}
 									{{action "onNameBlur" selector on="focusOut" preventDefault=false}}>
 								{{selector.name}}</span>
 						</td>

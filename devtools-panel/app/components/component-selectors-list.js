@@ -190,14 +190,17 @@ export default Component.extend({
 			}
 		},
 		onNameKeydown(componentSelector){
-			let newName = window.event.target.innerText.trim();
 			if(event.code=="Enter"){
+				let newName = window.event.target.innerText.trim();
 				this.submitRename(componentSelector, newName);
 				window.event.preventDefault();
 			}else if(event.code=="Escape"){
 				this.submitRename(componentSelector);
 			}
-			else if(newName.length==100){
+		},
+		onNameBeforeInput(){
+			let name = window.event.target.innerText.trim();
+			if(name.length==100 || !window.event.key.match(/[A-Za-z0-9_$]+/g)){
 				window.event.preventDefault();
 			}
 		},

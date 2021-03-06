@@ -351,8 +351,17 @@ export default Ember.Controller.extend({
 			}
 		});
 	},
-	generateComponentName(){
-		return "Component Name";
+	generateSelectorName(){
+		const prefix = 'Element';
+		let indexes = this.get('selectors').map(s=>{
+			let match = s.name.match(new RegExp('^'+prefix+'(\\d+)','i'));
+			return match?parseInt(match[1]):null;
+		}).filter(i=>i);
+		let index = 1;
+		while(indexes.indexOf(index)!==-1){
+			index++;
+		}
+		return prefix+index;
 	},
 	getSelector(){
 		return this.get('lastPart').getSelector();
@@ -360,7 +369,7 @@ export default Ember.Controller.extend({
 	addToList(){
 		if(this.get('inputValue')){
 			let componentSelector = ComponentSelector.create({
-				name: this.generateComponentName(),
+				name: this.generateSelectorName(),
 				selector: this.getSelector(),
 				elementsCount: this.get('status'),
 				stateText: this.get('pluralizer').pluralize(this.get('status'), "element"),

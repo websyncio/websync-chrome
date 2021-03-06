@@ -26,6 +26,7 @@ export const ComponentInstanceModel = types.compose(
             initializationAttribute: types.optional(AttributeModel, {
                 name: '',
             }),
+            isBlank: types.optional(types.boolean, false),
         })
         .views((self) => ({
             get typeName() {
@@ -33,6 +34,11 @@ export const ComponentInstanceModel = types.compose(
                 return arr[arr.length - 1].trim();
             },
             get componentFieldName() {
+                if (self.isBlank) {
+                    // this is a model from SelectorEditor
+                    return self.name;
+                }
+                // this is a model from IDE
                 const arr = self.id.split('.');
                 return arr[arr.length - 1].trim();
             },
