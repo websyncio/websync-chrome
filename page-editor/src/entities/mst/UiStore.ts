@@ -1,4 +1,4 @@
-import { types, Instance } from 'mobx-state-tree';
+import { types, Instance, applySnapshot } from 'mobx-state-tree';
 import IdeConnection, { IdeConnectionModel } from './IdeConnection';
 import { PageTypeModel } from './PageType';
 import PageInstance, { PageInstanceModel } from './PageInstance';
@@ -68,8 +68,9 @@ export const UiStoreModel = types
             self.editedPageObjects.remove(pageObject);
         },
         generateBlankComponents(selectors) {
-            self.blankComponents = selectors.map((s) =>
-                ComponentInstanceModel.create({
+            applySnapshot(
+                self.blankComponents,
+                selectors.map((s) => ({
                     id: s.id,
                     componentType: s.type,
                     name: s.name,
@@ -78,7 +79,7 @@ export const UiStoreModel = types
                         name: 'UI',
                         parameters: [{ values: [s.selector] }],
                     },
-                }),
+                })),
             );
         },
     }));

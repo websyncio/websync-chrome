@@ -95,12 +95,16 @@ export class SelectorsBagService implements ISelectorsBagService {
         if (!RootStore.uiStore.selectedPageObject) {
             throw new Error('No selected page object to update.');
         }
-        RootStore.projectStore.updateComponentInitializationParameter(
-            RootStore.uiStore.selectedPageObject,
+        const componentInstance: ComponentInstance = RootStore.uiStore.selectedPageObject.getComponentInstance(
             data.componentId,
+        );
+        if (!componentInstance) {
+            throw new Error('No component to update. componentId: ' + data.componentId);
+        }
+        componentInstance.updateInitializationParameter(
             data.parameterName,
             data.parameterValueIndex,
-            data.selector,
+            data.parameterValue,
         );
     }
 }

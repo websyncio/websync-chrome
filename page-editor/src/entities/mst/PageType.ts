@@ -8,6 +8,11 @@ export const PageTypeModel = types
             url: types.maybeNull(types.string),
         }),
     )
+    .views((self) => ({
+        getComponentInstance(componentId) {
+            return self.componentsInstances.find((ci) => ci.id == componentId);
+        },
+    }))
     .actions((self) => ({
         updateComponentInstance(old, updated) {
             const index = self.componentsInstances.indexOf(old);

@@ -34,7 +34,7 @@ const Selector: React.FC<Props> = observer(({ parameterName, selector, onEdit, o
 
     useEffect(() => {
         validate();
-    }, []);
+    }, [selector]);
 
     function submitRename(event, newName) {
         // event.target.contentEditable = false;

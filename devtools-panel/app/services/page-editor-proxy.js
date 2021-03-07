@@ -137,7 +137,7 @@ export default Service.extend({
 				componentId: componentId,
 				parameterName: parameterName,
 				parameterValueIndex: parameterValueIndex,
-				selector: newSelector
+				parameterValue: newSelector
 			},
 			MessageTargets.PageEditor);
 	}
