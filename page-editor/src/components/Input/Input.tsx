@@ -3,12 +3,12 @@ import './Input.sass';
 
 interface Props {
     value: string;
-    onClick: (value: string) => void;
+    onChange: (value: string) => void;
     disabled?: boolean;
 }
 
 const Input: React.FC<Props> = (props: Props) => {
-    const { value, onClick, disabled } = props;
+    const { value, onChange, disabled } = props;
 
     const [currentValue, setCurrentValue] = useState(value);
 
@@ -22,13 +22,13 @@ const Input: React.FC<Props> = (props: Props) => {
                 setCurrentValue(value);
                 break;
             case 'Enter': //enter
-                onClick(currentValue);
+                onChange(currentValue);
                 break;
         }
     };
 
     const handleFocusOut = () => {
-        onClick(currentValue);
+        onChange(currentValue);
     };
 
     return (

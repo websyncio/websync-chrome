@@ -3,7 +3,7 @@ import Portal from 'components-common/Portal';
 import FocusTrap from 'focus-trap-react';
 import { observer } from 'mobx-react';
 import ComponentInstanceModel from 'entities/mst/ComponentInstance';
-import React, { DOMElement, RefObject, useEffect, useLayoutEffect, useState } from 'react';
+import React, { RefObject, useEffect, useLayoutEffect, useState } from 'react';
 import ComponentTypeSelector from './ComponentTypeSelector';
 import './TypeNameEditor.sass';
 

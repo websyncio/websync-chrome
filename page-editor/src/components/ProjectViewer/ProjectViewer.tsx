@@ -20,7 +20,7 @@ const ProjectViewer: React.FC<Props> = observer(({ ideProxy }) => {
             {uiStore.selectedPageObject ? (
                 <PageObjectEditor ideProxy={ideProxy} pageObject={uiStore.selectedPageObject} />
             ) : (
-                <ProjectExplorer />
+                <ProjectExplorer ideProxy={ideProxy} />
             )}
         </div>
     );

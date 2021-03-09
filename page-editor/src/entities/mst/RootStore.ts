@@ -1,5 +1,5 @@
 import { types, Instance } from 'mobx-state-tree';
-import ProjectStore, { ProjectStoreModel } from './ProjectStore';
+import { ProjectStoreModel } from './ProjectStore';
 import { UiStoreModel } from './UiStore';
 
 export const RootStoreModel = types

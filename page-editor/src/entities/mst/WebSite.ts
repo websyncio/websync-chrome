@@ -1,6 +1,8 @@
 import { types, Instance } from 'mobx-state-tree';
 import { PageInstanceModel } from './PageInstance';
 import { SelectableModel } from './Selectable';
+// import IDEAConnection from 'connections/IDE/IDEAConnection';
+// import IIdeProxy from 'connections/IDE/IIdeConnection';
 
 export const WebSiteModel = types
     .compose(
@@ -22,6 +24,9 @@ export const WebSiteModel = types
     .actions((self) => ({
         toggleExpanded() {
             self.expanded = !self.expanded;
+        },
+        updateWebsite(newUrl, ideProxy) {
+            ideProxy.updateWebsiteUrl(newUrl);
         },
     }));
 
