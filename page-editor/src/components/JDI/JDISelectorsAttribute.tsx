@@ -9,13 +9,13 @@ import { SelectorModel } from 'entities/mst/Selector';
 interface JDISelectorsAttributeProps {
     attribute: AttributeModel;
     onEditSelector: any;
-    onValidationError: () => void;
+    onValidated: (hasError: boolean) => void;
 }
 
 const JDISelectorsAttribute: React.FC<JDISelectorsAttributeProps> = ({
     attribute,
     onEditSelector,
-    onValidationError,
+    onValidated,
 }: JDISelectorsAttributeProps) => {
     function getStatus() {
         return Math.floor(Math.random() * 3);
@@ -39,7 +39,7 @@ const JDISelectorsAttribute: React.FC<JDISelectorsAttributeProps> = ({
                                 parameterName={parameter.name}
                                 selector={getSelector(v)}
                                 onEdit={() => onEditSelector(parameter, index)}
-                                onValidationError={onValidationError}
+                                onValidated={onValidated}
                             />
                             {index !== parameter.values.length - 1 && ', '}
                         </>

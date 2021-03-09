@@ -59,8 +59,8 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                         <JDISelectorsAttribute
                             attribute={component.initializationAttribute}
                             onEditSelector={(parameter, valueIndex) => editSelector(component, parameter, valueIndex)}
-                            onValidationError={() => {
-                                setHasError(true);
+                            onValidated={(hasError) => {
+                                setHasError(hasError);
                             }}
                         />
                     );
