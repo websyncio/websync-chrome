@@ -1,10 +1,10 @@
-import { types, Instance } from 'mobx-state-tree';
+import { types, Instance, applySnapshot } from 'mobx-state-tree';
 import IdeConnection, { IdeConnectionModel } from './IdeConnection';
 import { PageTypeModel } from './PageType';
-// import PageInstance, { PageInstanceModel } from './PageInstance';
+import PageInstance, { PageInstanceModel } from './PageInstance';
 import PageType from 'entities/mst/PageType';
 import { ComponentInstanceModel } from 'entities/mst/ComponentInstance';
-// import WebSite, { WebSiteModel } from './WebSite';
+import WebSite, { WebSiteModel } from './WebSite';
 
 export const UiStoreModel = types
     .model({
@@ -42,13 +42,13 @@ export const UiStoreModel = types
             );
         },
         removeIdeConnection(type: string) {
-            const ide = self.ideConnections.find((ide) => ide.type === type);
+            const ide = self.ideConnections.find((ide) => ide.type == type);
             if (ide) {
                 self.ideConnections.remove(ide);
             }
         },
         setProjectsList(type, projectsList) {
-            const ide = self.ideConnections.find((ide) => ide.type === type);
+            const ide = self.ideConnections.find((ide) => ide.type == type);
             if (!ide) {
                 throw new Error('There is no connection to IDE: ' + type);
             }
@@ -59,7 +59,7 @@ export const UiStoreModel = types
             self.selectedProject = projectName;
         },
         addEditedPageObject(pageObject: PageType) {
-            if (!self.editedPageObjects.find((po) => po === pageObject)) {
+            if (!self.editedPageObjects.find((po) => po == pageObject)) {
                 self.editedPageObjects.push(pageObject);
             }
             this.selectPageObject(pageObject);
@@ -68,17 +68,18 @@ export const UiStoreModel = types
             self.editedPageObjects.remove(pageObject);
         },
         generateBlankComponents(selectors) {
-            // TODO: extract to framework components provider
-            self.blankComponents = selectors.map((s) =>
-                ComponentInstanceModel.create({
-                    id: 'blank' + Math.random() + '.' + s.name,
-                    componentType: '',
+            applySnapshot(
+                self.blankComponents,
+                selectors.map((s) => ({
+                    id: s.id,
+                    componentType: s.type,
                     name: s.name,
+                    isBlank: true,
                     initializationAttribute: {
                         name: 'UI',
                         parameters: [{ values: [s.selector] }],
                     },
-                }),
+                })),
             );
         },
     }));

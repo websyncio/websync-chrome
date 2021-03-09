@@ -47,7 +47,6 @@ const ComponentsContainer: React.FC<Props> = observer(({ ideProxy, pageObject })
         <div className="components-container">
             <div className="container-name">{pageObject.name}</div>
             <ComponentInstancesList
-                ideProxy={ideProxy}
                 componentInstances={pageObject.componentsInstances}
                 componentView={ComponentInstance}
                 onSelectNext={selectFirstBlankComponent}
@@ -59,7 +58,6 @@ const ComponentsContainer: React.FC<Props> = observer(({ ideProxy, pageObject })
                     Specify type and name, then click Take button or press Ctrl+Enter
                 </div>
                 <ComponentInstancesList
-                    ideProxy={ideProxy}
                     componentInstances={uiStore.blankComponents}
                     componentView={BlankComponentInstance}
                     onSelectPrevious={selectLastComponentInstance}

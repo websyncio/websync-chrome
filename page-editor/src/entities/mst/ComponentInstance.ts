@@ -2,15 +2,15 @@ import {
     types,
     Instance,
     getSnapshot,
-    // getParent,
-    // hasParent,
+    getParent,
+    hasParent,
     getParentOfType,
-    // cast,
-    // clone,
-    // destroy,
+    cast,
+    clone,
+    destroy,
 } from 'mobx-state-tree';
 import { AttributeModel } from './Attribute';
-// import { ComponentTypeModel } from './ComponentType';
+import { ComponentTypeModel } from './ComponentType';
 import { PageTypeModel } from './PageType';
 import IDEAConnection from 'connections/IDE/IDEAConnection';
 import { SelectableModel } from './Selectable';
@@ -26,13 +26,22 @@ export const ComponentInstanceModel = types.compose(
             initializationAttribute: types.optional(AttributeModel, {
                 name: '',
             }),
+            isBlank: types.optional(types.boolean, false),
         })
         .views((self) => ({
             get typeName() {
-                const arr = self.componentType.split('.');
-                return arr[arr.length - 1].trim();
+                if (self.componentType) {
+                    const arr = self.componentType.split('.');
+                    return arr[arr.length - 1].trim();
+                }
+                return '';
             },
             get componentFieldName() {
+                if (self.isBlank) {
+                    // this is a model from SelectorEditor
+                    return self.name;
+                }
+                // this is a model from IDE
                 const arr = self.id.split('.');
                 return arr[arr.length - 1].trim();
             },
@@ -53,18 +62,18 @@ export const ComponentInstanceModel = types.compose(
             setComponentType(newComponentType) {
                 self.componentType = newComponentType;
             },
-            rename(newName, ideProxy) {
+            setName(newName) {
                 self.name = newName;
-                if (ideProxy) {
-                    ideProxy.updateComponentInstance(self);
+                // if (ideProxy) {
+                //     ideProxy.updateComponentInstance(self);
 
-                    // have to update id by creating new object and replacing the old one with it
-                    const lastDot = self.id.lastIndexOf('.');
-                    const newId = self.id.substring(0, lastDot + 1) + newName;
-                    const pageType = getParentOfType(self, PageTypeModel);
-                    const updated = { ...getSnapshot(self), id: newId };
-                    pageType.updateComponentInstance(self, updated);
-                }
+                // have to update id by creating new object and replacing the old one with it
+                // const lastDot = self.id.lastIndexOf('.');
+                // const newId = self.id.substring(0, lastDot + 1) + newName;
+                // const pageType = getParentOfType(self, PageTypeModel);
+                // const updated = { ...getSnapshot(self), id: newId };
+                // pageType.updateComponentInstance(self, updated);
+                // }
             },
             updateInitializationParameter(parameterName, parameterValueIndex, parameterValue) {
                 if (!self.initializationAttribute) {

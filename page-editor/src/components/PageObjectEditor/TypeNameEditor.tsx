@@ -3,14 +3,14 @@ import Portal from 'components-common/Portal';
 import FocusTrap from 'focus-trap-react';
 import { observer } from 'mobx-react';
 import ComponentInstanceModel from 'entities/mst/ComponentInstance';
-import React, { RefObject, useEffect, useLayoutEffect, useState } from 'react';
+import React, { DOMElement, RefObject, useEffect, useLayoutEffect, useState } from 'react';
 import ComponentTypeSelector from './ComponentTypeSelector';
 import './TypeNameEditor.sass';
 
 interface Props {
     component: ComponentInstanceModel;
     showPlaceholders: boolean;
-    caretPosition: number | null;
+    initialCaretPosition: number | null;
     onDeleted: () => void;
     onSelectNext: (caretPosition: number) => boolean;
     onSelectPrevious: (caretPosition: number) => boolean;
@@ -18,17 +18,17 @@ interface Props {
 }
 
 const TypeNameEditor: React.FC<Props> = observer(
-    ({ component, showPlaceholders, caretPosition, onDeleted, onSelectNext, onSelectPrevious, onChange }) => {
+    ({ component, showPlaceholders, initialCaretPosition, onDeleted, onSelectNext, onSelectPrevious, onChange }) => {
         const typePlaceholder = '<set type>';
         const namePlaceholder = '<set name>';
         const popupRef: any = React.createRef();
         const typeRef: RefObject<any> = React.createRef();
-        const spaceRef: any = React.createRef();
         const nameRef: any = React.createRef();
         const [showSpace, setShowSpace] = useState(true);
         const [isOpen, setIsOpen] = useState(false);
         const [showTypePlaceholder, setShowTypePlaceholder] = useState(showPlaceholders && !component.typeName.length);
         const [showNamePlaceholder, setShowNamePlaceholder] = useState(showPlaceholders && !component.name.length);
+        const [actualCaretPosition, setActualCaretPosition] = useState(0);
         let popper: any;
 
         useLayoutEffect(() => {
@@ -115,7 +115,7 @@ const TypeNameEditor: React.FC<Props> = observer(
         useLayoutEffect(() => {
             if (component.selected) {
                 if (!isActive(typeRef.current) && !isActive(nameRef.current)) {
-                    setCaretPosition(caretPosition == null ? getFullLength() : caretPosition, showSpace);
+                    setCaretPosition(initialCaretPosition == null ? getFullLength() : initialCaretPosition, showSpace);
                 }
             } else {
                 if (!showPlaceholders && !typeRef.current.textContent && !nameRef.current.textContent) {
@@ -123,6 +123,12 @@ const TypeNameEditor: React.FC<Props> = observer(
                 }
             }
         }, [component.selected]);
+
+        useLayoutEffect(() => {
+            if (component.selected) {
+                setCaretPosition(actualCaretPosition, showSpace);
+            }
+        }, [actualCaretPosition]);
 
         function getElementCaretPosition(editableElement) {
             const sel = window.getSelection();
@@ -162,19 +168,6 @@ const TypeNameEditor: React.FC<Props> = observer(
                 nameRef.current.textContent = text.substring(caretPosition);
                 setCaretPosition(caretPosition + 1, true);
             }
-        }
-
-        function submitRename(event, component: ComponentInstanceModel, newName) {
-            // if (event.target.contentEditable === 'true') {
-            //     //event.target.contentEditable = false;
-            //     if (newName === null) {
-            //         event.target.innerText = component.name;
-            //         return;
-            //     } else if (component.name === newName) {
-            //         return;
-            //     }
-            //     component.rename(newName, ideProxy);
-            // }
         }
 
         function onTypeKeyDown(e) {
@@ -315,21 +308,12 @@ const TypeNameEditor: React.FC<Props> = observer(
                 }
             }
 
-            const newName = e.target.innerText.trim();
             if (!e.key.match(/[A-Za-z0-9_$]+/g)) {
                 e.preventDefault();
                 return;
             }
-            if (e.key === 'Enter') {
-                submitRename(e, component, newName);
-                e.preventDefault();
-                return;
-            }
-            if (e.key === 'Escape') {
-                submitRename(e, component, null);
-                return;
-            }
-            if (newName.length === 100) {
+            const name = e.target.innerText.trim();
+            if (name.length === 100) {
                 e.preventDefault();
                 return;
             }
@@ -363,13 +347,7 @@ const TypeNameEditor: React.FC<Props> = observer(
             element.contentEditable = false;
         }
 
-        function onNameBlur(event) {
-            const newName = event.target.innerText.trim();
-            submitRename(event, component, newName);
-            event.target.contentEditable = false;
-        }
-
-        function onTypeBlur(event) {
+        function onBlur(event) {
             event.target.contentEditable = false;
         }
 
@@ -392,6 +370,7 @@ const TypeNameEditor: React.FC<Props> = observer(
             setPlaceholder(attributeElement, setShowPlaceholder);
             // component.setComponentType(typeRef.current.textContent);
             // component.rename(nameRef.current.textContent, null);
+            setActualCaretPosition(getCaretPosition());
             onChange(typeRef.current.textContent, nameRef.current.textContent);
         }
 
@@ -405,7 +384,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                     onKeyUp={(e) => onAttributeChange(e.target, setShowTypePlaceholder)}
                     onMouseDown={(e) => makeNonEditable(e.target)}
                     onClick={(e) => makeEditable(e.target)}
-                    onBlur={onTypeBlur}
+                    onBlur={onBlur}
                 >
                     {component.typeName}
                 </span>
@@ -432,11 +411,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                         )}
                     </span>
                 </Portal>
-                {showSpace && (
-                    <span ref={spaceRef} className="space">
-                        &nbsp;
-                    </span>
-                )}
+                {showSpace && <span className="space">&nbsp;</span>}
                 <div className="field-name-wrap">
                     <span
                         ref={nameRef}
@@ -446,7 +421,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                         // onDoubleClick={onRename}
                         onKeyDown={onNameKeyDown}
                         onKeyUp={(e) => onAttributeChange(e.target, setShowNamePlaceholder)}
-                        onBlur={onNameBlur}
+                        onBlur={onBlur}
                         onMouseDown={(e) => makeNonEditable(e.target)}
                         onClick={(e) => makeEditable(e.target)}
                     >

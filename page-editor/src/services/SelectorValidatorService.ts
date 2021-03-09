@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { injectable, inject } from 'inversify';
-import SelectorEditorConnection, { MessageTypes } from '../connections/SelectorEditorConnection';
+import SelectorEditorConnection, { MessageTargets, MessageTypes } from '../connections/SelectorEditorConnection';
 import { Scss } from 'utils/ScssBuilder';
 import { TYPES } from 'inversify.config';
 export const SELECTOR_VALIDATED = 'selector-validated';
@@ -19,20 +19,25 @@ export default class SelectorValidator {
     }
 
     validate(selector: Scss, callback: Function) {
-        this.selectorEditorConnection.sendMessage(MessageTypes.ValidateSelector, selector, (event) => {
-            this.callback(event, callback);
-        });
+        this.selectorEditorConnection.postMessage(
+            MessageTypes.ValidateSelector,
+            selector,
+            MessageTargets.SelectorEditorAuxilliary,
+            (event) => {
+                this.callback(event, callback);
+            },
+        );
     }
-    callback(data, onValidated) {
+    callback(message, onValidated) {
         const validationData = {
             isValid: false,
             count: 0,
             displayedCount: 0,
         };
-        if (!data.isException) {
+        if (!message.isException) {
             validationData.isValid = true;
-            validationData.count = this.getNodesCount(data.result, false);
-            validationData.displayedCount = this.getNodesCount(data.result, true);
+            validationData.count = this.getNodesCount(message.data, false);
+            validationData.displayedCount = this.getNodesCount(message.data, true);
         }
         onValidated(validationData);
     }

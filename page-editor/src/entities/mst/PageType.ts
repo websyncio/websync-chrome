@@ -1,4 +1,4 @@
-import { types, Instance, destroy } from 'mobx-state-tree';
+import { types, Instance, destroy, getSnapshot } from 'mobx-state-tree';
 import { ComponentsContainerModel } from './ComponentsContainer';
 
 export const PageTypeModel = types
@@ -8,6 +8,11 @@ export const PageTypeModel = types
             url: types.maybeNull(types.string),
         }),
     )
+    .views((self) => ({
+        getComponentInstance(componentId) {
+            return self.componentsInstances.find((ci) => ci.id == componentId);
+        },
+    }))
     .actions((self) => ({
         updateComponentInstance(old, updated) {
             const index = self.componentsInstances.indexOf(old);

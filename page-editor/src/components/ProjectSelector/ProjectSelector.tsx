@@ -6,6 +6,8 @@ import IIdeProxy from 'connections/IDE/IIdeConnection';
 import IdeConnection from 'entities/mst/IdeConnection';
 import IdeProject from './IdeProject';
 import './ProjectSelector.sass';
+import { DependencyContainer, TYPES } from 'inversify.config';
+import ISelectorsBagService from 'services/ISelectorsBagService';
 
 interface Props {
     ideProxies: IIdeProxy[];
@@ -13,6 +15,7 @@ interface Props {
 
 const ProjectSelector: React.FC<Props> = observer(({ ideProxies }) => {
     const rootStore: RootStore = useRootStore();
+    const selectorsBagService = DependencyContainer.get<ISelectorsBagService>(TYPES.SelectorsBagService);
 
     function onProjectSelected(ideConnection: IdeConnection, projectName: string) {
         // GET IDE PROXY AND REQUEST PROJECT DATA
@@ -22,6 +25,7 @@ const ProjectSelector: React.FC<Props> = observer(({ ideProxies }) => {
         }
         rootStore.uiStore.setSelectedProject(ideConnection.type, projectName);
         ideProxy.requestProjectData(projectName);
+        selectorsBagService.requestSelectorsList();
     }
 
     function ideProjects(ideConnection: IdeConnection) {

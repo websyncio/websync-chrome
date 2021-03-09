@@ -26,22 +26,26 @@ export default Ember.Controller.extend({
 	init(){
 		this._super(...arguments);
 		console.log("Init ConvertController...");
-		this.configurePageEditor();
 
+		chrome.devtools.panels.elements.onSelectionChanged.addListener(this.locateInspectedElement.bind(this));
+    	this.set('withPageEditor', this.getParamValue('withPageEditor')==='true');
+
+		this.configurePageEditor();
+		
 		Ember.run.schedule("afterRender", this, function() {
       		this.focusInput();
       		this.locateInspectedElement();
       		resizeHandlerFrame.onresize = this.adjustLayout.bind(this);
       		this.bindSourceInputEvents();
     	});
-
-    	chrome.devtools.panels.elements.onSelectionChanged.addListener(this.locateInspectedElement.bind(this));
-    	this.set('withPageEditor', this.getParamValue('withpageeditor')==='true');
 	},
 	configurePageEditor(){
 		let pageEditor = this.get('pageEditorProxy'); 
-		pageEditor.addListener(MessageTypes.EditComponentSelector, this.onEditComponentSelector.bind(this));
-		pageEditor.start();
+		pageEditor.addListener(MessageTypes.EditSelector, this.onEditComponentSelector.bind(this));
+		pageEditor.addListener(MessageTypes.GetSelectorsList, this.sendSelectorsList.bind(this));
+		pageEditor.addListener(MessageTypes.SelectorsListUpdated, this.onUpdateSelectorsList.bind(this));
+		
+		pageEditor.start(this.get('withPageEditor'));
 	},
 	bindSourceInputEvents(){
 		let element = this.getInputElement();
@@ -349,8 +353,17 @@ export default Ember.Controller.extend({
 			}
 		});
 	},
-	generateComponentName(){
-		return "Component Name";
+	generateSelectorName(){
+		const prefix = 'Element';
+		let indexes = this.get('selectors').map(s=>{
+			let match = s.name.match(new RegExp('^'+prefix+'(\\d+)','i'));
+			return match?parseInt(match[1]):null;
+		}).filter(i=>i);
+		let index = 1;
+		while(indexes.indexOf(index)!==-1){
+			index++;
+		}
+		return prefix+index;
 	},
 	getSelector(){
 		return this.get('lastPart').getSelector();
@@ -358,7 +371,8 @@ export default Ember.Controller.extend({
 	addToList(){
 		if(this.get('inputValue')){
 			let componentSelector = ComponentSelector.create({
-				name: this.generateComponentName(),
+				id: Math.random()+'',
+				name: this.generateSelectorName(),
 				selector: this.getSelector(),
 				elementsCount: this.get('status'),
 				stateText: this.get('pluralizer').pluralize(this.get('status'), "element"),
@@ -393,11 +407,11 @@ export default Ember.Controller.extend({
 	updateComponentSelector(){
 		if(this.get('inputValue')){
 			let {componentId, parameterName, parameterValueIndex} = this.get('componentSelectorToUpdate');
-			this.get('pageEditorProxy').updateComponentSelector(
+			this.get('pageEditorProxy').updateSelector(
 				componentId,
 				parameterName, 
 				parameterValueIndex,
-				this.getSelector().css
+				this.getSelector().scss
 			);
 			this.set('componentSelectorToUpdate', null);
 			this.setInputValue('');
@@ -455,6 +469,28 @@ export default Ember.Controller.extend({
 				this.set('notification', null);
 			}.bind(this), 2500);
 		}
+	},
+	selectorsListUpdatedObserver: Ember.observer('selectors.@each.name','selectors.@each.selector', function(){
+		console.log('onSelectorsListUpdated observer was fired.');
+		this.sendSelectorsList();
+	}),
+	sendSelectorsList(){
+		this.get('pageEditorProxy').sendSelectorsList(this.get('selectors'));
+	},
+	onUpdateSelectorsList(updatedSelectors){
+		let selectors = this.get('selectors');
+		for (var i = updatedSelectors.length - 1; i >= 0; i--){
+			let selector = selectors.find(s=>s.id===updatedSelectors[i].id);
+			if(selector){
+				selector.set('name', updatedSelectors[i].name);
+				selector.set('type', updatedSelectors[i].type);
+			}else{
+				console.error('Unknown selector ' + updatedSelectors[i].name);
+			}
+		};
+		let updatedSelectorIds = updatedSelectors.map(s=>s.id);
+		let removedSelectors = selectors.filter(s=>updatedSelectorIds.indexOf(s.id)===-1);
+		selectors.removeObjects(removedSelectors);
 	},
 	actions:{
 		copySelectorStart(isXpath){

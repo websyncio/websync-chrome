@@ -2,12 +2,23 @@ import Service from '@ember/service';
 import Reactor from './reactor';
 
 export const MessageTypes = {
-	EditComponentSelector: 'edit-component-selector',
-	UpdateComponentSelector: 'update-component-selector',
+	InitConnection: 'init',
+	EditSelector: 'edit-selector',
 	ValidateSelector: 'validate-selector',
 	HighlightSelector: 'highlight-selector',
-	RemoveHighlighting: 'remove-highlighting'
+	RemoveHighlighting: 'remove-highlighting',
+	
+	GetSelectorsList: 'get-selectors-list',
+	
+	SelectorUpdated: 'selector-updated',
+	SelectorsListUpdated: 'selectors-list-updated',
 };
+
+export const MessageTargets = {
+	SelectorEditorMain: 'selector-editor-main',
+	SelectorEditorAuxilliary: 'selector-editor-auxilliary',
+	PageEditor: 'page-editor'
+}
 
 export default Service.extend({
 	scssParser: Ember.inject.service(),
@@ -17,94 +28,117 @@ export default Service.extend({
 	reactor: Ember.inject.service(),
 
 	init(){
-		this.get('reactor').registerEvent(MessageTypes.EditComponentSelector);
+		this.get('reactor').registerEvent(MessageTypes.EditSelector);
+		this.get('reactor').registerEvent(MessageTypes.GetSelectorsList);
+		this.get('reactor').registerEvent(MessageTypes.SelectorsListUpdated);
 	},
-	start(){
-		window.addEventListener("message", this.receiveMessage.bind(this), false);
+	start(isAuxilliary){
+		let sourceName = isAuxilliary?MessageTargets.SelectorEditorAuxilliary:MessageTargets.SelectorEditorMain;
+		this.set('sourceName', sourceName);
+		
+		let backgroundConnection = chrome.runtime.connect();
+	    backgroundConnection.onMessage.addListener(this.receiveMessage.bind(this));
+	    this.set('backgroundConnection', backgroundConnection);
+	    this.postMessage(MessageTypes.InitConnection);
 	},
-	receiveMessage(event){
-		// Do we trust the sender of this message?
-	  	if (!chrome.runtime.getURL("").startsWith(event.origin)){
-	    	return;
-		}
-
-		switch(event.data.type){
+	receiveMessage(message){
+		console.log('page-editor-proxy received', message);
+		switch(message.type){
 			case MessageTypes.ValidateSelector:
-				this.validateSelector(event);
+				this.validateSelector(message);
 				break;
-			case MessageTypes.EditComponentSelector:
-				this.editComponentSelector(event);
+			case MessageTypes.EditSelector:
+				this.editComponentSelector(message);
 				break;
 			case MessageTypes.HighlightSelector:
-				this.highlightSelector(event);
+				this.highlightSelector(message);
 				break;
 			case MessageTypes.RemoveHighlighting:
 				this.removeHighlighting();
+				break;
+			case MessageTypes.GetSelectorsList:
+				this.getSelectorsList(message);
+				break;
+			case MessageTypes.SelectorsListUpdated:
+				this.updateSelectorList(message);
 				break;
 			default:
 				console.log("Page edito proxy received message of unknown type.", event.data.type);
 		}
 	},
-	highlightSelector(event){
-		let selector = this.getSelector(event);
+	highlightSelector(message){
+		let selector = this.getSelector(message.data);
 		this.get('selectorHighlighter').highlight(selector);
 	},
 	removeHighlighting(){
 		this.get('selectorHighlighter').removeHighlighting();
 	},
-	editComponentSelector(event){
+	updateSelectorList(message){
 		this.get('reactor').dispatchEvent(
-			MessageTypes.EditComponentSelector,
-			event.data.data
+			MessageTypes.SelectorsListUpdated,
+			message.data
 		);
 	},
-	validateSelector(event){
+	getSelectorsList(message){
+		this.get('reactor').dispatchEvent(
+			MessageTypes.GetSelectorsList
+		);
+	},
+	editComponentSelector(message){
+		this.get('reactor').dispatchEvent(
+			MessageTypes.EditSelector,
+			message.data
+		);
+	},
+	validateSelector(message){
 		try{
-			let selector = this.getSelector(event);
+			let selector = this.getSelector(message.data);
 			this.get('selectorValidator').validate(selector, function(result, isException){
-				this.postResult(event, result, isException);
+				this.postMessage(MessageTypes.ValidateSelector, result, message.source, isException, message.acknowledgment);
 			}.bind(this));
 		}
 		catch(e){
-			this.postResult(event, null, true);
+			this.postMessage(MessageTypes.ValidateSelector, null, message.source, true, acknowledgment);
 		}
 	},
-	getSelector(event) {
-		let selector = event.data.data;
+	getSelector(selector) {
 		if (selector.scss) {
 			selector = this.get('scssParser').parse(selector.scss);
 		}
 		return selector;
 	},
-	postResult(event, result, isException){
-		// Assuming you've verified the origin of the received message (which
-		// you must do in any case), a convenient idiom for replying to a
-		// message is to call postMessage on event.source and provide
-		// event.origin as the targetOrigin.
-		event.source.postMessage({
-			acknowledgment: event.data.acknowledgment,
-			type: event.data.type,
-			result: result,
-			isException: isException
-		}, event.origin);
-	},
-	postMessage(type, data){
-		pageEditor.contentWindow.postMessage({
+	postMessage(type, data, target, isException, acknowledgment){
+		this.get('backgroundConnection').postMessage({
+			source: this.get('sourceName'),
+			tabId: chrome.devtools.inspectedWindow.tabId,
 			type: type,
-			data: data
-		}, "*");
+			data: data,
+			isException: isException,
+			acknowledgment: acknowledgment,
+			target: target
+		});
 	},
 	addListener(messageType, listener){
 		this.get('reactor').addEventListener(messageType, listener);
 	},
-	updateComponentSelector(componentId, parameterName, parameterValueIndex, newSelector){
+	sendSelectorsList(selectors){
+		let data = selectors.map(s=>({
+			id: s.id,
+			name: s.name,
+			type: s.type,
+			selector: s.selector.scss
+		}));
+		this.postMessage(MessageTypes.SelectorsListUpdated, data, MessageTargets.PageEditor);
+	},
+	updateSelector(componentId, parameterName, parameterValueIndex, newSelector){
 		this.postMessage(
-			MessageTypes.UpdateComponentSelector,
+			MessageTypes.SelectorUpdated,
 			{
 				componentId: componentId,
 				parameterName: parameterName,
 				parameterValueIndex: parameterValueIndex,
-				selector: newSelector
-			});
+				parameterValue: newSelector
+			},
+			MessageTargets.PageEditor);
 	}
 });

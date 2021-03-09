@@ -8,10 +8,10 @@ interface Props {
     parameterName: string | null;
     selector: ISelector;
     onEdit: () => void;
-    onValidationError: () => void;
+    onValidated: (hasError) => void;
 }
 
-const Selector: React.FC<Props> = observer(({ parameterName, selector, onEdit, onValidationError }) => {
+const Selector: React.FC<Props> = observer(({ parameterName, selector, onEdit, onValidated }) => {
     const selectorValidator: SelectorValidator = DependencyContainer.get<SelectorValidator>(TYPES.SelectorValidator);
     const selectorHighlighter: SelectorHighlighter = DependencyContainer.get<SelectorHighlighter>(
         TYPES.SelectorHighlighter,
@@ -23,9 +23,7 @@ const Selector: React.FC<Props> = observer(({ parameterName, selector, onEdit, o
     function validateCallback(validationResult: any) {
         console.log(selector.value + ': ' + validationResult.count);
         setStatus(validationResult.count);
-        if (validationResult.count === 0) {
-            onValidationError();
-        }
+        onValidated(validationResult.count === 0);
     }
 
     function validate() {
@@ -34,7 +32,7 @@ const Selector: React.FC<Props> = observer(({ parameterName, selector, onEdit, o
 
     useEffect(() => {
         validate();
-    }, []);
+    }, [selector]);
 
     function submitRename(event, newName) {
         // event.target.contentEditable = false;
