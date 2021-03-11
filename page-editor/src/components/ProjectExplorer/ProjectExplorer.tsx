@@ -8,12 +8,15 @@ import PageInstance from 'entities/mst/PageInstance';
 import './ProjectExplorer.sass';
 import WebSiteDetails from './ProjectTreeItemDetails/WebSiteDetails';
 import PageInstanceDetails from './ProjectTreeItemDetails/PageInstanceDetails';
-import Selectable from 'entities/mst/Selectable';
+// import Selectable from 'entities/mst/Selectable';
+import IIdeProxy from 'connections/IDE/IIdeConnection';
 
-interface Props {}
+interface Props {
+    ideProxy: IIdeProxy;
+}
 
-const Explorer: React.FC<Props> = observer(() => {
-    const { projectStore, uiStore }: RootStore = useRootStore();
+const Explorer: React.FC<Props> = observer(({ ideProxy }) => {
+    const { projectStore }: RootStore = useRootStore();
 
     // const [selectedWebSite, setSelectedWebSite] = useState<WebSite | undefined>(undefined);
     // const [selectedPageInstance, setSelectedPageInstance] = useState<PageInstance | undefined>(undefined);
@@ -41,7 +44,7 @@ const Explorer: React.FC<Props> = observer(() => {
                 <div id="sidebar-actions"></div>
                 {/* <div> */}
                 {/* <PageList/> */}
-                {/* <PageList 
+                {/* <PageList
                         pageTypes={this.state.pageTypes}
                         selected={this.state.selectedPageType}
                         onSelectedPageChanged={this.onSelectedPageChange}
@@ -51,9 +54,9 @@ const Explorer: React.FC<Props> = observer(() => {
             </div>
             <div id="details" className="flex-auto">
                 {projectStore.selectedPageInstance ? (
-                    <PageInstanceDetails pageInstance={projectStore.selectedPageInstance} />
+                    <PageInstanceDetails pageInstance={projectStore.selectedPageInstance} ideProxy={ideProxy} />
                 ) : projectStore.selectedWebSite ? (
-                    <WebSiteDetails website={projectStore.selectedWebSite} />
+                    <WebSiteDetails website={projectStore.selectedWebSite} ideProxy={ideProxy} />
                 ) : (
                     <div>Nothing selected</div>
                 )}

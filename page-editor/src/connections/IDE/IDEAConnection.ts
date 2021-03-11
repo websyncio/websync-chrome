@@ -1,9 +1,10 @@
 import 'reflect-metadata';
-import { inject, injectable } from 'inversify';
+import { injectable } from 'inversify';
 import WebsocketConnection, { Events } from '../WebsocketConnection';
 import { RootStore } from 'context';
 import IIdeConnection from 'connections/IDE/IIdeConnection';
 import ComponentInstance from 'entities/mst/ComponentInstance';
+import PageInstance from 'entities/mst/PageInstance';
 
 @injectable()
 export default class IDEAConnection implements IIdeConnection {
@@ -31,6 +32,22 @@ export default class IDEAConnection implements IIdeConnection {
             projectName: RootStore.uiStore.selectedProject,
             type: 'update-component-instance',
             data: component,
+        };
+        this.connection.send(message);
+    }
+
+    updateWebsiteUrl(url: string) {
+        const message = {
+            type: 'update-website-url',
+            url,
+        };
+        this.connection.send(message);
+    }
+
+    updatePageInstanceUrl(pageInstance: PageInstance) {
+        const message = {
+            type: 'update-pageinstance-url',
+            pageInstance,
         };
         this.connection.send(message);
     }
@@ -77,7 +94,8 @@ export default class IDEAConnection implements IIdeConnection {
                 break;
             case 'show-page':
                 console.log('page is opened:', message.className);
-            // return this.props.onSelectedPageChange(null, message.className);
+                // return this.props.onSelectedPageChange(null, message.className);
+                break;
             case 'update-component':
                 RootStore.projectStore.updateComponentType(message.data);
                 return;

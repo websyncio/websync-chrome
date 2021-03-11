@@ -33,7 +33,7 @@ export default class IdeConnection {
         // 1	OPEN	The connection is open and ready to communicate.
         // 2	CLOSING	The connection is in the process of closing.
         // 3	CLOSED	The connection is closed or couldn't be opened.
-        if (this.client.readyState == 3) {
+        if (this.client.readyState === 3) {
             this.connect();
         }
     }
@@ -47,7 +47,7 @@ export default class IdeConnection {
     }
 
     send(messageObject) {
-        if (this.client.readyState != 1) {
+        if (this.client.readyState !== 1) {
             throw new Error("Can't send message to IDE because connection is closed.");
         }
         this.client.send(JSON.stringify(messageObject));

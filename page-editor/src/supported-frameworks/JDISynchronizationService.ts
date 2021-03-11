@@ -3,7 +3,6 @@ import ComponentInstance from 'entities/mst/ComponentInstance';
 import { injectable, inject } from 'inversify';
 import { TYPES } from 'inversify.config';
 import IProjectSynchronizerService from 'services/ISynchronizationService';
-import { RootStore } from 'context';
 
 @injectable()
 export default class JDISynchronizationService implements IProjectSynchronizerService {
