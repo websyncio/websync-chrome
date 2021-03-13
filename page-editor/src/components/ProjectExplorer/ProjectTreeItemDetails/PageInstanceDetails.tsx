@@ -4,20 +4,19 @@ import PageInstance from 'entities/mst/PageInstance';
 import Input from 'components/Input/Input';
 import IIdeProxy from 'connections/IDE/IIdeConnection';
 import './PageInstanceDetails.sass';
+import { DependencyContainer, TYPES } from 'inversify.config';
+import ISynchronizationService from 'services/ISynchronizationService';
 
 interface Props {
     pageInstance: PageInstance;
-    ideProxy: IIdeProxy;
 }
 
-const PageInstanceDetails: React.FC<Props> = observer(({ pageInstance, ideProxy }) => {
-    const [url, setUrl] = useState(pageInstance.url);
+const PageInstanceDetails: React.FC<Props> = observer(({ pageInstance }) => {
+    const synchronizationService = DependencyContainer.get<ISynchronizationService>(TYPES.SynchronizationService);
 
-    const submitPageInstanceUrlRename = (val) => {
-        setUrl(val);
-        const newPageInstance = { ...pageInstance, url: val };
-        pageInstance.updatePageInstanceUrl(newPageInstance, ideProxy);
-    };
+    function onChangeUrl(newUrl: string) {
+        synchronizationService.updatePageInstanceUrl(pageInstance, newUrl);
+    }
 
     return (
         <div className="details-wrap">
@@ -27,7 +26,7 @@ const PageInstanceDetails: React.FC<Props> = observer(({ pageInstance, ideProxy 
             </div>
             <div className="pageinstance-url">
                 <label>Url:</label>
-                <Input value={url} onChange={submitPageInstanceUrlRename} />
+                <Input value={pageInstance.url} onChange={onChangeUrl} />
             </div>
         </div>
     );

@@ -1,18 +1,17 @@
 import { types, Instance } from 'mobx-state-tree';
+import { ExpandableModel } from './Expandable';
 import { PageInstanceModel } from './PageInstance';
 import { SelectableModel } from './Selectable';
-// import IDEAConnection from 'connections/IDE/IDEAConnection';
-// import IIdeProxy from 'connections/IDE/IIdeConnection';
 
 export const WebSiteModel = types
     .compose(
+        ExpandableModel,
         SelectableModel,
         types.model({
             id: types.identifier,
             baseWebSite: types.maybe(types.reference(types.late(() => WebSiteModel))),
             url: types.string,
             pageInstances: types.array(PageInstanceModel),
-            expanded: types.optional(types.boolean, false),
         }),
     )
     .views((self) => ({
@@ -22,11 +21,8 @@ export const WebSiteModel = types
         },
     }))
     .actions((self) => ({
-        toggleExpanded() {
-            self.expanded = !self.expanded;
-        },
-        updateWebsite(newUrl, ideProxy) {
-            ideProxy.updateWebsiteUrl(newUrl);
+        setUrl(newUrl) {
+            self.url = newUrl;
         },
     }));
 
