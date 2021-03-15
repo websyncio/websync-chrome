@@ -15,6 +15,7 @@ export const MessageTypes = {
 
     SelectorUpdated: 'selector-updated',
     SelectorsListUpdated: 'selectors-list-updated',
+    UrlChanged: 'page-url-changed',
 };
 
 export const MessageTargets = {
@@ -33,6 +34,7 @@ export default class SelectorEditorProxy {
         this.reactor = new Reactor();
         this.reactor.registerEvent(MessageTypes.SelectorUpdated);
         this.reactor.registerEvent(MessageTypes.SelectorsListUpdated);
+        this.reactor.registerEvent(MessageTypes.UrlChanged);
 
         this.backgroundConnection = chrome.runtime.connect();
         this.backgroundConnection.onMessage.addListener(this.receiveMessage.bind(this));
@@ -42,6 +44,7 @@ export default class SelectorEditorProxy {
 
     receiveMessage(message) {
         console.log('selector-editor-connection received', message);
+
         const callback = message.acknowledgment && this.acknowledgments[message.acknowledgment];
         if (callback) {
             callback(message);
@@ -54,6 +57,10 @@ export default class SelectorEditorProxy {
                     break;
                 case MessageTypes.SelectorsListUpdated:
                     this.reactor.dispatchEvent(MessageTypes.SelectorsListUpdated, message.data);
+                    break;
+                case MessageTypes.UrlChanged:
+                    console.log('recieved Message UrlChanged');
+                    this.reactor.dispatchEvent(MessageTypes.UrlChanged, message.data);
                     break;
             }
         }
