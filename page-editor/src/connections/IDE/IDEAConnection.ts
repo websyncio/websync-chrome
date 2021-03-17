@@ -5,6 +5,7 @@ import { RootStore } from 'context';
 import IIdeConnection from 'connections/IDE/IIdeConnection';
 import ComponentInstance from 'entities/mst/ComponentInstance';
 import PageInstance from 'entities/mst/PageInstance';
+import WebSite from 'entities/mst/WebSite';
 
 @injectable()
 export default class IDEAConnection implements IIdeConnection {
@@ -36,17 +37,19 @@ export default class IDEAConnection implements IIdeConnection {
         this.connection.send(message);
     }
 
-    updateWebsiteUrl(url: string) {
+    updateWebSite(projectName: string, webSite: WebSite) {
         const message = {
-            type: 'update-website-url',
-            url,
+            type: 'update-website',
+            projectName,
+            webSite,
         };
         this.connection.send(message);
     }
 
-    updatePageInstanceUrl(pageInstance: PageInstance) {
+    updatePageInstance(projectName: string, pageInstance: PageInstance) {
         const message = {
-            type: 'update-pageinstance-url',
+            type: 'update-page-instance',
+            projectName,
             pageInstance,
         };
         this.connection.send(message);

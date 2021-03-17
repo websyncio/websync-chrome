@@ -54,9 +54,9 @@ const Explorer: React.FC<Props> = observer(({ ideProxy }) => {
             </div>
             <div id="details" className="flex-auto">
                 {projectStore.selectedPageInstance ? (
-                    <PageInstanceDetails pageInstance={projectStore.selectedPageInstance} ideProxy={ideProxy} />
+                    <PageInstanceDetails pageInstance={projectStore.selectedPageInstance} />
                 ) : projectStore.selectedWebSite ? (
-                    <WebSiteDetails website={projectStore.selectedWebSite} ideProxy={ideProxy} />
+                    <WebSiteDetails website={projectStore.selectedWebSite} />
                 ) : (
                     <div>Nothing selected</div>
                 )}

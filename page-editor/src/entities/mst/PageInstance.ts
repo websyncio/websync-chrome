@@ -12,9 +12,9 @@ export const PageInstanceModel = types
             url: types.optional(types.string, ''),
         }),
     )
-    .actions(() => ({
-        updatePageInstanceUrl(newUrl, ideProxy) {
-            ideProxy.updatePageInstanceUrl(newUrl);
+    .actions((self) => ({
+        setUrl(newUrl) {
+            self.url = newUrl;
         },
     }));
 
