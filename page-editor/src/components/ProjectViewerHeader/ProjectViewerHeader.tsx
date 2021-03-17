@@ -6,32 +6,19 @@ import './ProjectViewerHeader.sass';
 import PageType from 'entities/mst/PageType';
 import CloseButton from 'components-common/CloseButton/CloseButton';
 import PageInstance from 'entities/mst/PageInstance';
-import WebSite from 'entities/mst/WebSite';
 
 interface Props {}
 
 const Header: React.FC<Props> = observer(() => {
     const rootStore: RootStore = useRootStore();
-    const { uiStore, projectStore } = rootStore;
+    const { uiStore } = rootStore;
 
     function goBackToProjectSelector() {
         rootStore.clearProject();
     }
 
     function onMatchedPageClick(pi: PageInstance) {
-        if (projectStore.selectedPageInstance) {
-            projectStore.selectedPageInstance.deselect();
-        }
-
-        // expand corresponding website at project explorer
-        const parentWebsite = projectStore.webSites.find((ws: WebSite) => ws.pageInstances.includes(pi));
-        if (parentWebsite.expanded === false) {
-            parentWebsite.toggleExpanded();
-        }
-
-        if (pi) {
-            pi.select();
-        }
+        uiStore.addEditedPageObject(pi.pageType);
     }
 
     function editedPageObjects() {

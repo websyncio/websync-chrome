@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
 import WebSite from 'entities/mst/WebSite';
 import Input from 'components/Input/Input';
 import './WebSiteDetails.sass';
-import IIdeProxy from 'connections/IDE/IIdeConnection';
 import { DependencyContainer, TYPES } from 'inversify.config';
 import ISynchronizationService from 'services/ISynchronizationService';
 
