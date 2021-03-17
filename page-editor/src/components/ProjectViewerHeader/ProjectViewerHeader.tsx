@@ -5,15 +5,33 @@ import RootStore from 'entities/mst/RootStore';
 import './ProjectViewerHeader.sass';
 import PageType from 'entities/mst/PageType';
 import CloseButton from 'components-common/CloseButton/CloseButton';
+import PageInstance from 'entities/mst/PageInstance';
+import WebSite from 'entities/mst/WebSite';
 
 interface Props {}
 
 const Header: React.FC<Props> = observer(() => {
     const rootStore: RootStore = useRootStore();
-    const { uiStore } = rootStore;
+    const { uiStore, projectStore } = rootStore;
 
     function goBackToProjectSelector() {
         rootStore.clearProject();
+    }
+
+    function onMatchedPageClick(pi: PageInstance) {
+        if (projectStore.selectedPageInstance) {
+            projectStore.selectedPageInstance.deselect();
+        }
+
+        // expand corresponding website at project explorer
+        const parentWebsite = projectStore.webSites.find((ws: WebSite) => ws.pageInstances.includes(pi));
+        if (parentWebsite.expanded === false) {
+            parentWebsite.toggleExpanded();
+        }
+
+        if (pi) {
+            pi.select();
+        }
     }
 
     function editedPageObjects() {
@@ -25,6 +43,14 @@ const Header: React.FC<Props> = observer(() => {
             >
                 <span>{po.name}</span>
                 <CloseButton onClick={() => uiStore.removeEditedPageObject(po)} />
+            </div>
+        ));
+    }
+
+    function matchedPages() {
+        return uiStore.matchedPages.map((pi: PageInstance) => (
+            <div key={pi.id} onClick={() => onMatchedPageClick(pi)} className="matched-page">
+                <span> {pi.name} </span>
             </div>
         ));
     }
@@ -50,6 +76,10 @@ const Header: React.FC<Props> = observer(() => {
                 Project Explorer ({uiStore.selectedProject})
             </div>
             {editedPageObjects()}
+            <div className="matched-pages-container">
+                <span>Matched pages: </span>
+                {matchedPages()}
+            </div>
         </div>
     );
 });

@@ -84,7 +84,7 @@ function urlPollingCallback(){
 }
 
 
-window.addEventListener("visibilitychange", function(e){
+window.addEventListener("visibilitychange", function(){
 	if (document.visibilityState === 'visible') {
 		window.clearInterval(urlPollingIntervalId);
 		startPolling();
@@ -109,7 +109,7 @@ function sendUrlMessage() {
 //
 
 window.getCurrentUrl = function(){
-	return window.location;
+	return window.location.href;
 }
 
 window.getIframes = function(){

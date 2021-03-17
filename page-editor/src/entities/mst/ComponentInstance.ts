@@ -1,16 +1,5 @@
-import {
-    types,
-    Instance,
-    getSnapshot,
-    getParent,
-    hasParent,
-    getParentOfType,
-    cast,
-    clone,
-    destroy,
-} from 'mobx-state-tree';
+import { types, Instance, getParentOfType } from 'mobx-state-tree';
 import { AttributeModel } from './Attribute';
-import { ComponentTypeModel } from './ComponentType';
 import { PageTypeModel } from './PageType';
 import IDEAConnection from 'connections/IDE/IDEAConnection';
 import { SelectableModel } from './Selectable';

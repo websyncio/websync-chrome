@@ -59,7 +59,6 @@ export default class SelectorEditorProxy {
                     this.reactor.dispatchEvent(MessageTypes.SelectorsListUpdated, message.data);
                     break;
                 case MessageTypes.UrlChanged:
-                    console.log('recieved Message UrlChanged');
                     this.reactor.dispatchEvent(MessageTypes.UrlChanged, message.data);
                     break;
             }

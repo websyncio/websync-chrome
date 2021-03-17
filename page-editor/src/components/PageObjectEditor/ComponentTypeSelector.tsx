@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import ComponentType from 'entities/mst/ComponentType';
+import React from 'react';
 import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
 import { observer } from 'mobx-react';
@@ -9,8 +8,8 @@ interface Props {
     onSelected: Function;
 }
 
-const ComponentTypeSelector: React.FC<Props> = observer(({ onSelected }) => {
-    const { projectStore, uiStore }: RootStore = useRootStore();
+const ComponentTypeSelector: React.FC<Props> = observer(() => {
+    const { projectStore }: RootStore = useRootStore();
 
     function customComponentTypes() {
         return projectStore.customComponentTypes.map((item) => {

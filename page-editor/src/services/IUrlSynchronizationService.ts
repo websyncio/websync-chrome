@@ -1,3 +1,3 @@
 export default interface IUrlSynchronizationService {
-    updateUrlStatus(url: string);
+    updateUrlStatus(data: { url: string });
 }

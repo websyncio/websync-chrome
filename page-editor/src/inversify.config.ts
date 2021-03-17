@@ -3,6 +3,7 @@ import { Container } from 'inversify';
 import ISynchronizationService from 'services/ISynchronizationService';
 import JDISynchronizationService from 'supported-frameworks/JDISynchronizationService';
 import { SelectorsBagService } from 'services/SelectorsBagService';
+import { UrlSynchronizationService } from 'services/UrlSynchronizationService';
 import SelectorEditorConnection from 'connections/SelectorEditorConnection';
 import SelectorValidator from 'services/SelectorValidatorService';
 import SelectorHighlighter from 'services/SelectorHighlighterService';
@@ -16,9 +17,17 @@ export const TYPES = {
     SelectorValidator: Symbol.for('SelectorValidator'),
     SelectorHighlighter: Symbol.for('SelectorHighlighter'),
     IDEAConnection: Symbol.for('IDEAConnection'),
+    UrlSynchronizationService: Symbol.for('UrlSynchronizationService'),
 };
 
 export const DependencyContainer = new Container();
+
+DependencyContainer.bind<UrlSynchronizationService>(TYPES.UrlSynchronizationService)
+    .toDynamicValue(() => {
+        const connection = DependencyContainer.get<SelectorEditorConnection>(TYPES.SelectorEditorConnection);
+        return new UrlSynchronizationService(connection);
+    })
+    .inSingletonScope();
 
 DependencyContainer.bind<SelectorEditorConnection>(TYPES.SelectorEditorConnection)
     .to(SelectorEditorConnection)

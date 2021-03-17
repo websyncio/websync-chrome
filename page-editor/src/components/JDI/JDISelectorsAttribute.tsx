@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import AttributeModel from 'entities/mst/Attribute';
 import ParameterModel from 'entities/mst/Parameter';
 import { observer } from 'mobx-react';
@@ -17,9 +17,9 @@ const JDISelectorsAttribute: React.FC<JDISelectorsAttributeProps> = ({
     onEditSelector,
     onValidated,
 }: JDISelectorsAttributeProps) => {
-    function getStatus() {
-        return Math.floor(Math.random() * 3);
-    }
+    // function getStatus() {
+    //     return Math.floor(Math.random() * 3);
+    // }
 
     function getSelector(value: string) {
         return SelectorModel.create({

@@ -73,7 +73,7 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
             setIsDeleted(true);
         }
 
-        function onChange(componentType: string, componentName: string) {
+        function onChange() {
             console.log('update type and name for component model and ide');
         }
 

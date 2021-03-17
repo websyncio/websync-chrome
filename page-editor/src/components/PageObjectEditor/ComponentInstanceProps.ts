@@ -1,4 +1,4 @@
-import IIdeProxy from 'connections/IDE/IIdeConnection';
+// import IIdeProxy from 'connections/IDE/IIdeConnection';
 import IComponentInstance from 'entities/mst/ComponentInstance';
 
 export default interface ComponentInstanceProps {

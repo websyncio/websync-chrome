@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ISelector from 'entities/mst/Selector';
 import SelectorValidator from 'services/SelectorValidatorService';
 import SelectorHighlighter from 'services/SelectorHighlighterService';
@@ -35,6 +35,7 @@ const Selector: React.FC<Props> = observer(({ parameterName, selector, onEdit, o
     }, [selector]);
 
     function submitRename(event, newName) {
+        console.log('submit rename', event, newName);
         // event.target.contentEditable = false;
         // if (newName === null) {
         //     event.target.innerText = this.props.component.name;

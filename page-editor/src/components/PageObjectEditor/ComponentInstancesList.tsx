@@ -105,8 +105,9 @@ const ComponentInstancesList: React.FC<Props> = observer(
             return true;
         }
 
-        function onComponentKeyDown(e, component: IComponentInstance) {
+        function onComponentKeyDown(e, component) {
             if (!e.altKey && !e.ctrlKey && !e.shiftKey) {
+                console.log('onComponentKeyDown', component);
             }
         }
 

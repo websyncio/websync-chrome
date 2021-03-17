@@ -1,9 +1,8 @@
-import { types, Instance, getParent, hasParent, destroy, cast, applySnapshot } from 'mobx-state-tree';
+import { types, Instance, applySnapshot } from 'mobx-state-tree';
 import WebSite, { WebSiteModel } from './WebSite';
-import PageType, { PageTypeModel } from './PageType';
+import { PageTypeModel } from './PageType';
 import PageInstance from './PageInstance';
 import ComponentType, { ComponentTypeModel } from './ComponentType';
-import ComponentInstance from './ComponentInstance';
 
 function compareComponentTypes(a: ComponentType, b: ComponentType) {
     if (a.name > b.name) {
