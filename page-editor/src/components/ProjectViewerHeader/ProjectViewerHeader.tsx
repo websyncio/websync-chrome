@@ -5,6 +5,7 @@ import RootStore from 'entities/mst/RootStore';
 import './ProjectViewerHeader.sass';
 import PageType from 'entities/mst/PageType';
 import CloseButton from 'components-common/CloseButton/CloseButton';
+import PageInstance from 'entities/mst/PageInstance';
 
 interface Props {}
 
@@ -16,6 +17,10 @@ const Header: React.FC<Props> = observer(() => {
         rootStore.clearProject();
     }
 
+    function onMatchedPageClick(pi: PageInstance) {
+        uiStore.addEditedPageObject(pi.pageType);
+    }
+
     function editedPageObjects() {
         return uiStore.editedPageObjects.map((po: PageType) => (
             <div
@@ -25,6 +30,14 @@ const Header: React.FC<Props> = observer(() => {
             >
                 <span>{po.name}</span>
                 <CloseButton onClick={() => uiStore.removeEditedPageObject(po)} />
+            </div>
+        ));
+    }
+
+    function matchedPages() {
+        return uiStore.matchedPages.map((pi: PageInstance) => (
+            <div key={pi.id} onClick={() => onMatchedPageClick(pi)} className="matched-page">
+                <span> {pi.name} </span>
             </div>
         ));
     }
@@ -50,6 +63,10 @@ const Header: React.FC<Props> = observer(() => {
                 Project Explorer ({uiStore.selectedProject})
             </div>
             {editedPageObjects()}
+            <div className="matched-pages-container">
+                <span>Matched pages: </span>
+                {matchedPages()}
+            </div>
         </div>
     );
 });

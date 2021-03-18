@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
 import PageInstance from 'entities/mst/PageInstance';
 import Input from 'components/Input/Input';
-import IIdeProxy from 'connections/IDE/IIdeConnection';
 import './PageInstanceDetails.sass';
 import { DependencyContainer, TYPES } from 'inversify.config';
 import ISynchronizationService from 'services/ISynchronizationService';

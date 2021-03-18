@@ -41,6 +41,11 @@ chrome.runtime.onConnect.addListener(function (port) {
   }
 
   var listener = function (message, senderPort, sendResponse) {
+    if (message.type == 'get-tab-id') {
+      console.log("Responde to sender with tabId");
+      senderPort.postMessage({ tabId: senderPort.sender.tab.id, target: 'content', type: 'response-tab-id'});
+      return;
+    }
     if(!message.tabId){
       console.error("Tab Id is not specified in the message.");
       return;
@@ -114,7 +119,7 @@ chrome.runtime.onConnect.addListener(function (port) {
 //           console.log("request tab id", request.tabId);
 //           chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
 //             console.log("request tab id", tabs[0].id);
-//             chrome.tabs.sendMessage(tabs[0].id, request, sendResponse);  
+//             chrome.tabs.sendMessage(tabs[0].id, request, sendResponse);
 //           });
 //           // if(request.tabId){
 //           //   // Relay message to content script

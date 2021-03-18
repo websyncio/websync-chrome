@@ -6,7 +6,7 @@ export const AttributeModel = types
         name: types.string,
         parameters: types.array(ParameterModel),
     })
-    .views((self) => ({}))
+    .views(() => ({}))
     .actions((self) => ({
         updateParameterValue(name, parameterValueIndex, parameterValue) {
             const parameter = self.parameters.find((p) => p.name == name);

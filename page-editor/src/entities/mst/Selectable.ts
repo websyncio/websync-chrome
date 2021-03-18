@@ -2,7 +2,7 @@ import { types, Instance } from 'mobx-state-tree';
 
 export const SelectableModel = types
     .model()
-    .volatile((self) => ({
+    .volatile(() => ({
         selected: false,
     }))
     .actions((self) => ({

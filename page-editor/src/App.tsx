@@ -1,4 +1,4 @@
-import React, { Component, useLayoutEffect } from 'react';
+import React from 'react';
 import 'App.sass';
 
 import 'semantic-ui-css/semantic.min.css';
@@ -11,10 +11,14 @@ import ProjectViewer from 'components/ProjectViewer/ProjectViewer';
 import RootStore from 'entities/mst/RootStore';
 import { useRootStore } from 'context';
 // import SelectorsBagService from 'services/SelectorsBagService';
+import { DependencyContainer, TYPES } from 'inversify.config';
+import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
 
 const App: React.FC = observer(() => {
     const ideProxies: IIdeProxy[] = [IDEAConnection.instance()];
     const { projectStore, uiStore }: RootStore = useRootStore();
+
+    DependencyContainer.get<IUrlSynchronizationService>(TYPES.UrlSynchronizationService);
 
     // useLayoutEffect(() => {
     //     SelectorsBagService.init();

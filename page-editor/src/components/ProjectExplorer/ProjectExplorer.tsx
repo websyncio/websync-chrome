@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
 import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
@@ -15,7 +15,7 @@ interface Props {
     ideProxy: IIdeProxy;
 }
 
-const Explorer: React.FC<Props> = observer(({ ideProxy }) => {
+const Explorer: React.FC<Props> = observer(() => {
     const { projectStore }: RootStore = useRootStore();
 
     // const [selectedWebSite, setSelectedWebSite] = useState<WebSite | undefined>(undefined);

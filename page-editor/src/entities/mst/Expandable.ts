@@ -2,7 +2,7 @@ import { types, Instance } from 'mobx-state-tree';
 
 export const ExpandableModel = types
     .model()
-    .volatile((self) => ({
+    .volatile(() => ({
         expanded: false,
     }))
     .actions((self) => ({

@@ -8,7 +8,7 @@ import ISelectorsBagService from 'services/ISelectorsBagService';
 import SelectorHighlighter from 'services/SelectorHighlighterService';
 
 const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
-    ({ component, index, caretPosition, onSelected, onSelectNext, onSelectPrevious }) => {
+    ({ component, caretPosition, onSelected, onSelectNext, onSelectPrevious }) => {
         const [isDeleted, setIsDeleted] = useState(false);
         const [isAllSet, setIsAllSet] = useState(!!component.typeName.length && !!component.componentFieldName.length);
         const selectorBagService = DependencyContainer.get<ISelectorsBagService>(TYPES.SelectorsBagService);

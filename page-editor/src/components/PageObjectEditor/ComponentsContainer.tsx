@@ -15,8 +15,8 @@ interface Props {
     pageObject: IComponentsContainer;
 }
 
-const ComponentsContainer: React.FC<Props> = observer(({ ideProxy, pageObject }) => {
-    const { projectStore, uiStore }: RootStore = useRootStore();
+const ComponentsContainer: React.FC<Props> = observer(({ pageObject }) => {
+    const { uiStore }: RootStore = useRootStore();
 
     function selectComponent(components: IComponentInstance[], index: number) {
         components.forEach((c, i) => {

@@ -4,7 +4,6 @@ import { PageTypeModel } from './PageType';
 import PageInstance, { PageInstanceModel } from './PageInstance';
 import PageType from 'entities/mst/PageType';
 import { ComponentInstanceModel } from 'entities/mst/ComponentInstance';
-import WebSite, { WebSiteModel } from './WebSite';
 
 export const UiStoreModel = types
     .model({
@@ -16,6 +15,7 @@ export const UiStoreModel = types
         // selectedWebSite: types.safeReference(WebSiteModel),
         // selectedPageType: types.safeReference(PageTypeModel),s
         blankComponents: types.array(ComponentInstanceModel),
+        matchedPages: types.array(types.reference(PageInstanceModel)),
     })
     .views((self) => ({
         get selectedPageObject() {
@@ -66,6 +66,9 @@ export const UiStoreModel = types
         },
         removeEditedPageObject(pageObject: PageType) {
             self.editedPageObjects.remove(pageObject);
+        },
+        updateMathchedPages(pageInstances: PageInstance[]) {
+            self.matchedPages.replace(pageInstances);
         },
         generateBlankComponents(selectors) {
             applySnapshot(

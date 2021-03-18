@@ -48,28 +48,68 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
     }
 });
 
-// document.addEventListener("DOMContentLoaded", function(){
-// 	chrome.runtime.sendMessage({
-// 		type: "urlchanged",
-// 		location: window.location
-// 	});
-// });
+// initialize permanent connection to background script
+var port = chrome.runtime.connect({ name: "devtools-panel" });
+var tabId;
 
-// window.onload = window.onUrlChanged;
-// window.onhashchange = window.onUrlChanged;
+port.postMessage({ type: 'get-tab-id', target: 'background', name: 'get-tab-id' });
 
-// function onUrlChanged(){
-// 	chrome.runtime.sendMessage({
-// 		type: "urlchanged",
-// 		data: {
-// 			url: window.location.href
-// 		}
-// 	});
-// 	console.log("Sent urlchanged message to Backround Page.");
-// }
+port.onMessage.addListener(function(msg) {
+	console.log("content: message received", msg);
+	if (msg.type == 'response-tab-id') {
+		tabId = msg.tabId;
+	}
+});
+
+// URL Polling
+var urlPollingIntervalId;
+var currentUrl = window.location.href;
+
+function startPolling() {
+	urlPollingIntervalId = window.setInterval(urlPollingCallback, 1000)
+}
+
+window.onload = function() {
+	// console.log('onload');
+	sendUrlMessage();
+	startPolling();
+}
+
+function urlPollingCallback(){
+	const testUrl = window.location.href;
+	if (currentUrl !== testUrl) {
+		currentUrl = testUrl;
+		sendUrlMessage();
+	}
+}
+
+
+window.addEventListener("visibilitychange", function(){
+	if (document.visibilityState === 'visible') {
+		window.clearInterval(urlPollingIntervalId);
+		startPolling();
+	}
+});
+
+function sendUrlMessage() {
+	const message = {
+		name: 'page-url-changed',
+		type: 'page-url-changed',
+		target: 'page-editor',
+		source: 'content',
+		tabId,
+		data: {
+			url: getCurrentUrl(),
+		},
+	}
+	console.log('Content send message:', message);
+	port.postMessage(message);
+}
+
+//
 
 window.getCurrentUrl = function(){
-	return window.location;
+	return window.location.href;
 }
 
 window.getIframes = function(){
@@ -133,7 +173,7 @@ function getIsDisplayed(element){
 	return !!( element.offsetWidth || element.offsetHeight || element.getClientRects().length );
 }
 
- 
+
 
 function getFirstLevelText(e){
 	var firstText = "";
@@ -362,7 +402,7 @@ window.inspectInspectedChild = function(childIndicesChain){
 	if(!element){
 		console.log('Child was not located. ' + childIndicesChain);
 		return;
-	}		
+	}
 
 	inspectElement(element);
 };
@@ -467,7 +507,7 @@ window.highlightInspectedElement = function(childIndicesChain){
 		if(!element){
 			console.log('Child was not located. ' + childIndicesChain);
 			return;
-		}		
+		}
 	}
 	higlightElement(document, element, window.HL_GREEN, 0.66, 'websync-highlighter');
 };

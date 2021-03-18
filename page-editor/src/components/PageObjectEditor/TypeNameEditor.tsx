@@ -3,7 +3,7 @@ import Portal from 'components-common/Portal';
 import FocusTrap from 'focus-trap-react';
 import { observer } from 'mobx-react';
 import ComponentInstanceModel from 'entities/mst/ComponentInstance';
-import React, { DOMElement, RefObject, useEffect, useLayoutEffect, useState } from 'react';
+import React, { RefObject, useEffect, useLayoutEffect, useState } from 'react';
 import ComponentTypeSelector from './ComponentTypeSelector';
 import './TypeNameEditor.sass';
 
@@ -389,7 +389,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                     {component.typeName}
                 </span>
                 {showTypePlaceholder && (
-                    <span className="component-attr-placeholder" onClick={(e) => makeEditable(typeRef.current)}>
+                    <span className="component-attr-placeholder" onClick={() => makeEditable(typeRef.current)}>
                         {typePlaceholder}
                     </span>
                 )}
@@ -428,7 +428,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                         {component.componentFieldName}
                     </span>
                     {showNamePlaceholder && (
-                        <span className="component-attr-placeholder" onClick={(e) => makeEditable(nameRef.current)}>
+                        <span className="component-attr-placeholder" onClick={() => makeEditable(nameRef.current)}>
                             {namePlaceholder}
                         </span>
                     )}
