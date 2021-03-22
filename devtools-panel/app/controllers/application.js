@@ -41,10 +41,13 @@ export default Ember.Controller.extend({
 	},
 	configurePageEditor(){
 		let pageEditor = this.get('pageEditorProxy'); 
+
 		pageEditor.addListener(MessageTypes.EditSelector, this.onEditComponentSelector.bind(this));
+		pageEditor.addListener(MessageTypes.RequestSelectorEditorState, this.sendSelectorEditorState.bind(this));
+		pageEditor.addListener(MessageTypes.SelectorEditorStateUpdated, this.onSelectorEditorStateUpdated.bind(this));
 		pageEditor.addListener(MessageTypes.GetSelectorsList, this.sendSelectorsList.bind(this));
 		pageEditor.addListener(MessageTypes.SelectorsListUpdated, this.onUpdateSelectorsList.bind(this));
-		
+
 		pageEditor.start(this.get('withPageEditor'));
 	},
 	bindSourceInputEvents(){
@@ -366,7 +369,8 @@ export default Ember.Controller.extend({
 		return prefix+index;
 	},
 	getSelector(){
-		return this.get('lastPart').getSelector();
+		let lastPart = this.get('lastPart');
+		return lastPart?this.get('lastPart').getSelector():{scss:'',css:''};
 	},
 	addToList(){
 		if(this.get('inputValue')){
@@ -383,12 +387,6 @@ export default Ember.Controller.extend({
 			this.showNotification("Selector was added to the list.");
 		}
 	},
-	onEditComponentSelector(data){
-		this.removeRoot();
-		this.set('componentSelectorToUpdate', data);
-		this.setInputValue(data.selector);
-		this.collapseSelectorsList();
-	},
 	updateSelector(){
 		if(this.get('inputValue')){
 			let componentSelector = this.get('selectorToUpdate');
@@ -403,6 +401,63 @@ export default Ember.Controller.extend({
 			this.setInputValue('');
 			this.expandSelectorsList();
 		}
+	},
+	onEditComponentSelector(editedComponent){
+		// let editedComponent = this.get('componentSelectorToUpdate');
+		// if(editedComponent){
+		// 	let {componentId, componentName, parameterName, parameterValueIndex, parameterValue} = editedComponent;
+		// 	if(componentId===data.componentId && 
+		// 		parameterName===data.parameterName && 
+		// 		parameterValueIndex===data.parameterValueIndex &&
+		// 		this.get('inputValue')===data.parameterValue){
+		// 		// .nothing to update
+		// 		console.log("set editedComponent BREAK");
+		// 		return;
+		// 	}
+		// }
+		// else if(!data){
+		// 	// current editedComponent is null
+		// 	// new editedComponent is null
+		// 	// nothing to reset, just ignore this event
+		// 	return;
+		// }
+
+		console.log("set editedComponent");
+		this.removeRoot();
+		this.setInputValue(editedComponent?editedComponent.parameterValue:'');
+		this.collapseSelectorsList();
+		this.set('componentSelectorToUpdate', editedComponent);
+	},
+	stateObserver: Ember.observer('inputValue', 'rootParts.[]', 'componentSelectorToUpdate', 'selectorToUpdate', function(){
+		console.log('selector editor state changed. isAuxilliary: ' + this.get('withPageEditor'));
+		Ember.run.next(this, () => this.sendSelectorEditorState());
+	}),
+	sendSelectorEditorState(){
+		let inputValue = this.get('inputValue');
+		let rootParts = this.get('rootParts');
+		let editedSelector = this.get('selectorToUpdate');
+		let editedComponent = this.get('componentSelectorToUpdate');
+		this.get('pageEditorProxy').sendSelectorEditorState(rootParts, inputValue, editedSelector, editedComponent);
+	},
+	onSelectorEditorStateUpdated(state){
+		let inputValue = this.get('inputValue');
+		let rootParts = this.get('rootParts');
+		let editedSelector = this.get('selectorToUpdate');
+		let editedComponent = this.get('componentSelectorToUpdate');
+
+		console.log('selector editor state changed. isAuxilliary: ' + this.get('withPageEditor'), state);
+		if(this.isEditedComponentUpdated(editedComponent, state.editedComponent)){
+			debugger;
+			this.onEditComponentSelector(state.editedComponent);
+		}else if(inputValue!=state.inputValue){
+			debugger;
+			this.setInputValue(state.inputValue);
+		}
+	},
+	isEditedComponentUpdated(ec1, ec2){
+		let componentId1 = ec1?ec1.componentId:null;
+		let componentId2 = ec2?ec2.componentId:null;
+		return componentId1!==componentId2;
 	},
 	updateComponentSelector(){
 		if(this.get('inputValue')){

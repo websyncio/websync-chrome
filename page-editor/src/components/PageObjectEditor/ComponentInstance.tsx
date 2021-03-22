@@ -49,7 +49,7 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                 componentName: component.name,
                 parameterName: parameter.name,
                 parameterValueIndex: valueIndex,
-                selector: parameter.values[valueIndex],
+                parameterValue: parameter.values[valueIndex],
             });
 
         function initializationAttribute(attribute: AttributeModel) {

@@ -18,8 +18,8 @@ export class InitializationAttributes {
     ];
 
     static JTable = 'JTable';
-    static JDropdown = 'JTable';
-    static JMenu = 'JTable';
+    static JDropdown = 'JDropdown';
+    static JMenu = 'JMenu';
 
     static Specific = [
         InitializationAttributes.JTable,
