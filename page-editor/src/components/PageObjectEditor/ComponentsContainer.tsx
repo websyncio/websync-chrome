@@ -9,6 +9,8 @@ import BlankComponentInstance from './BlankComponentInstance';
 import RootStore from 'entities/mst/RootStore';
 import { useRootStore } from 'context';
 import './ComponentsContainer.sass';
+import { DependencyContainer, TYPES } from 'inversify.config';
+import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
 
 interface Props {
     ideProxy: IIdeProxy;
@@ -16,7 +18,8 @@ interface Props {
 }
 
 const ComponentsContainer: React.FC<Props> = observer(({ pageObject }) => {
-    const { uiStore }: RootStore = useRootStore();
+    const { uiStore, projectStore }: RootStore = useRootStore();
+    const urlSynchroService = DependencyContainer.get<IUrlSynchronizationService>(TYPES.UrlSynchronizationService);
 
     function selectComponent(components: IComponentInstance[], index: number) {
         components.forEach((c, i) => {
@@ -43,9 +46,33 @@ const ComponentsContainer: React.FC<Props> = observer(({ pageObject }) => {
         return true;
     }
 
+    function getWebsiteUrl(pageInstance) {
+        const website = projectStore.webSites.find((ws) => ws.pageInstances.some((pi) => pi.id === pageInstance.id));
+        return website ? website.url : '';
+    }
+
+    function redirectToUrl(pageInstance) {
+        urlSynchroService.changeContentPageUrl(`${getWebsiteUrl(pageInstance)}${pageInstance.url}`);
+    }
+
     return (
         <div className="components-container">
-            <div className="container-name">{pageObject.name}</div>
+            <div className="container-name">
+                <strong>{pageObject.name}</strong>
+                {projectStore.selectedPageInstance &&
+                uiStore.matchedPages.map((mp) => mp.id).includes(projectStore.selectedPageInstance.id) ? (
+                    <div> Page matched </div>
+                ) : (
+                    <div>
+                        {' '}
+                        Page not matched{' '}
+                        <button onClick={() => redirectToUrl(projectStore.selectedPageInstance)}>
+                            {' '}
+                            Redirect to page
+                        </button>{' '}
+                    </div>
+                )}
+            </div>
             <ComponentInstancesList
                 componentInstances={pageObject.componentsInstances}
                 componentView={ComponentInstance}

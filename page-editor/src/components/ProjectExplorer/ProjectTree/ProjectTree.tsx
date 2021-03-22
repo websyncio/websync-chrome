@@ -35,6 +35,7 @@ const WebSitesTree: React.FC<Props> = observer(({ websites, onSelected }) => {
                         onDoubleClick={() => editPageObject(p.pageType)}
                     >
                         {p.pageType.name}
+                        {uiStore.matchedPages.map((mp) => mp.id).includes(p.id) && <span className="match-circle" />}
                     </li>
                 ))}
             </ul>

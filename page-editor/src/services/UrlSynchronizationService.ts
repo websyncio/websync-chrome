@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { inject, injectable } from 'inversify';
 import IUrlSynchronizationService from './IUrlSynchronizationService';
 import { TYPES } from 'inversify.config';
-import SelectorEditorConnection, { MessageTypes } from '../connections/SelectorEditorConnection';
+import SelectorEditorConnection, { MessageTypes, MessageTargets } from '../connections/SelectorEditorConnection';
 import { RootStore } from '../context';
 import PageInstance from 'entities/mst/PageInstance';
 
@@ -15,7 +15,6 @@ export class UrlSynchronizationService implements IUrlSynchronizationService {
     updateUrlStatus(data) {
         const { url } = data;
         const matchedPages: PageInstance[] = [];
-        console.log('update url matched pages');
         RootStore.projectStore.webSites.map((site) => {
             if (url.toLowerCase().indexOf(site.url.toLowerCase()) === 0) {
                 const urlC = new URL(url.toLowerCase());
@@ -30,5 +29,13 @@ export class UrlSynchronizationService implements IUrlSynchronizationService {
             return site;
         });
         RootStore.uiStore.updateMathchedPages(matchedPages);
+    }
+
+    initUrlSynchro() {
+        this.selectorEditorConnection.postMessage(MessageTypes.InitSynchroService, null, MessageTargets.ContentPage);
+    }
+
+    changeContentPageUrl(url: string) {
+        this.selectorEditorConnection.postMessage(MessageTypes.ChangePageUrl, { url }, MessageTargets.ContentPage);
     }
 }

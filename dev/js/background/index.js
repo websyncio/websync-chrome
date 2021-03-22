@@ -9,7 +9,8 @@
 export const Sources = {
   SelectorEditorMain : 'selector-editor-main',
   SelectorEditorAuxilliary : 'selector-editor-auxilliary',
-  PageEditor : 'page-editor'
+  PageEditor : 'page-editor',
+  Content: 'content',
 };
 
 
@@ -40,10 +41,11 @@ chrome.runtime.onConnect.addListener(function (port) {
     }
   }
 
-  var listener = function (message, senderPort, sendResponse) {
+  var listener = function (message, senderPort) {
     if (message.type == 'get-tab-id') {
       console.log("Responde to sender with tabId");
       senderPort.postMessage({ tabId: senderPort.sender.tab.id, target: 'content', type: 'response-tab-id'});
+      // storeConnection(message.tabId, message.source, port);
       return;
     }
     if(!message.tabId){
@@ -65,6 +67,7 @@ chrome.runtime.onConnect.addListener(function (port) {
 
     if(message.target){
       // Relay message to target
+      console.log('target', message.target, connections);
       if(!connections[message.tabId] || !connections[message.tabId][message.target]){
         console.error('No connection to '+ message.target);
         return;
