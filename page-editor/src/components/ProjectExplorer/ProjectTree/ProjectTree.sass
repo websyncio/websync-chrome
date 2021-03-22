@@ -1,25 +1,38 @@
 .expand-icon
-    width: 8px;
-    height: 8px;
-    background-color: red;
-    display: inline-block;
+    width: 8px
+    height: 8px
+    background-color: red
+    display: inline-block
 
 .expanded .expand-icon
-    background-color: green;
+    background-color: #74B266
 
 .website, .website-page
-    cursor: pointer;
+    cursor: pointer
 
 .website
-    padding-left: 10px;
+    padding-left: 10px
 
 .website-page
-    padding-left: 26px;
+    padding-left: 26px
+    display: flex
+    justify-content: flex-start
+    align-items: center
 
 #webSitesTree
     .selectable
         user-select: none
     .selectable.selected
-        background-color: rgba(233, 240, 251, 0.6);	
+        background-color: rgba(233, 240, 251, 0.6)	
     .selectable:hover
-        background-color: rgba(233, 240, 251, 0.3);
+        background-color: rgba(233, 240, 251, 0.3)
+
+.match-circle
+    width: 10px
+    height: 10px
+    flex: 0 0 10px
+    margin-left: auto
+    margin-right: 5px
+    border-radius: 50%
+    background-color: #74B266
+    box-shadow: 0 0 8px #74B266, inset 0 0 8px #74B266

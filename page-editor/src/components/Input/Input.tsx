@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Input.sass';
 
 interface Props {
@@ -11,6 +11,10 @@ const Input: React.FC<Props> = (props: Props) => {
     const { value, onChange, disabled } = props;
 
     const [currentValue, setCurrentValue] = useState(value);
+
+    useEffect(() => {
+        setCurrentValue(value);
+    }, [value]);
 
     const handleInput = (e) => {
         setCurrentValue(e.target.value);

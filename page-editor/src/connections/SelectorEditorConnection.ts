@@ -15,12 +15,16 @@ export const MessageTypes = {
 
     SelectorUpdated: 'selector-updated',
     SelectorsListUpdated: 'selectors-list-updated',
+
+    InitSynchroService: 'init-url-synchro',
     UrlChanged: 'page-url-changed',
+    ChangePageUrl: 'change-page-url',
 };
 
 export const MessageTargets = {
     SelectorEditorMain: 'selector-editor-main',
     SelectorEditorAuxilliary: 'selector-editor-auxilliary',
+    ContentPage: 'content',
 };
 
 @injectable()
@@ -43,8 +47,6 @@ export default class SelectorEditorProxy {
     }
 
     receiveMessage(message) {
-        console.log('selector-editor-connection received', message);
-
         const callback = message.acknowledgment && this.acknowledgments[message.acknowledgment];
         if (callback) {
             callback(message);

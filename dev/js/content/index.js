@@ -49,15 +49,36 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 });
 
 // initialize permanent connection to background script
-var port = chrome.runtime.connect({ name: "devtools-panel" });
+var port = chrome.runtime.connect({ name: "content" });
 var tabId;
 
-port.postMessage({ type: 'get-tab-id', target: 'background', name: 'get-tab-id' });
+port.postMessage({
+	type: 'get-tab-id',
+	target: 'background',
+	name: 'get-tab-id', 
+	// target: 'page-editor',
+	source: 'content',
+});
 
-port.onMessage.addListener(function(msg) {
-	console.log("content: message received", msg);
-	if (msg.type == 'response-tab-id') {
+port.onMessage.addListener(function(msg, senderPort) {
+	console.log("Content script receive message: ", msg);
+	if (msg.type === 'response-tab-id') {
 		tabId = msg.tabId;
+		senderPort.postMessage({
+			type: 'init',
+			// target: 'background',
+			name: 'init', 
+			tabId: msg.tabId,
+			source: 'content',
+		});
+	}
+
+	if (msg.type === 'change-page-url') {
+		history.pushState({}, null, msg.data.url);
+	}
+
+	if (msg.type = 'init-url-synchro') {
+		sendUrlMessage();
 	}
 });
 
@@ -102,7 +123,7 @@ function sendUrlMessage() {
 			url: getCurrentUrl(),
 		},
 	}
-	console.log('Content send message:', message);
+	console.log('Content script send message: ', message);
 	port.postMessage(message);
 }
 
