@@ -4,6 +4,8 @@ import SelectorValidator from 'services/SelectorValidatorService';
 import SelectorHighlighter from 'services/SelectorHighlighterService';
 import { observer } from 'mobx-react';
 import { DependencyContainer, TYPES } from 'inversify.config';
+import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
+import { values } from 'mobx';
 interface Props {
     parameterName: string | null;
     selector: ISelector;
@@ -16,6 +18,10 @@ const Selector: React.FC<Props> = observer(({ parameterName, selector, onEdit, o
     const selectorHighlighter: SelectorHighlighter = DependencyContainer.get<SelectorHighlighter>(
         TYPES.SelectorHighlighter,
     );
+    const urlSynchronizationService: IUrlSynchronizationService = DependencyContainer.get<IUrlSynchronizationService>(
+        TYPES.UrlSynchronizationService,
+    );
+
     const [status, setStatus] = useState<number | undefined>(undefined);
 
     parameterName = parameterName ?? 'root';
@@ -29,6 +35,8 @@ const Selector: React.FC<Props> = observer(({ parameterName, selector, onEdit, o
     function validate() {
         selectorValidator.validate(selector.scss, validateCallback);
     }
+
+    urlSynchronizationService.addUrlChangedListener(validate);
 
     useEffect(() => {
         validate();

@@ -5,15 +5,24 @@ import { TYPES } from 'inversify.config';
 import SelectorEditorConnection, { MessageTypes, MessageTargets } from '../connections/SelectorEditorConnection';
 import { RootStore } from '../context';
 import PageInstance from 'entities/mst/PageInstance';
+import Reactor from '../utils/Reactor';
 
+export const UrlSynchronizationEvents = {
+    UrlChanged: 'url-changed',
+};
 @injectable()
 export class UrlSynchronizationService implements IUrlSynchronizationService {
+    reactor: Reactor;
+
     constructor(@inject(TYPES.SelectorEditorConnection) private selectorEditorConnection: SelectorEditorConnection) {
-        selectorEditorConnection.addListener(MessageTypes.UrlChanged, this.onUrlChanged);
+        this.reactor = new Reactor();
+        this.reactor.registerEvent(UrlSynchronizationEvents.UrlChanged);
+        selectorEditorConnection.addListener(MessageTypes.UrlChanged, this.onUrlChanged.bind(this));
     }
 
     onUrlChanged(data) {
         const { url } = data;
+        this.reactor.dispatchEvent(UrlSynchronizationEvents.UrlChanged);
         const matchedPages: PageInstance[] = [];
         RootStore.projectStore.webSites.map((site) => {
             if (url.toLowerCase().indexOf(site.url.toLowerCase()) === 0) {
@@ -37,5 +46,9 @@ export class UrlSynchronizationService implements IUrlSynchronizationService {
 
     redirectToUrl(url: string) {
         this.selectorEditorConnection.postMessage(MessageTypes.ChangePageUrl, { url }, MessageTargets.ContentPage);
+    }
+
+    addUrlChangedListener(listener: Function) {
+        this.reactor.addEventListener(UrlSynchronizationEvents.UrlChanged, listener);
     }
 }
