@@ -5,4 +5,5 @@ export default interface ISelectorsBagService {
     updateComponentName(component: ComponentInstance, componentName: string);
     updateComponentType(component: ComponentInstance, componentType: string);
     requestSelectorsList();
+    editSelector(selector);
 }

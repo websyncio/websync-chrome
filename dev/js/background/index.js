@@ -83,7 +83,7 @@ chrome.runtime.onConnect.addListener(function (port) {
           continue;
         }
         console.log('Relaying the message from ' + message.source + ' to ' + target + ' in tab ' + message.tabId + '.');
-        connections[tabId][target].postMessage(message);
+        connections[message.tabId][target].postMessage(message);
       };
     }
   }

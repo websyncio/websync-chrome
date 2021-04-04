@@ -28,7 +28,7 @@ const PageInstanceDetails: React.FC<Props> = observer(({ pageInstance }) => {
     }
 
     function redirectToUrl() {
-        urlSynchroService.changeContentPageUrl(`${getWebsiteUrl(pageInstance)}${pageInstance.url}`);
+        urlSynchroService.redirectToUrl(`${getWebsiteUrl(pageInstance)}${pageInstance.url}`);
     }
 
     return (

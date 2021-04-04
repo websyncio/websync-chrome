@@ -52,7 +52,7 @@ const ComponentsContainer: React.FC<Props> = observer(({ pageObject }) => {
     }
 
     function redirectToUrl(pageInstance) {
-        urlSynchroService.changeContentPageUrl(`${getWebsiteUrl(pageInstance)}${pageInstance.url}`);
+        urlSynchroService.redirectToUrl(`${getWebsiteUrl(pageInstance)}${pageInstance.url}`);
     }
 
     return (

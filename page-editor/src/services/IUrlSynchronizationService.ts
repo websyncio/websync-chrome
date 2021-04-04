@@ -1,5 +1,5 @@
 export default interface IUrlSynchronizationService {
-    updateUrlStatus(data: { url: string });
-    changeContentPageUrl(url: string);
+    onUrlChanged(data: { url: string });
+    redirectToUrl(url: string);
     initUrlSynchro();
 }

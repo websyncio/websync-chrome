@@ -66,11 +66,7 @@ export class SelectorsBagService implements ISelectorsBagService {
     // TODO: create model for selector
     //{ componentId: string; componentName: string; parameterName: string | null; parameterValueIndex: number; selector: string; }
     editSelector(selector) {
-        this.selectorEditorConnection.postMessage(
-            MessageTypes.EditSelector,
-            selector,
-            MessageTargets.SelectorEditorAuxilliary,
-        );
+        this.selectorEditorConnection.postMessage(MessageTypes.EditSelector, selector);
     }
 
     requestSelectorsList() {

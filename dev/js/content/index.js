@@ -74,7 +74,8 @@ port.onMessage.addListener(function(msg, senderPort) {
 	}
 
 	if (msg.type === 'change-page-url') {
-		history.pushState({}, null, msg.data.url);
+		window.location.href = msg.data.url;
+		//history.pushState({}, null, msg.data.url);
 	}
 
 	if (msg.type = 'init-url-synchro') {

@@ -342,11 +342,14 @@ export default Ember.Controller.extend({
 
 		this.selectPartInInput(part);
 	},
-	setInputValue(value){
+	setInputValue(value, noStateChange){
 		this.set('inputValue', value);
 		this.set('updateCaretPosition', true);
 		// .old highlighter is not valid anymore
 		this.setHighlighter(0,0);
+		if(!noStateChange){
+			this.sendSelectorEditorState();
+		}
 	},
 	selectElement(elements, element){
 		elements.forEach(e=>{
@@ -398,8 +401,9 @@ export default Ember.Controller.extend({
 			componentSelector.set('elementsCount', this.get('status'));
 			componentSelector.set('stateText', this.get('pluralizer').pluralize(this.get('status'), "element"));
 			this.set('selectorToUpdate', null);
-			this.setInputValue('');
+			this.setInputValue('', true);
 			this.expandSelectorsList();
+			this.sendSelectorEditorState();
 		}
 	},
 	onEditComponentSelector(editedComponent){
@@ -423,15 +427,15 @@ export default Ember.Controller.extend({
 		// }
 
 		console.log("set editedComponent");
-		this.removeRoot();
-		this.setInputValue(editedComponent?editedComponent.parameterValue:'');
+		this.removeRoot(true);
+		this.setInputValue(editedComponent?editedComponent.parameterValue:'', true);
 		this.collapseSelectorsList();
 		this.set('componentSelectorToUpdate', editedComponent);
 	},
-	stateObserver: Ember.observer('inputValue', 'rootParts.[]', 'componentSelectorToUpdate', 'selectorToUpdate', function(){
-		console.log('selector editor state changed. isAuxilliary: ' + this.get('withPageEditor'));
-		Ember.run.next(this, () => this.sendSelectorEditorState());
-	}),
+	// stateObserver: Ember.observer('inputValue', 'rootParts.[]', 'componentSelectorToUpdate', 'selectorToUpdate', function(){
+	// 	console.log('selector editor state changed. isAuxilliary: ' + this.get('withPageEditor'));
+	// 	Ember.run.next(this, () => this.sendSelectorEditorState());
+	// }),
 	sendSelectorEditorState(){
 		let inputValue = this.get('inputValue');
 		let rootParts = this.get('rootParts');
@@ -469,14 +473,16 @@ export default Ember.Controller.extend({
 				this.getSelector().scss
 			);
 			this.set('componentSelectorToUpdate', null);
-			this.setInputValue('');
+			this.setInputValue('', true);
+			this.sendSelectorEditorState();
 		}
 	},
 	cancelEditMode(){
 		this.set('selectorToUpdate', null);
 		this.set('componentSelectorToUpdate', null);
-		this.setInputValue('');
+		this.setInputValue('', true);
 		this.expandSelectorsList();
+		this.sendSelectorEditorState();
 	},
 	removePart(part){
 		let toRemoveIndex = this.get('parts').indexOf(part);
@@ -502,15 +508,19 @@ export default Ember.Controller.extend({
 		this.get('rootParts').pushObjects(newRootParts);
 
 		let scssWithoutRoot = this.get('parts').map(p=>p.scss).join('').trimStart();
-		this.setInputValue(scssWithoutRoot);
+		this.setInputValue(scssWithoutRoot, true);
 		this.get('selectorHighlighter').highlightRootSelector(this.get('rootParts.lastObject').getSelector());
+		this.sendSelectorEditorState();
 	},
-	removeRoot(){
+	removeRoot(noStateChange){
 		if(this.get('rootParts.length')){
 			this.get('selectorHighlighter').removeRootHighlighting(this.get('rootParts.lastObject').getSelector());
 			this.get('parts').unshiftObjects(this.get('rootParts'));
 			this.get('rootParts').clear();
-			this.setInputValue(this.get('lastPart.fullScss'));
+			this.setInputValue(this.get('lastPart.fullScss'), true);
+			if(!noStateChange){
+				this.sendSelectorEditorState();
+			}
 		}
 	},
 	showNotification(message){
@@ -632,9 +642,10 @@ export default Ember.Controller.extend({
 		onEditSelector(componentSelector){
 			this.removeRoot();
 			this.set('selectorToUpdate', componentSelector);
-			this.setInputValue(componentSelector.selector.scss);			
+			this.setInputValue(componentSelector.selector.scss, true);			
 			this.selectPartInInput(this.get('parts.lastObject'));
 			this.collapseSelectorsList();
+			this.sendSelectorEditorState();
 		},
 		onSelectorConverterFocus(){
 			this.collapseSelectorsList();
@@ -656,6 +667,9 @@ export default Ember.Controller.extend({
 					}
 				break;
 			}
+		},
+		onInputValueChange(){
+			this.sendSelectorEditorState();	
 		},
 		onCancelSelectorUpdate(){
 			this.cancelEditMode();

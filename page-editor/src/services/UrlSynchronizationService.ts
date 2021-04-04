@@ -9,10 +9,10 @@ import PageInstance from 'entities/mst/PageInstance';
 @injectable()
 export class UrlSynchronizationService implements IUrlSynchronizationService {
     constructor(@inject(TYPES.SelectorEditorConnection) private selectorEditorConnection: SelectorEditorConnection) {
-        selectorEditorConnection.addListener(MessageTypes.UrlChanged, this.updateUrlStatus);
+        selectorEditorConnection.addListener(MessageTypes.UrlChanged, this.onUrlChanged);
     }
 
-    updateUrlStatus(data) {
+    onUrlChanged(data) {
         const { url } = data;
         const matchedPages: PageInstance[] = [];
         RootStore.projectStore.webSites.map((site) => {
@@ -35,7 +35,7 @@ export class UrlSynchronizationService implements IUrlSynchronizationService {
         this.selectorEditorConnection.postMessage(MessageTypes.InitSynchroService, null, MessageTargets.ContentPage);
     }
 
-    changeContentPageUrl(url: string) {
+    redirectToUrl(url: string) {
         this.selectorEditorConnection.postMessage(MessageTypes.ChangePageUrl, { url }, MessageTargets.ContentPage);
     }
 }
