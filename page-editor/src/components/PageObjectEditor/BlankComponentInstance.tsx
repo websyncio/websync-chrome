@@ -38,10 +38,10 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
 
             // Should we implement more complex validation here?
             if (!componentTypeName) {
-                console.log('componentTypeName', componentTypeName);
+                console.log('componentTypeName not set', componentTypeName);
             }
             if (!componentFieldName) {
-                console.log('componentFieldName', componentFieldName);
+                console.log('componentFieldName not set', componentFieldName);
             }
             setIsAllSet(!!componentTypeName.length && !!componentFieldName.length);
         }

@@ -32,6 +32,7 @@ const TypeNameEditor: React.FC<Props> = observer(
         let popper: any;
 
         useLayoutEffect(() => {
+            console.log('TypeNameEditor first render');
             popper = createPopper(typeRef.current, popupRef.current, {
                 placement: 'bottom-start',
                 strategy: 'fixed',
@@ -54,6 +55,10 @@ const TypeNameEditor: React.FC<Props> = observer(
                 popper.forceUpdate();
             }
         }, [isOpen]);
+
+        useEffect(() => {
+            console.log('TypeNameEditor rerendered');
+        });
 
         function getTypeLength(): number {
             return showTypePlaceholder ? typePlaceholder.length : typeRef.current.textContent.length;
@@ -115,7 +120,14 @@ const TypeNameEditor: React.FC<Props> = observer(
         useLayoutEffect(() => {
             if (component.selected) {
                 if (!isActive(typeRef.current) && !isActive(nameRef.current)) {
-                    setCaretPosition(initialCaretPosition == null ? getFullLength() : initialCaretPosition, showSpace);
+                    const caretPosition = initialCaretPosition == null ? getFullLength() : initialCaretPosition;
+                    console.log(
+                        'set caret position when type and name are not active: ' +
+                            caretPosition +
+                            ', initial caret position: ' +
+                            initialCaretPosition,
+                    );
+                    setCaretPosition(caretPosition, showSpace);
                 }
             } else {
                 if (!showPlaceholders && !typeRef.current.textContent && !nameRef.current.textContent) {
@@ -126,6 +138,7 @@ const TypeNameEditor: React.FC<Props> = observer(
 
         useLayoutEffect(() => {
             if (component.selected) {
+                console.log('set actual caret position: ' + actualCaretPosition);
                 setCaretPosition(actualCaretPosition, showSpace);
             }
         }, [actualCaretPosition]);
@@ -143,9 +156,11 @@ const TypeNameEditor: React.FC<Props> = observer(
 
         function getCaretPosition(): number {
             if (isActive(typeRef.current)) {
+                console.log('get caret position from type');
                 return getElementCaretPosition(typeRef.current);
             }
             if (isActive(nameRef.current)) {
+                console.log('get caret position from name');
                 return getTypeLength() + 1 + getElementCaretPosition(nameRef.current);
             }
             throw new Error('Unable to calculate caret position.');
@@ -156,6 +171,7 @@ const TypeNameEditor: React.FC<Props> = observer(
             const caretPosition = getCaretPosition();
             typeRef.current.textContent += nameRef.current.textContent;
             nameRef.current.textContent = '';
+            // setActualCaretPosition(caretPosition + caretShift);
             setCaretPosition(caretPosition + caretShift, false);
         }
 
@@ -370,7 +386,10 @@ const TypeNameEditor: React.FC<Props> = observer(
             setPlaceholder(attributeElement, setShowPlaceholder);
             // component.setComponentType(typeRef.current.textContent);
             // component.rename(nameRef.current.textContent, null);
-            setActualCaretPosition(getCaretPosition());
+            const caretPosition = getCaretPosition();
+            console.log('attribute changed', attributeElement);
+            console.log('attribute changed', caretPosition);
+            //setActualCaretPosition(caretPosition);
             onChange(typeRef.current.textContent, nameRef.current.textContent);
         }
 
