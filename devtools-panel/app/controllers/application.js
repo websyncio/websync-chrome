@@ -536,13 +536,16 @@ export default Ember.Controller.extend({
 		}
 	},
 	selectorsListUpdatedObserver: Ember.observer('selectors.@each.name','selectors.@each.selector', function(){
-		console.log('onSelectorsListUpdated observer was fired.');
+		if(this.get('disableSelectorsListObserver')){
+			return;
+		}
 		this.sendSelectorsList();
 	}),
 	sendSelectorsList(){
 		this.get('pageEditorProxy').sendSelectorsList(this.get('selectors'));
 	},
 	onUpdateSelectorsList(updatedSelectors){
+		this.set('disableSelectorsListObserver', true);
 		let selectors = this.get('selectors');
 		for (var i = updatedSelectors.length - 1; i >= 0; i--){
 			let selector = selectors.find(s=>s.id===updatedSelectors[i].id);
@@ -556,6 +559,7 @@ export default Ember.Controller.extend({
 		let updatedSelectorIds = updatedSelectors.map(s=>s.id);
 		let removedSelectors = selectors.filter(s=>updatedSelectorIds.indexOf(s.id)===-1);
 		selectors.removeObjects(removedSelectors);
+		this.set('disableSelectorsListObserver', false);
 	},
 	actions:{
 		copySelectorStart(isXpath){

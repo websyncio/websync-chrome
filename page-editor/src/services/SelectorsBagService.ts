@@ -83,6 +83,7 @@ export class SelectorsBagService implements ISelectorsBagService {
     }
 
     generateBlankComponents(data) {
+        console.log('selectors list updated');
         RootStore.uiStore.generateBlankComponents(data);
     }
 
