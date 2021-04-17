@@ -102,46 +102,23 @@ const TypeNameEditor: React.FC<Props> = observer(
                 position = position < typePlaceholder.length ? 0 : position - typePlaceholder.length;
             }
             if (position <= typeLength || !nameDisplayed) {
-                if (position > typeLength) {
-                    position = typeLength;
+                const maxPosition = typeLength;
+                if (position > maxPosition) {
+                    position = maxPosition;
                 }
+                const elementPosition = position;
                 makeEditable(typeRef.current);
-                setElementCaretPosition(typeRef.current, position);
+                setElementCaretPosition(typeRef.current, elementPosition);
             } else {
-                position = position - typeLength - 1;
-                if (position > nameLength) {
-                    position = nameLength;
+                const maxPosition = typeLength + 1 + nameLength;
+                if (position > maxPosition) {
+                    position = maxPosition;
                 }
+                const elementPosition = position - typeLength - 1;
                 makeEditable(nameRef.current);
-                setElementCaretPosition(nameRef.current, position);
+                setElementCaretPosition(nameRef.current, elementPosition);
             }
         }
-
-        useLayoutEffect(() => {
-            if (component.selected) {
-                if (!isActive(typeRef.current) && !isActive(nameRef.current)) {
-                    const caretPosition = initialCaretPosition == null ? getFullLength() : initialCaretPosition;
-                    console.log(
-                        'set caret position when type and name are not active: ' +
-                            caretPosition +
-                            ', initial caret position: ' +
-                            initialCaretPosition,
-                    );
-                    setCaretPosition(caretPosition, showSpace);
-                }
-            } else {
-                if (!showPlaceholders && !typeRef.current.textContent && !nameRef.current.textContent) {
-                    onDeleted(); //setIsDeleted(true);
-                }
-            }
-        }, [component.selected]);
-
-        useLayoutEffect(() => {
-            if (component.selected) {
-                console.log('set actual caret position: ' + actualCaretPosition);
-                setCaretPosition(actualCaretPosition, showSpace);
-            }
-        }, [actualCaretPosition]);
 
         function getElementCaretPosition(editableElement) {
             const sel = window.getSelection();
@@ -163,16 +140,46 @@ const TypeNameEditor: React.FC<Props> = observer(
                 console.log('get caret position from name');
                 return getTypeLength() + 1 + getElementCaretPosition(nameRef.current);
             }
+            return 0;
             throw new Error('Unable to calculate caret position.');
         }
+
+        useLayoutEffect(() => {
+            if (component.selected && (isActive(typeRef.current) || isActive(nameRef.current))) {
+                console.log('set actual caret position: ' + actualCaretPosition);
+                setCaretPosition(actualCaretPosition, showSpace);
+            }
+        });
+
+        useLayoutEffect(() => {
+            if (component.selected) {
+                if (!isActive(typeRef.current) && !isActive(nameRef.current)) {
+                    const caretPosition = initialCaretPosition == null ? getFullLength() : initialCaretPosition;
+                    console.log(
+                        'set caret position when type and name are not active: ' +
+                            caretPosition +
+                            ', initial caret position: ' +
+                            initialCaretPosition,
+                    );
+                    setCaretPosition(caretPosition, showSpace);
+                    console.log('caret position:' + caretPosition + ', actual caret position: ' + getCaretPosition());
+                    setActualCaretPosition(caretPosition);
+                }
+            } else {
+                if (!showPlaceholders && !typeRef.current.textContent && !nameRef.current.textContent) {
+                    onDeleted(); //setIsDeleted(true);
+                }
+            }
+        }, [component.selected]);
 
         function deleteSpace(caretShift = 0) {
             setShowSpace(false);
             const caretPosition = getCaretPosition();
             typeRef.current.textContent += nameRef.current.textContent;
             nameRef.current.textContent = '';
-            // setActualCaretPosition(caretPosition + caretShift);
-            setCaretPosition(caretPosition + caretShift, false);
+            const newCaretPosition = caretPosition + caretShift;
+            setCaretPosition(newCaretPosition, false);
+            setActualCaretPosition(newCaretPosition);
         }
 
         function addSpace() {
@@ -182,7 +189,9 @@ const TypeNameEditor: React.FC<Props> = observer(
                 const text = typeRef.current.textContent;
                 typeRef.current.textContent = text.substring(0, caretPosition);
                 nameRef.current.textContent = text.substring(caretPosition);
+                const newCaretPosition = caretPosition + 1;
                 setCaretPosition(caretPosition + 1, true);
+                setActualCaretPosition(newCaretPosition);
             }
         }
 
@@ -389,8 +398,13 @@ const TypeNameEditor: React.FC<Props> = observer(
             const caretPosition = getCaretPosition();
             console.log('attribute changed', attributeElement);
             console.log('attribute changed', caretPosition);
-            //setActualCaretPosition(caretPosition);
+            setActualCaretPosition(caretPosition);
             onChange(typeRef.current.textContent, nameRef.current.textContent);
+        }
+
+        function onEditableClick(element) {
+            makeEditable(element);
+            setActualCaretPosition(getCaretPosition());
         }
 
         return (
@@ -402,13 +416,13 @@ const TypeNameEditor: React.FC<Props> = observer(
                     onKeyDown={onTypeKeyDown}
                     onKeyUp={(e) => onAttributeChange(e.target, setShowTypePlaceholder)}
                     onMouseDown={(e) => makeNonEditable(e.target)}
-                    onClick={(e) => makeEditable(e.target)}
+                    onClick={(e) => onEditableClick(e.target)}
                     onBlur={onBlur}
                 >
                     {component.typeName}
                 </span>
                 {showTypePlaceholder && (
-                    <span className="component-attr-placeholder" onClick={() => makeEditable(typeRef.current)}>
+                    <span className="component-attr-placeholder" onClick={() => onEditableClick(typeRef.current)}>
                         {typePlaceholder}
                     </span>
                 )}
@@ -442,12 +456,12 @@ const TypeNameEditor: React.FC<Props> = observer(
                         onKeyUp={(e) => onAttributeChange(e.target, setShowNamePlaceholder)}
                         onBlur={onBlur}
                         onMouseDown={(e) => makeNonEditable(e.target)}
-                        onClick={(e) => makeEditable(e.target)}
+                        onClick={(e) => onEditableClick(e.target)}
                     >
                         {component.componentFieldName}
                     </span>
                     {showNamePlaceholder && (
-                        <span className="component-attr-placeholder" onClick={() => makeEditable(nameRef.current)}>
+                        <span className="component-attr-placeholder" onClick={() => onEditableClick(nameRef.current)}>
                             {namePlaceholder}
                         </span>
                     )}
