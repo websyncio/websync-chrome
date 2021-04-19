@@ -145,9 +145,10 @@ const TypeNameEditor: React.FC<Props> = observer(
         }
 
         useLayoutEffect(() => {
-            if (component.selected && (isActive(typeRef.current) || isActive(nameRef.current))) {
+            if (isActive(typeRef.current) || isActive(nameRef.current)) {
                 console.log('set actual caret position: ' + actualCaretPosition);
                 setCaretPosition(actualCaretPosition, showSpace);
+                component.select();
             }
         });
 
@@ -199,7 +200,7 @@ const TypeNameEditor: React.FC<Props> = observer(
             const isLeftArrow = e.key == 'ArrowLeft';
             const isRightArrow = e.key == 'ArrowRight';
             const isDelete = e.key == 'Delete';
-            const isEnd = getElementCaretPosition(e.target) == typeRef.current.textContent.length;
+            const isEnd = getElementCaretPosition(e.target) == getTypeLength(); //typeRef.current.textContent.length;
             if (e.ctrlKey) {
                 if (e.shiftKey) {
                     // SELECTION
@@ -216,16 +217,23 @@ const TypeNameEditor: React.FC<Props> = observer(
                     // NAVIGATION WITH CTRL
                     if (isRightArrow) {
                         if (isEnd) {
-                            setCaretPosition(getTypeLength() + 1 + nameRef.current.textContent.length, showSpace);
+                            const caretPosition = getTypeLength() + 1 + nameRef.current.textContent.length;
+                            setCaretPosition(caretPosition, showSpace);
+                            setActualCaretPosition(caretPosition);
                             e.preventDefault();
                         } else {
-                            setElementCaretPosition(typeRef.current, typeRef.current.textContent.length);
+                            //setElementCaretPosition(typeRef.current, typeRef.current.textContent.length);
+                            const caretPosition = getTypeLength();
+                            setCaretPosition(caretPosition, showSpace);
+                            setActualCaretPosition(caretPosition);
                             e.preventDefault();
                         }
                         return;
                     }
                     if (isLeftArrow) {
-                        setElementCaretPosition(typeRef.current, 0);
+                        //setElementCaretPosition(typeRef.current, 0);
+                        setCaretPosition(0, showSpace);
+                        setActualCaretPosition(0);
                         e.preventDefault();
                         return;
                     }
@@ -240,7 +248,9 @@ const TypeNameEditor: React.FC<Props> = observer(
                 // NAVIGATION
                 if (isEnd) {
                     if (isRightArrow) {
-                        setCaretPosition(getTypeLength() + 1, showSpace);
+                        const caretPosition = getTypeLength() + 1;
+                        setCaretPosition(caretPosition, showSpace);
+                        setActualCaretPosition(caretPosition);
                         e.preventDefault();
                         return;
                     } else if (isDelete) {
@@ -252,10 +262,13 @@ const TypeNameEditor: React.FC<Props> = observer(
                 switch (e.key) {
                     case 'Home':
                         setCaretPosition(0, showSpace);
+                        setActualCaretPosition(0);
                         e.preventDefault();
                         return;
                     case 'End':
-                        setCaretPosition(getTypeLength() + 1 + nameRef.current.textContent.length, showSpace);
+                        const caretPosition = getTypeLength() + 1 + nameRef.current.textContent.length;
+                        setCaretPosition(caretPosition, showSpace);
+                        setActualCaretPosition(caretPosition);
                         e.preventDefault();
                         return;
                     case ' ':
@@ -298,14 +311,21 @@ const TypeNameEditor: React.FC<Props> = observer(
                 }
             } else if (e.ctrlKey) {
                 if (isRightArrow) {
-                    setElementCaretPosition(nameRef.current, nameRef.current.textContent.length);
+                    // setElementCaretPosition(nameRef.current, nameRef.current.textContent.length);
+                    const caretPosition = getTypeLength() + 1 + nameRef.current.textContent.length;
+                    setCaretPosition(caretPosition, showSpace);
+                    setActualCaretPosition(caretPosition);
                     e.preventDefault();
                     return;
                 } else if (isLeftArrow) {
                     if (isStart) {
                         setCaretPosition(0, showSpace);
+                        setActualCaretPosition(0);
                     } else {
-                        setElementCaretPosition(nameRef.current, 0);
+                        // setElementCaretPosition(nameRef.current, 0);
+                        const caretPosition = getTypeLength() + 1;
+                        setCaretPosition(caretPosition, showSpace);
+                        setActualCaretPosition(caretPosition);
                     }
                     e.preventDefault();
                     return;
@@ -318,16 +338,21 @@ const TypeNameEditor: React.FC<Props> = observer(
                         return;
                     }
                     if (isLeftArrow) {
-                        setCaretPosition(getTypeLength(), showSpace);
+                        const caretPosition = getTypeLength();
+                        setCaretPosition(caretPosition, showSpace);
+                        setActualCaretPosition(caretPosition);
                         e.preventDefault();
                         return;
                     }
                 } else if (isHomeKey) {
                     setCaretPosition(0, showSpace);
+                    setActualCaretPosition(0);
                     e.preventDefault();
                     return;
                 } else if (isEndKey) {
-                    setCaretPosition(getTypeLength() + 1 + nameRef.current.textContent.length, showSpace);
+                    const caretPosition = getTypeLength() + 1 + nameRef.current.textContent.length;
+                    setCaretPosition(caretPosition, showSpace);
+                    setActualCaretPosition(caretPosition);
                     e.preventDefault();
                     return;
                 }
@@ -374,6 +399,9 @@ const TypeNameEditor: React.FC<Props> = observer(
 
         function onBlur(event) {
             event.target.contentEditable = false;
+            if (!isActive(typeRef.current) && !isActive(nameRef.current)) {
+                component.deselect();
+            }
         }
 
         function togglePopup() {
