@@ -25,9 +25,10 @@ export class UrlSynchronizationService implements IUrlSynchronizationService {
         this.reactor.dispatchEvent(UrlSynchronizationEvents.UrlChanged);
         const matchedPages: PageInstance[] = [];
         RootStore.projectStore.webSites.map((site) => {
+            console.log('onurlchanged');
             if (url.toLowerCase().indexOf(site.url.toLowerCase()) === 0) {
                 const urlC = new URL(url.toLowerCase());
-                const pathname = urlC.pathname.substring(1);
+                const pathname = urlC.pathname;
 
                 site.pageInstances.map((pi: PageInstance) => {
                     if (pathname === pi.url) {
