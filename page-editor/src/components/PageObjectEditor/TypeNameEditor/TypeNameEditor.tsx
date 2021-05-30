@@ -196,11 +196,26 @@ const TypeNameEditor: React.FC<Props> = observer(
             }
         }
 
+        function handleInvalidSymbols(e) {
+            if (!e.key.match(/[A-Za-z0-9_$]+/g)) {
+                e.preventDefault();
+                return true;
+            }
+        }
+
+        function handleExtraSymbols(e, maxLength: number) {
+            const name = e.target.innerText.trim();
+            if (name.length === maxLength) {
+                e.preventDefault();
+                return true;
+            }
+        }
+
         function onTypeKeyDown(e) {
             const isLeftArrow = e.key == 'ArrowLeft';
             const isRightArrow = e.key == 'ArrowRight';
             const isDelete = e.key == 'Delete';
-            const isEnd = getElementCaretPosition(e.target) == getTypeLength(); //typeRef.current.textContent.length;
+            const isEnd = getElementCaretPosition(e.target) == typeRef.current.textContent.length;
             if (e.ctrlKey) {
                 if (e.shiftKey) {
                     // SELECTION
@@ -280,6 +295,14 @@ const TypeNameEditor: React.FC<Props> = observer(
                         return;
                 }
             }
+
+            if (handleInvalidSymbols(e)) {
+                return;
+            }
+
+            if (handleExtraSymbols(e, 50)) {
+                return;
+            }
         }
 
         function onNameKeyDown(e) {
@@ -358,13 +381,11 @@ const TypeNameEditor: React.FC<Props> = observer(
                 }
             }
 
-            if (!e.key.match(/[A-Za-z0-9_$]+/g)) {
-                e.preventDefault();
+            if (handleInvalidSymbols(e)) {
                 return;
             }
-            const name = e.target.innerText.trim();
-            if (name.length === 100) {
-                e.preventDefault();
+
+            if (handleExtraSymbols(e, 50)) {
                 return;
             }
         }
@@ -419,15 +440,20 @@ const TypeNameEditor: React.FC<Props> = observer(
             setShowPlaceholder(!element.textContent.length);
         }
 
-        function onAttributeChange(attributeElement, setShowPlaceholder) {
-            setPlaceholder(attributeElement, setShowPlaceholder);
-            // component.setComponentType(typeRef.current.textContent);
-            // component.rename(nameRef.current.textContent, null);
-            const caretPosition = getCaretPosition();
-            console.log('attribute changed', attributeElement);
-            console.log('attribute changed', caretPosition);
-            setActualCaretPosition(caretPosition);
-            onChange(typeRef.current.textContent, nameRef.current.textContent);
+        function onAttributeChange(e, setShowPlaceholder) {
+            const isWordCharacter = e.key.length === 1;
+            const isBackspaceOrDelete = e.key === 'Backspace' || e.key === 'Delete';
+            if (isWordCharacter || isBackspaceOrDelete) {
+                const attributeElement = e.target;
+                setPlaceholder(attributeElement, setShowPlaceholder);
+                // component.setComponentType(typeRef.current.textContent);
+                // component.rename(nameRef.current.textContent, null);
+                const caretPosition = getCaretPosition();
+                console.log('attribute changed', attributeElement);
+                console.log('attribute changed', caretPosition);
+                setActualCaretPosition(caretPosition);
+                onChange(typeRef.current.textContent, nameRef.current.textContent);
+            }
         }
 
         function onEditableClick(element) {
@@ -442,7 +468,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                     ref={typeRef}
                     spellCheck="false"
                     onKeyDown={onTypeKeyDown}
-                    onKeyUp={(e) => onAttributeChange(e.target, setShowTypePlaceholder)}
+                    onKeyUp={(e) => onAttributeChange(e, setShowTypePlaceholder)}
                     onMouseDown={(e) => makeNonEditable(e.target)}
                     onClick={(e) => onEditableClick(e.target)}
                     onBlur={onBlur}
@@ -481,7 +507,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                         title="Double Click to Edit Name"
                         // onDoubleClick={onRename}
                         onKeyDown={onNameKeyDown}
-                        onKeyUp={(e) => onAttributeChange(e.target, setShowNamePlaceholder)}
+                        onKeyUp={(e) => onAttributeChange(e, setShowNamePlaceholder)}
                         onBlur={onBlur}
                         onMouseDown={(e) => makeNonEditable(e.target)}
                         onClick={(e) => onEditableClick(e.target)}
