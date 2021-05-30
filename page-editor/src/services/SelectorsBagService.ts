@@ -5,30 +5,38 @@ import SelectorEditorConnection, { MessageTargets, MessageTypes } from '../conne
 import { TYPES } from 'inversify.config';
 import ISelectorsBagService from './ISelectorsBagService';
 import ComponentInstance from 'entities/mst/ComponentInstance';
+import IProjectSynchronizationService from './ISynchronizationService';
 
 @injectable()
 export class SelectorsBagService implements ISelectorsBagService {
-    constructor(@inject(TYPES.SelectorEditorConnection) private selectorEditorConnection: SelectorEditorConnection) {
+    constructor(
+        @inject(TYPES.SelectorEditorConnection) private selectorEditorConnection: SelectorEditorConnection,
+        @inject(TYPES.SynchronizationService) private synchronizationService: IProjectSynchronizationService,
+    ) {
         selectorEditorConnection.addListener(MessageTypes.SelectorUpdated, this.onSelectorUpdated);
         selectorEditorConnection.addListener(MessageTypes.SelectorsListUpdated, this.generateBlankComponents);
         this.generateBlankComponents([
             {
                 id: '1',
+                type: 'WebInput',
                 name: 'SearchInput',
                 selector: '#search',
             },
             {
                 id: '2',
+                type: 'WebInput',
                 name: 'SendButton',
                 selector: "[type='submit']",
             },
             {
                 id: '3',
+                type: '',
                 name: 'CancelButton',
                 selector: "button['Cancel']",
             },
             {
-                id: '4.',
+                id: '4',
+                type: '',
                 name: '',
                 selector: "button['Cancel']",
             },
@@ -40,8 +48,8 @@ export class SelectorsBagService implements ISelectorsBagService {
         this.updateSelectorsList();
     }
 
-    updateComponentName(component: ComponentInstance, newComponentName: string) {
-        component.setName(newComponentName);
+    updateComponentFieldName(component: ComponentInstance, newComponentFieldName: string) {
+        component.setFieldName(newComponentFieldName);
         this.updateSelectorsList();
     }
 
@@ -53,7 +61,7 @@ export class SelectorsBagService implements ISelectorsBagService {
     private updateSelectorsList() {
         const componentsData = RootStore.uiStore.blankComponents.map((c) => ({
             id: c.id,
-            name: c.componentFieldName,
+            name: c.fieldName,
             type: c.componentType,
         }));
         this.selectorEditorConnection.postMessage(
@@ -103,5 +111,7 @@ export class SelectorsBagService implements ISelectorsBagService {
             data.parameterValueIndex,
             data.parameterValue,
         );
+
+        this.synchronizationService.updateComponentInstance(componentInstance);
     }
 }

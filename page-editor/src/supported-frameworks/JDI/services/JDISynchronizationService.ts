@@ -11,6 +11,13 @@ import IProjectSynchronizerService from 'services/ISynchronizationService';
 export default class JDISynchronizationService implements IProjectSynchronizerService {
     constructor(@inject(TYPES.IDEAConnection) private ideaConnection: IDEAConnection) {}
 
+    updateComponentInstance(component: ComponentInstance): void {
+        if (!RootStore.uiStore.selectedProject) {
+            throw new Error('Project not set');
+        }
+        this.ideaConnection.updateComponentInstance(RootStore.uiStore.selectedProject, component);
+    }
+
     updateWebSiteUrl(website: WebSite, newUrl: any) {
         if (!RootStore.uiStore.selectedProject) {
             throw new Error('Project not set');

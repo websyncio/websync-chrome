@@ -11,12 +11,15 @@ export const ComponentInstanceModel = types.compose(
             id: types.identifier,
             // try to fix - https://mobx-state-tree.js.org/tips/circular-deps
             componentType: types.string, //.maybe(types.reference(types.late(() => ComponentTypeModel))),
+            fieldName: types.string,
             name: types.string,
             initializationAttribute: types.optional(AttributeModel, {
                 name: '',
             }),
-            isBlank: types.optional(types.boolean, false),
         })
+        // .volatile(()=>({
+        //     isBlank: false
+        // }))
         .views((self) => ({
             get typeName() {
                 if (self.componentType) {
@@ -25,15 +28,15 @@ export const ComponentInstanceModel = types.compose(
                 }
                 return '';
             },
-            get componentFieldName() {
-                if (self.isBlank) {
-                    // this is a model from SelectorEditor
-                    return self.name;
-                }
-                // this is a model from IDE
-                const arr = self.id.split('.');
-                return arr[arr.length - 1].trim();
-            },
+            // get componentFieldName() {
+            //     // if (self.isBlank) {
+            //     //     // this is a model from SelectorEditor
+            //     //     return self.name;
+            //     // }
+            //     // this is a model from IDE
+            //     const arr = self.id.split('.');
+            //     return arr[arr.length - 1].trim();
+            // },
             get rootXcss() {
                 if (self.initializationAttribute == null || !self.initializationAttribute.parameters.length) {
                     return '';
@@ -51,8 +54,8 @@ export const ComponentInstanceModel = types.compose(
             setComponentType(newComponentType) {
                 self.componentType = newComponentType;
             },
-            setName(newName) {
-                self.name = newName;
+            setFieldName(newFieldName) {
+                self.fieldName = newFieldName;
                 // if (ideProxy) {
                 //     ideProxy.updateComponentInstance(self);
 
@@ -69,7 +72,6 @@ export const ComponentInstanceModel = types.compose(
                     throw new Error('No initialization attribute to update for component. componentId: ' + self.id);
                 }
                 self.initializationAttribute.updateParameterValue(parameterName, parameterValueIndex, parameterValue);
-                IDEAConnection.instance().updateComponentInstance(self as ComponentInstance);
             },
             delete() {
                 const pageType = getParentOfType(self, PageTypeModel);

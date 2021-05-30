@@ -11,7 +11,7 @@ import XcssSelector from 'entities/XcssSelector';
 const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
     ({ component, caretPosition, onSelected, onSelectNext, onSelectPrevious }) => {
         const [isDeleted, setIsDeleted] = useState(false);
-        const [isAllSet, setIsAllSet] = useState(!!component.typeName.length && !!component.componentFieldName.length);
+        const [isAllSet, setIsAllSet] = useState(!!component.typeName.length && !!component.fieldName.length);
         const selectorBagService = DependencyContainer.get<ISelectorsBagService>(TYPES.SelectorsBagService);
         const selectorHighlighter: SelectorHighlighter = DependencyContainer.get<SelectorHighlighter>(
             TYPES.SelectorHighlighter,
@@ -33,8 +33,8 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
             if (component.typeName !== componentTypeName) {
                 selectorBagService.updateComponentType(component, componentTypeName);
             }
-            if (component.componentFieldName != componentFieldName) {
-                selectorBagService.updateComponentName(component, componentFieldName);
+            if (component.fieldName != componentFieldName) {
+                selectorBagService.updateComponentFieldName(component, componentFieldName);
             }
 
             // Should we implement more complex validation here?

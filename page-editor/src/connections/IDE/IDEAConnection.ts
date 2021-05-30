@@ -28,9 +28,9 @@ export default class IDEAConnection implements IIdeConnection {
         return IDEAConnection._inst;
     }
 
-    updateComponentInstance(component: ComponentInstance) {
+    updateComponentInstance(projectName: string, component: ComponentInstance) {
         const message = {
-            projectName: RootStore.uiStore.selectedProject,
+            projectName: projectName,
             type: 'update-component-instance',
             data: component,
         };

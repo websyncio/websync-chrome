@@ -76,8 +76,7 @@ export const UiStoreModel = types
                 selectors.map((s) => ({
                     id: s.id,
                     componentType: s.type,
-                    name: s.name,
-                    isBlank: true,
+                    fieldName: s.name,
                     initializationAttribute: {
                         name: 'UI',
                         parameters: [{ values: [s.selector] }],

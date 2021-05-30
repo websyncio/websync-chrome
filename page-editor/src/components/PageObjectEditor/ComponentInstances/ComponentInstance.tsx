@@ -74,8 +74,10 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
             setIsDeleted(true);
         }
 
-        function onChange() {
-            console.log('update type and name for component model and ide');
+        function onChange(componentType: string, fieldName: string) {
+            component.setComponentType(componentType);
+            component.setFieldName(fieldName);
+            synchronizationService.updateComponentInstance(component);
         }
 
         return (

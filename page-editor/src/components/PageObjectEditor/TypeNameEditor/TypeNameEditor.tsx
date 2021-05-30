@@ -27,7 +27,7 @@ const TypeNameEditor: React.FC<Props> = observer(
         const [showSpace, setShowSpace] = useState(true);
         const [isOpen, setIsOpen] = useState(false);
         const [showTypePlaceholder, setShowTypePlaceholder] = useState(showPlaceholders && !component.typeName.length);
-        const [showNamePlaceholder, setShowNamePlaceholder] = useState(showPlaceholders && !component.name.length);
+        const [showNamePlaceholder, setShowNamePlaceholder] = useState(showPlaceholders && !component.fieldName.length);
         const [actualCaretPosition, setActualCaretPosition] = useState(0);
         let popper: any;
 
@@ -446,12 +446,12 @@ const TypeNameEditor: React.FC<Props> = observer(
             if (isWordCharacter || isBackspaceOrDelete) {
                 const attributeElement = e.target;
                 setPlaceholder(attributeElement, setShowPlaceholder);
-                // component.setComponentType(typeRef.current.textContent);
-                // component.rename(nameRef.current.textContent, null);
                 const caretPosition = getCaretPosition();
-                console.log('attribute changed', attributeElement);
-                console.log('attribute changed', caretPosition);
+                // console.log('attribute changed', attributeElement);
+                // console.log('attribute changed', caretPosition);
                 setActualCaretPosition(caretPosition);
+                console.log('attribute changed, type: ', typeRef.current.textContent);
+                console.log('attribute changed, name: ', nameRef.current.textContent);
                 onChange(typeRef.current.textContent, nameRef.current.textContent);
             }
         }
@@ -512,7 +512,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                         onMouseDown={(e) => makeNonEditable(e.target)}
                         onClick={(e) => onEditableClick(e.target)}
                     >
-                        {component.componentFieldName}
+                        {component.fieldName}
                     </span>
                     {showNamePlaceholder && (
                         <span className="component-attr-placeholder" onClick={() => onEditableClick(nameRef.current)}>

@@ -39,7 +39,8 @@ DependencyContainer.bind<SelectorEditorConnection>(TYPES.SelectorEditorConnectio
 DependencyContainer.bind<ISelectorsBagService>(TYPES.SelectorsBagService)
     .toDynamicValue(() => {
         const connection = DependencyContainer.get<SelectorEditorConnection>(TYPES.SelectorEditorConnection);
-        return new SelectorsBagService(connection);
+        const synchronizationService = DependencyContainer.get<ISynchronizationService>(TYPES.SynchronizationService);
+        return new SelectorsBagService(connection, synchronizationService);
     })
     .inSingletonScope();
 
