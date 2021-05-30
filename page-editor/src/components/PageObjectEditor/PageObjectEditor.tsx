@@ -5,7 +5,7 @@ import { observer } from 'mobx-react';
 import IComponentsContainer from 'entities/mst/ComponentsContainer';
 // import ComponentInstancesList from './ComponentInstancesList';
 import IIdeProxy from 'connections/IDE/IIdeConnection';
-import ComponentsContainer from './ComponentsContainer';
+import ComponentsContainer from './ComponentsContainer/ComponentsContainer';
 
 interface Props {
     ideProxy: IIdeProxy;

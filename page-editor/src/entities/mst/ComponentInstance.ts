@@ -34,7 +34,7 @@ export const ComponentInstanceModel = types.compose(
                 const arr = self.id.split('.');
                 return arr[arr.length - 1].trim();
             },
-            get rootSelector() {
+            get rootXcss() {
                 if (self.initializationAttribute == null || !self.initializationAttribute.parameters.length) {
                     return '';
                 }

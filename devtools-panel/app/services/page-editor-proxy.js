@@ -109,12 +109,12 @@ export default Service.extend({
 			}.bind(this));
 		}
 		catch(e){
-			this.postMessage(MessageTypes.ValidateSelector, message.source, null, true, acknowledgment);
+			this.postMessage(MessageTypes.ValidateSelector, message.source, null, true, message.acknowledgment);
 		}
 	},
 	getSelector(selector) {
-		if (selector.scss) {
-			selector = this.get('scssParser').parse(selector.scss);
+		if (!selector.css && !selector.xpath) {
+			selector = this.get('scssParser').parse(selector.xcss);
 		}
 		return selector;
 	},

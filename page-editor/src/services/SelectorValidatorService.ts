@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { injectable, inject } from 'inversify';
 import SelectorEditorConnection, { MessageTargets, MessageTypes } from '../connections/SelectorEditorConnection';
-import { Scss } from 'utils/ScssBuilder';
 import { TYPES } from 'inversify.config';
+import XcssSelector from 'entities/XcssSelector';
 export const SELECTOR_VALIDATED = 'selector-validated';
 
 // https://stackoverflow.com/questions/27383224/chrome-extension-long-lived-message-connection-how-to-use-callback-functions
@@ -18,7 +18,7 @@ export default class SelectorValidator {
         return count;
     }
 
-    validate(selector: Scss, callback: Function) {
+    validate(selector: XcssSelector, callback: Function) {
         this.selectorEditorConnection.postMessage(
             MessageTypes.ValidateSelector,
             selector,

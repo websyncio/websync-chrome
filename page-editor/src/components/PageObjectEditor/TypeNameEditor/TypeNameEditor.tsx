@@ -4,7 +4,7 @@ import FocusTrap from 'focus-trap-react';
 import { observer } from 'mobx-react';
 import ComponentInstanceModel from 'entities/mst/ComponentInstance';
 import React, { RefObject, useEffect, useLayoutEffect, useState } from 'react';
-import ComponentTypeSelector from './ComponentTypeSelector';
+import ComponentTypeSelector from '../TypeSelector/ComponentTypeSelector';
 import './TypeNameEditor.sass';
 
 interface Props {

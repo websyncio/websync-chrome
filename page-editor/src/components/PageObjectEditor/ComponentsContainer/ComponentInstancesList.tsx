@@ -1,5 +1,5 @@
 import React from 'react';
-import ComponentInstanceProps from './ComponentInstanceProps';
+import ComponentInstanceProps from 'components/PageObjectEditor/ComponentInstances/ComponentInstanceProps';
 import { observer } from 'mobx-react';
 import './ComponentInstancesList.sass';
 import IComponentInstance from 'entities/mst/ComponentInstance';
