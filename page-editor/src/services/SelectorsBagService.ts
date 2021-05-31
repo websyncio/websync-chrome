@@ -13,8 +13,11 @@ export class SelectorsBagService implements ISelectorsBagService {
         @inject(TYPES.SelectorEditorConnection) private selectorEditorConnection: SelectorEditorConnection,
         @inject(TYPES.SynchronizationService) private synchronizationService: IProjectSynchronizationService,
     ) {
-        selectorEditorConnection.addListener(MessageTypes.SelectorUpdated, this.onSelectorUpdated);
-        selectorEditorConnection.addListener(MessageTypes.SelectorsListUpdated, this.generateBlankComponents);
+        selectorEditorConnection.addListener(MessageTypes.SelectorUpdated, this.onSelectorUpdated.bind(this));
+        selectorEditorConnection.addListener(
+            MessageTypes.SelectorsListUpdated,
+            this.generateBlankComponents.bind(this),
+        );
         this.generateBlankComponents([
             {
                 id: '1',
