@@ -41,6 +41,8 @@ export const ProjectStoreModel = types
                 console.log('Probably name of the page changed. Have to decide what to do in this case.');
                 throw new Error('Unable to update page type: ' + pageTypeJson.id);
             }
+            console.log('Apply snapshot, Old', JSON.stringify(self.pageTypes[index]));
+            console.log('Apply snapshot, New', JSON.stringify(pageTypeJson));
             applySnapshot(self.pageTypes[index], pageTypeJson);
             // if (old.selected) {
             //     updated.select();

@@ -46,11 +46,12 @@ export default class IdeConnection {
         this.client.onmessage = this.onMessage.bind(this);
     }
 
-    send(messageObject) {
+    send(message) {
         if (this.client.readyState !== 1) {
             throw new Error("Can't send message to IDE because connection is closed.");
         }
-        this.client.send(JSON.stringify(messageObject));
+        this.client.send(JSON.stringify(message));
+        console.log('Message sent:', message);
     }
 
     onError() {

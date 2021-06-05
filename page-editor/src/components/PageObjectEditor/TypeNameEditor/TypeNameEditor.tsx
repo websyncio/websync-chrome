@@ -57,7 +57,7 @@ const TypeNameEditor: React.FC<Props> = observer(
         }, [isOpen]);
 
         useEffect(() => {
-            console.log('TypeNameEditor rerendered');
+            console.log('TypeNameEditor rerendered', component.fieldName);
         });
 
         function getTypeLength(): number {
@@ -215,7 +215,11 @@ const TypeNameEditor: React.FC<Props> = observer(
             const isLeftArrow = e.key == 'ArrowLeft';
             const isRightArrow = e.key == 'ArrowRight';
             const isDelete = e.key == 'Delete';
-            const isEnd = getElementCaretPosition(e.target) == typeRef.current.textContent.length;
+            const isBackspace = e.key == 'Backspace';
+            const typeLength = typeRef.current.textContent.length;
+            const elementCaretPosition = getElementCaretPosition(e.target);
+            const isStart = elementCaretPosition == 0;
+            const isEnd = elementCaretPosition == typeLength;
             if (e.ctrlKey) {
                 if (e.shiftKey) {
                     // SELECTION
@@ -303,6 +307,21 @@ const TypeNameEditor: React.FC<Props> = observer(
             if (handleExtraSymbols(e, 50)) {
                 return;
             }
+
+            // if(showPlaceholders){
+            //     const isWordCharacter = e.key.length === 1;
+            //     if(typeLength==0){
+            //         if(isWordCharacter){
+            //             setShowTypePlaceholder(false);
+            //         }
+            //     }else if(typeLength==1){
+            //         if(isStart){
+            //             setShowTypePlaceholder(isDelete);
+            //         }else if(isEnd){
+            //             setShowTypePlaceholder(isBackspace);
+            //         }
+            //     }
+            // }
         }
 
         function onNameKeyDown(e) {
@@ -311,7 +330,11 @@ const TypeNameEditor: React.FC<Props> = observer(
             const isLeftArrow = e.key == 'ArrowLeft';
             const isRightArrow = e.key == 'ArrowRight';
             const isBackspace = e.key == 'Backspace';
-            const isStart = getElementCaretPosition(e.target) == 0;
+            const isDelete = e.key == 'Delete';
+            const elementCaretPosition = getElementCaretPosition(e.target);
+            const nameLength = nameRef.current.textContent.length;
+            const isStart = elementCaretPosition == 0;
+            const isEnd = elementCaretPosition == nameLength;
             if (e.shiftKey) {
                 // if(isStart && isLeftArrow){
                 //     component.setForDeletion(true);
@@ -335,7 +358,7 @@ const TypeNameEditor: React.FC<Props> = observer(
             } else if (e.ctrlKey) {
                 if (isRightArrow) {
                     // setElementCaretPosition(nameRef.current, nameRef.current.textContent.length);
-                    const caretPosition = getTypeLength() + 1 + nameRef.current.textContent.length;
+                    const caretPosition = getTypeLength() + 1 + nameLength;
                     setCaretPosition(caretPosition, showSpace);
                     setActualCaretPosition(caretPosition);
                     e.preventDefault();
@@ -373,7 +396,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                     e.preventDefault();
                     return;
                 } else if (isEndKey) {
-                    const caretPosition = getTypeLength() + 1 + nameRef.current.textContent.length;
+                    const caretPosition = getTypeLength() + 1 + nameLength;
                     setCaretPosition(caretPosition, showSpace);
                     setActualCaretPosition(caretPosition);
                     e.preventDefault();
@@ -388,6 +411,21 @@ const TypeNameEditor: React.FC<Props> = observer(
             if (handleExtraSymbols(e, 50)) {
                 return;
             }
+
+            // if(showPlaceholders){
+            //     const isWordCharacter = e.key.length === 1;
+            //     if(nameLength==0){
+            //         if(isWordCharacter){
+            //             setShowNamePlaceholder(false);
+            //         }
+            //     }else if(nameLength==1){
+            //         if(isStart){
+            //             setShowNamePlaceholder(isDelete);
+            //         }else if(isEnd){
+            //             setShowNamePlaceholder(isBackspace);
+            //         }
+            //     }
+            // }
         }
 
         function onKeyDown(e) {

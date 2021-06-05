@@ -27,7 +27,7 @@ const Selector: React.FC<Props> = observer(({ parameterName, selector, onEdit, o
     parameterName = parameterName ?? 'root';
 
     function validateCallback(validationResult: any) {
-        console.log(selector.xcss + ': ' + validationResult.count);
+        // console.log(selector.xcss + ': ' + validationResult.count);
         setStatus(validationResult.count);
         onValidated(validationResult.count === 0);
     }

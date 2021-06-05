@@ -12,7 +12,7 @@ export const ComponentInstanceModel = types.compose(
             // try to fix - https://mobx-state-tree.js.org/tips/circular-deps
             componentType: types.string, //.maybe(types.reference(types.late(() => ComponentTypeModel))),
             fieldName: types.string,
-            name: types.string,
+            name: types.maybeNull(types.string),
             initializationAttribute: types.optional(AttributeModel, {
                 name: '',
             }),

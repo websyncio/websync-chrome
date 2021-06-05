@@ -103,9 +103,9 @@ export class SelectorsBagService implements ISelectorsBagService {
         if (!RootStore.uiStore.selectedPageObject) {
             throw new Error('No selected page object to update.');
         }
-        const componentInstance: ComponentInstance = RootStore.uiStore.selectedPageObject.getComponentInstance(
-            data.componentId,
-        );
+        const componentInstance:
+            | ComponentInstance
+            | undefined = RootStore.uiStore.selectedPageObject.getComponentInstance(data.componentId);
         if (!componentInstance) {
             throw new Error('No component to update. componentId: ' + data.componentId);
         }
