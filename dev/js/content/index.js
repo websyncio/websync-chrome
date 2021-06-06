@@ -52,7 +52,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 //   Connection to background page
 //============================================================================================
 
-export const Sources = {
+const Sources = {
 	SelectorEditorMain : 'selector-editor-main',
 	SelectorEditorAuxilliary : 'selector-editor-auxilliary',
 	PageEditor : 'page-editor',
@@ -60,9 +60,8 @@ export const Sources = {
 };
 
 const BackgroundMessages = {
-	GetTabIdRequest: 'get-tabid-request',
-	GetTabIdResponse: "get-tabid-response",
 	GetUrlRequest: "get-url-request",
+	TabId: "tabid",
 	ChangeUrl: "change-url",
 	UrlChanged: "url-changed"
 };
@@ -88,23 +87,20 @@ function sendMessageToBackground(type, target, data){
 function connectToBackgroundPage(){
 	backgroundPort = chrome.runtime.connect({ name: "content" });
 
-	backgroundPort.onDisconnect(function(){
+	backgroundPort.onDisconnect.addListener(function(){
 		backgroundPort = null;
 		setTimeout(connectToBackgroundPage, 1000);
 	});
 
 	addBackgroundPageListeners();
-	sendMessageToBackground(BackgroundMessages.GetTabIdRequest);
 }
 
-function onTabIdResponse(){
+function onTabIdReceived(msg){
 	tabId = msg.tabId;
-	sendMessageToBackground('init');
 	sendUrlChangedMessage();
-
 }
 
-function onChangeUrlRequest(){
+function onChangeUrlRequest(msg){
 	window.location.href = msg.data.url;
 	//history.pushState({}, null, msg.data.url);
 }
@@ -117,11 +113,11 @@ function addBackgroundPageListeners(){
 		console.log("Content script receive message", msg);
 
 		switch(msg.type){
-			case BackgroundMessages.GetTabIdResponse:
-				onTabIdResponse();
+			case BackgroundMessages.TabId:
+				onTabIdReceived(msg);
 				break;
 			case BackgroundMessages.ChangeUrl:
-				onChangeUrlRequest();
+				onChangeUrlRequest(msg);
 				break;
 			case BackgroundMessages.GetUrlRequest:
 				sendUrlChangedMessage();
@@ -154,7 +150,7 @@ function urlPollingCallback(){
 	const currentUrl = getCurrentUrl();
 	if (currentUrl!==previoustUrl) {
 		previoustUrl = currentUrl;
-		sendUrlChangedMessage(currentUrl);
+		sendUrlChangedMessage();
 	}
 }
 
@@ -167,9 +163,9 @@ window.addEventListener("visibilitychange", function(){
 	}
 });
 
-function sendUrlChangedMessage(url) {
+function sendUrlChangedMessage() {
 	let data = {
-		url
+		url: getCurrentUrl()
 	};
 	sendMessageToBackground(BackgroundMessages.UrlChanged, Sources.PageEditor, data);
 }

@@ -6,13 +6,17 @@
 //   }, callback);
 // }
 
-export const Sources = {
+const Sources = {
   SelectorEditorMain : 'selector-editor-main',
   SelectorEditorAuxilliary : 'selector-editor-auxilliary',
   PageEditor : 'page-editor',
   Content: 'content',
 };
 
+const MessageTypes = {
+  Init: 'init',
+  TabId: "tabid"
+}
 
 var connections = {};
 chrome.runtime.onConnect.addListener(function (port) {
@@ -20,10 +24,8 @@ chrome.runtime.onConnect.addListener(function (port) {
     if(!connections[tabId]){
       connections[tabId] = {};
     }
-    // if(!connections[tabId][sourceName]){
-      connections[tabId][sourceName] = port;
-      console.log(sourceName + ' for tab ' + tabId + ' connected.');
-    // }
+    connections[tabId][sourceName] = port;
+    console.log(sourceName + ' for tab ' + tabId + ' connected.');
   }
 
   let deleteConnection = function(){
@@ -41,13 +43,7 @@ chrome.runtime.onConnect.addListener(function (port) {
     }
   }
 
-  var listener = function (message, senderPort) {
-    if (message.type == 'get-tab-id') {
-      console.log("Responde to sender with tabId");
-      senderPort.postMessage({ tabId: senderPort.sender.tab.id, target: 'content', type: 'response-tab-id'});
-      // storeConnection(message.tabId, message.source, port);
-      return;
-    }
+  var listener = function (message) {
     if(!message.tabId){
       console.error("Tab Id is not specified in the message.");
       return;
@@ -60,7 +56,7 @@ chrome.runtime.onConnect.addListener(function (port) {
 
     console.trace(message);
 
-    if(message.type=='init'){
+    if(message.type==MessageTypes.Init){
       storeConnection(message.tabId, message.source, port);
       return;
     }
@@ -69,7 +65,7 @@ chrome.runtime.onConnect.addListener(function (port) {
       // Relay message to target
       console.log('target', message.target, connections);
       if(!connections[message.tabId] || !connections[message.tabId][message.target]){
-        console.error('No connection to '+ message.target);
+        console.log('No connection to '+ message.target);
         return;
       }
       console.log('Relaying the message from ' + message.source + ' to ' + (message.target||'all receivers') + ' in tab ' + message.tabId + '.');
@@ -100,42 +96,15 @@ chrome.runtime.onConnect.addListener(function (port) {
       deleteConnection(port);
   });
 
+  // We do not need init request from content script, because we already know tab id
+  if(port.name===Sources.Content){
+    let tabId = port.sender.tab.id;
+    storeConnection(tabId, Sources.Content, port);
+    console.log("Send tabId to content script");
+    port.postMessage({ type: MessageTypes.TabId, tabId, target: Sources.Content});
+    return;
+  }
 });
-
-// Receive message from content script and relay to the devTools page for the
-// current tab
-// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-//     // Messages from content scripts should have sender.tab set
-//     if (sender.tab) {
-//       console.log('Received message from Content Page.');
-//       var tabId = sender.tab.id;
-//       if (tabId in connections) {
-//         connections[tabId].postMessage(request);
-//         console.log('Sent message to Devtools Page for tab ' + tabId + '.');
-//       } else {
-//         console.log("Tab not found in connection list.");
-//       }
-//     } else {
-//       console.log('Received message from Devtools Page.');
-//       switch(request.name){
-//         case "injectContentScript":
-//           injectContentScript(request.tabId, sendResponse);
-//           break;
-//         default:
-//           console.log("request tab id", request.tabId);
-//           chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-//             console.log("request tab id", tabs[0].id);
-//             chrome.tabs.sendMessage(tabs[0].id, request, sendResponse);
-//           });
-//           // if(request.tabId){
-//           //   // Relay message to content script
-//           //   chrome.tabs.sendMessage(request.tabId, request, sendResponse);
-//           // }
-//           break;
-//       }
-//     }
-//     return true;
-// });
 
 // Check whether new version is installed
 chrome.runtime.onInstalled.addListener(function(details){
