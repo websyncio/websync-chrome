@@ -1,7 +1,6 @@
 import { types, Instance, getParentOfType } from 'mobx-state-tree';
 import { AttributeModel } from './Attribute';
 import { PageTypeModel } from './PageType';
-import IDEAConnection from 'connections/IDE/IDEAConnection';
 import { SelectableModel } from './Selectable';
 
 export const ComponentInstanceModel = types.compose(

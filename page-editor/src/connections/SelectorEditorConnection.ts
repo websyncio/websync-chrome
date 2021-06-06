@@ -16,9 +16,9 @@ export const MessageTypes = {
     SelectorUpdated: 'selector-updated',
     SelectorsListUpdated: 'selectors-list-updated',
 
-    InitSynchroService: 'init-url-synchro',
-    UrlChanged: 'page-url-changed',
-    ChangePageUrl: 'change-page-url',
+    GetUrlRequest: 'get-url-request',
+    UrlChanged: 'url-changed',
+    ChangeUrl: 'change-url',
 };
 
 export const MessageTargets = {

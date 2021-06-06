@@ -7,22 +7,19 @@ import { RootStore } from '../context';
 import PageInstance from 'entities/mst/PageInstance';
 import Reactor from '../utils/Reactor';
 
-export const UrlSynchronizationEvents = {
-    UrlChanged: 'url-changed',
-};
 @injectable()
 export class UrlSynchronizationService implements IUrlSynchronizationService {
     reactor: Reactor;
 
     constructor(@inject(TYPES.SelectorEditorConnection) private selectorEditorConnection: SelectorEditorConnection) {
         this.reactor = new Reactor();
-        this.reactor.registerEvent(UrlSynchronizationEvents.UrlChanged);
+        this.reactor.registerEvent(MessageTypes.UrlChanged);
         selectorEditorConnection.addListener(MessageTypes.UrlChanged, this.onUrlChanged.bind(this));
     }
 
     onUrlChanged(data) {
         const { url } = data;
-        this.reactor.dispatchEvent(UrlSynchronizationEvents.UrlChanged);
+        this.reactor.dispatchEvent(MessageTypes.UrlChanged);
         const matchedPages: PageInstance[] = [];
         RootStore.projectStore.webSites.map((site) => {
             console.log('onurlchanged');
@@ -42,14 +39,14 @@ export class UrlSynchronizationService implements IUrlSynchronizationService {
     }
 
     initUrlSynchro() {
-        this.selectorEditorConnection.postMessage(MessageTypes.InitSynchroService, null, MessageTargets.ContentPage);
+        this.selectorEditorConnection.postMessage(MessageTypes.GetUrlRequest, null, MessageTargets.ContentPage);
     }
 
     redirectToUrl(url: string) {
-        this.selectorEditorConnection.postMessage(MessageTypes.ChangePageUrl, { url }, MessageTargets.ContentPage);
+        this.selectorEditorConnection.postMessage(MessageTypes.ChangeUrl, { url }, MessageTargets.ContentPage);
     }
 
     addUrlChangedListener(listener: Function) {
-        this.reactor.addEventListener(UrlSynchronizationEvents.UrlChanged, listener);
+        this.reactor.addEventListener(MessageTypes.UrlChanged, listener);
     }
 }

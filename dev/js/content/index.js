@@ -48,91 +48,136 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
     }
 });
 
-// initialize permanent connection to background script
-var port = chrome.runtime.connect({ name: "content" });
-var tabId;
+//============================================================================================
+//   Connection to background page
+//============================================================================================
 
-port.postMessage({
-	type: 'get-tab-id',
-	target: 'background',
-	name: 'get-tab-id', 
-	// target: 'page-editor',
-	source: 'content',
-});
+export const Sources = {
+	SelectorEditorMain : 'selector-editor-main',
+	SelectorEditorAuxilliary : 'selector-editor-auxilliary',
+	PageEditor : 'page-editor',
+	Content: 'content',
+};
 
-port.onMessage.addListener(function(msg, senderPort) {
-	console.log("Content script receive message: ", msg);
-	if (msg.type === 'response-tab-id') {
-		tabId = msg.tabId;
-		senderPort.postMessage({
-			type: 'init',
-			// target: 'background',
-			name: 'init', 
-			tabId: msg.tabId,
-			source: 'content',
-		});
+const BackgroundMessages = {
+	GetTabIdRequest: 'get-tabid-request',
+	GetTabIdResponse: "get-tabid-response",
+	GetUrlRequest: "get-url-request",
+	ChangeUrl: "change-url",
+	UrlChanged: "url-changed"
+};
+
+let backgroundPort;
+let tabId;
+
+function sendMessageToBackground(type, target, data){
+	if(!backgroundPort){
+		console.log("Unable to send message. Connection to background page is not available.", type);
 	}
-
-	if (msg.type === 'change-page-url') {
-		window.location.href = msg.data.url;
-		//history.pushState({}, null, msg.data.url);
-	}
-
-	if (msg.type = 'init-url-synchro') {
-		sendUrlMessage();
-	}
-});
-
-// URL Polling
-var urlPollingIntervalId;
-var currentUrl = window.location.href;
-
-function startPolling() {
-	urlPollingIntervalId = window.setInterval(urlPollingCallback, 1000)
+	let message = {
+		type,
+		source: Sources.Content,
+		target,
+		tabId,
+		data
+	};
+	console.log('Send message to background page', message);
+	backgroundPort.postMessage(message);
 }
 
-window.onload = function() {
-	// console.log('onload');
-	sendUrlMessage();
-	startPolling();
+function connectToBackgroundPage(){
+	backgroundPort = chrome.runtime.connect({ name: "content" });
+
+	backgroundPort.onDisconnect(function(){
+		backgroundPort = null;
+		setTimeout(connectToBackgroundPage, 1000);
+	});
+
+	addBackgroundPageListeners();
+	sendMessageToBackground(BackgroundMessages.GetTabIdRequest);
+}
+
+function onTabIdResponse(){
+	tabId = msg.tabId;
+	sendMessageToBackground('init');
+	sendUrlChangedMessage();
+
+}
+
+function onChangeUrlRequest(){
+	window.location.href = msg.data.url;
+	//history.pushState({}, null, msg.data.url);
+}
+
+function addBackgroundPageListeners(){
+	if(!backgroundPort){
+		throw new Error("Connection to background page is not available.");
+	}
+	backgroundPort.onMessage.addListener(function(msg) {
+		console.log("Content script receive message", msg);
+
+		switch(msg.type){
+			case BackgroundMessages.GetTabIdResponse:
+				onTabIdResponse();
+				break;
+			case BackgroundMessages.ChangeUrl:
+				onChangeUrlRequest();
+				break;
+			case BackgroundMessages.GetUrlRequest:
+				sendUrlChangedMessage();
+				break;
+		}
+	});
+}
+
+connectToBackgroundPage();
+//============================================================================================
+//   URL Polling
+//============================================================================================
+
+let urlPollingIntervalId;
+let previoustUrl = window.location.href;
+
+function startUrlPolling() {
+	urlPollingIntervalId = window.setInterval(urlPollingCallback, 1000);
+}
+
+function stopUrlPolling() {
+	window.clearInterval(urlPollingIntervalId);
+}
+
+function getCurrentUrl(){
+	return window.location.href;
 }
 
 function urlPollingCallback(){
-	const testUrl = window.location.href;
-	if (currentUrl !== testUrl) {
-		currentUrl = testUrl;
-		sendUrlMessage();
+	const currentUrl = getCurrentUrl();
+	if (currentUrl!==previoustUrl) {
+		previoustUrl = currentUrl;
+		sendUrlChangedMessage(currentUrl);
 	}
 }
 
-
 window.addEventListener("visibilitychange", function(){
-	if (document.visibilityState === 'visible') {
-		window.clearInterval(urlPollingIntervalId);
-		startPolling();
+	if (document.visibilityState === 'visible'){
+		stopUrlPolling();
+		startUrlPolling();
+	}else{
+		stopUrlPolling();
 	}
 });
 
-function sendUrlMessage() {
-	const message = {
-		name: 'page-url-changed',
-		type: 'page-url-changed',
-		target: 'page-editor',
-		source: 'content',
-		tabId,
-		data: {
-			url: getCurrentUrl(),
-		},
-	}
-	console.log('Content script send message: ', message);
-	port.postMessage(message);
+function sendUrlChangedMessage(url) {
+	let data = {
+		url
+	};
+	sendMessageToBackground(BackgroundMessages.UrlChanged, Sources.PageEditor, data);
 }
 
-//
-
-window.getCurrentUrl = function(){
-	return window.location.href;
-}
+startUrlPolling();
+//============================================================================================
+//   Selector validation
+//============================================================================================
 
 window.getIframes = function(){
 	let iframes = document.querySelectorAll('iframe');
