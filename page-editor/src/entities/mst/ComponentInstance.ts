@@ -50,8 +50,10 @@ export const ComponentInstanceModel = types.compose(
             },
         }))
         .actions((self) => ({
-            setComponentType(newComponentType) {
-                self.componentType = newComponentType;
+            setComponentTypeName(newComponentTypeName) {
+                const typeNamespace = self.componentType.substring(0, self.componentType.lastIndexOf('.'));
+                console.log('typeNamespace', typeNamespace);
+                self.componentType = typeNamespace + '.' + newComponentTypeName;
             },
             setFieldName(newFieldName) {
                 self.fieldName = newFieldName;

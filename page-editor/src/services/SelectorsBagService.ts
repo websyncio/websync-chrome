@@ -57,7 +57,7 @@ export class SelectorsBagService implements ISelectorsBagService {
     }
 
     updateComponentType(component: ComponentInstance, componentType: string) {
-        component.setComponentType(componentType);
+        component.setComponentTypeName(componentType);
         this.updateSelectorsList();
     }
 
