@@ -3,6 +3,7 @@ import PageInstance from 'entities/mst/PageInstance';
 import WebSite from 'entities/mst/WebSite';
 
 export default interface IProjectSynchronizationService {
+    addComponentInstance(component: ComponentInstance): void;
     updateComponentInstance(component: ComponentInstance): void;
     deleteComponentInstance(component: ComponentInstance): void;
     updateWebSiteUrl(website: WebSite, newUrl: string): void;

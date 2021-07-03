@@ -1,5 +1,5 @@
 import { types, Instance } from 'mobx-state-tree';
-import { ComponentInstanceModel } from './ComponentInstance';
+import ComponentInstance, { ComponentInstanceModel } from './ComponentInstance';
 import { SelectableModel } from './Selectable';
 
 export const ComponentsContainerModel = types
@@ -15,6 +15,11 @@ export const ComponentsContainerModel = types
         get name() {
             const arr = self.id.split('.');
             return arr[arr.length - 1];
+        },
+    }))
+    .actions((self) => ({
+        addComponentInstance(component: ComponentInstance) {
+            self.componentsInstances.push(component);
         },
     }));
 

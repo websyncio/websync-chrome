@@ -11,14 +11,22 @@ interface Props {
     component: ComponentInstanceModel;
     showPlaceholders: boolean;
     initialCaretPosition: number | null;
-    onDeleted: () => void;
+    onDelete: () => void;
     onSelectNext: (caretPosition: number) => boolean;
     onSelectPrevious: (caretPosition: number) => boolean;
     onChange: (componentType: string, componentName: string) => void;
 }
 
 const TypeNameEditor: React.FC<Props> = observer(
-    ({ component, showPlaceholders, initialCaretPosition, onDeleted, onSelectNext, onSelectPrevious, onChange }) => {
+    ({
+        component,
+        showPlaceholders,
+        initialCaretPosition,
+        onDelete: onDeleted,
+        onSelectNext,
+        onSelectPrevious,
+        onChange,
+    }) => {
         const typePlaceholder = '<set type>';
         const namePlaceholder = '<set name>';
         const popupRef: any = React.createRef();

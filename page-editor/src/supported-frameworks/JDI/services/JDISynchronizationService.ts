@@ -34,8 +34,24 @@ export default class JDISynchronizationService implements IProjectSynchronizerSe
         this.ideaConnection.updatePageInstance(RootStore.uiStore.selectedProject, pageInstance);
     }
 
+    addComponentInstance(component: ComponentInstance): void {
+        if (!RootStore.uiStore.selectedProject) {
+            throw new Error('Project not set');
+        }
+        // let selectedPageObject = RootStore.uiStore.selectedPageObject;
+        // if(!selectedPageObject){
+        //     throw new Error("Page object is not selected. No place to add the component instance.");
+        // }
+        // selectedPageObject.addComponentInstance(component);
+        this.ideaConnection.addComponentInstance(RootStore.uiStore.selectedProject, component);
+    }
+
     deleteComponentInstance(component: ComponentInstance): void {
-        component.delete();
-        //this.ideaConnection.deleteComponentInstance(component);
+        if (!RootStore.uiStore.selectedProject) {
+            throw new Error('Project not set');
+        }
+
+        // component.delete();
+        this.ideaConnection.deleteComponentInstance(RootStore.uiStore.selectedProject, component);
     }
 }

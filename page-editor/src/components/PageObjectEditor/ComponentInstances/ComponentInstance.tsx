@@ -70,10 +70,6 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
             }
         }
 
-        function onDeleted() {
-            setIsDeleted(true);
-        }
-
         function onChange(componentType: string, fieldName: string) {
             component.setComponentTypeName(componentType);
             component.setFieldName(fieldName);
@@ -100,7 +96,7 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                         component={component}
                         showPlaceholders={false}
                         initialCaretPosition={caretPosition}
-                        onDeleted={onDeleted}
+                        onDelete={() => setIsDeleted(true)}
                         onSelectNext={onSelectNext}
                         onSelectPrevious={onSelectPrevious}
                         onChange={onChange}

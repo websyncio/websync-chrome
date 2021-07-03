@@ -63,7 +63,8 @@ const BackgroundMessages = {
 	GetUrlRequest: "get-url-request",
 	TabId: "tabid",
 	ChangeUrl: "change-url",
-	UrlChanged: "url-changed"
+	UrlChanged: "url-changed",
+	TicketsUnpaid: "tickets-unpdaid"
 };
 
 let backgroundPort;
@@ -85,9 +86,16 @@ function sendMessageToBackground(type, target, data){
 }
 
 function connectToBackgroundPage(){
-	backgroundPort = chrome.runtime.connect({ name: "content" });
-
+	try{
+		backgroundPort = chrome.runtime.connect({ name: "content" });
+	}catch(e){
+		console.log("WebSync is unable to connect to background.", e);
+		setTimeout(connectToBackgroundPage, 1000);
+		return;
+	}
+	console.log("WebSync has created a connection to background.");
 	backgroundPort.onDisconnect.addListener(function(){
+		console.log("Connection to background from WebSync has broken.");
 		backgroundPort = null;
 		setTimeout(connectToBackgroundPage, 1000);
 	});
@@ -122,6 +130,9 @@ function addBackgroundPageListeners(){
 			case BackgroundMessages.GetUrlRequest:
 				sendUrlChangedMessage();
 				break;
+			case BackgroundMessages.TicketsUnpaid:
+				alert("Tickets for VSITNI are updaid!");
+				break
 		}
 	});
 }

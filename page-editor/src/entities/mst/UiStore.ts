@@ -3,7 +3,7 @@ import IdeConnection, { IdeConnectionModel } from './IdeConnection';
 import { PageTypeModel } from './PageType';
 import PageInstance, { PageInstanceModel } from './PageInstance';
 import PageType from 'entities/mst/PageType';
-import { ComponentInstanceModel } from 'entities/mst/ComponentInstance';
+import ComponentInstance, { ComponentInstanceModel } from 'entities/mst/ComponentInstance';
 
 export const UiStoreModel = types
     .model({
@@ -18,7 +18,7 @@ export const UiStoreModel = types
         matchedPages: types.array(types.reference(PageInstanceModel)),
     })
     .views((self) => ({
-        get selectedPageObject() {
+        get selectedPageObject(): PageType | undefined {
             return self.editedPageObjects.find((po) => po.selected);
         },
     }))

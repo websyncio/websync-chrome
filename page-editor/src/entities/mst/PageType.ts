@@ -1,4 +1,5 @@
 import { types, Instance, destroy } from 'mobx-state-tree';
+import ComponentInstance from './ComponentInstance';
 import { ComponentsContainerModel } from './ComponentsContainer';
 
 export const PageTypeModel = types

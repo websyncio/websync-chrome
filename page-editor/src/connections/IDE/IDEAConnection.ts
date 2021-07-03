@@ -28,13 +28,29 @@ export default class IDEAConnection implements IIdeConnection {
         return IDEAConnection._inst;
     }
 
-    updateComponentInstance(projectName: string, component: ComponentInstance) {
+    updateComponentInstance(projectName: string, componentInstance: ComponentInstance) {
         const message = {
-            projectName: projectName,
             type: 'update-component-instance',
-            data: component,
+            projectName,
+            componentInstance,
         };
         this.connection.send(message);
+    }
+
+    addComponentInstance(projectName: string, componentInstance: ComponentInstance) {
+        this.connection.send({
+            type: 'add-component-instance',
+            projectName,
+            componentInstance,
+        });
+    }
+
+    deleteComponentInstance(projectName: string, componentInstance: ComponentInstance) {
+        this.connection.send({
+            type: 'delete-component-instance',
+            projectName,
+            componentInstance,
+        });
     }
 
     updateWebSite(projectName: string, webSite: WebSite) {
@@ -67,13 +83,13 @@ export default class IDEAConnection implements IIdeConnection {
     }
 
     requestProjects() {
-        this.connection.send({ type: 'get-projects' });
+        this.connection.send({ type: 'get-projects-list' });
     }
 
     requestProjectData(projectName: string) {
         this.connection.send({
             type: 'get-project',
-            moduleName: projectName,
+            projectName,
         });
     }
 
@@ -89,7 +105,7 @@ export default class IDEAConnection implements IIdeConnection {
 
     onMessage(message) {
         switch (message.type) {
-            case 'get-projects-response':
+            case 'get-projects-list-response':
                 this.onProjectsReceived(message.data);
                 break;
             case 'get-project-response':
@@ -100,10 +116,10 @@ export default class IDEAConnection implements IIdeConnection {
                 // return this.props.onSelectedPageChange(null, message.className);
                 break;
             case 'update-component':
-                RootStore.projectStore.updateComponentType(message.data);
+                RootStore.projectStore.updateComponentType(message.componentType);
                 return;
             case 'update-page':
-                RootStore.projectStore.updatePageType(message.data);
+                RootStore.projectStore.updatePageType(message.pageType);
                 return;
             default:
                 console.log('unknown message type, ignored: ', message);

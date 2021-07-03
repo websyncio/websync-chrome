@@ -1,3 +1,46 @@
+//============================================================================================
+//   Check booking status
+//============================================================================================
+// setInterval(checkStatus, 60000);
+
+// function checkStatus(){
+//   var requestBody = {
+//    "pnr_locator":"VSITNI",
+//    "lang":"ru",
+//    "source":"PNR",
+//    "pnr_key":"affbd9a20cac40637ef4e4a5c8339991a3c6f6119f880cd396a2a5c083780a98f321cc53960c51525ee028a83a5f44161764f00fa16448677cc8934bf2986f45"
+//   };
+
+//   fetch("https://www.aeroflot.ru/sb/booking/api/app/payment_info_by_pnr/v1",{
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json;charset=utf-8'
+//     },
+//     body: JSON.stringify(requestBody)
+//   })
+//   .then(response=>response.json())
+//   .then(json=>showStatus(json));
+// }
+
+// function showStatus(response){
+//   console.log(response);
+//   let isPaid = response.data.order_status_name==="Оплачен" && response.data.tickets_status_name==="Выпущены";
+//   if(isPaid){
+//     console.log('Booking is paid.');
+//   }else{
+//     console.log('Booking is NOT paid.');
+//     for(let tabId in connections){
+//       let tabConnections = connections[tabId];
+//       let contentConnection = tabConnections[Sources.Content];
+//       if(contentConnection){
+//         contentConnection.postMessage({
+//           type: 'tickets-unpdaid'
+//         });
+//       }
+//     }
+//   }
+// }
+
 
 // function injectContentScript(tabId, callback){
 //   chrome.tabs.executeScript(tabId, {

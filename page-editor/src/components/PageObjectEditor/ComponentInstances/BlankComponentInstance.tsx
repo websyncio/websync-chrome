@@ -7,12 +7,15 @@ import { DependencyContainer, TYPES } from 'inversify.config';
 import ISelectorsBagService from 'services/ISelectorsBagService';
 import SelectorHighlighter from 'services/SelectorHighlighterService';
 import XcssSelector from 'entities/XcssSelector';
+import ISynchronizationService from 'services/ISynchronizationService';
+import ComponentInstance from 'entities/mst/ComponentInstance';
 
 const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
-    ({ component, caretPosition, onSelected, onSelectNext, onSelectPrevious }) => {
+    ({ component, caretPosition, onSelected: onSelect, onSelectNext, onSelectPrevious }) => {
         const [isDeleted, setIsDeleted] = useState(false);
         const [isAllSet, setIsAllSet] = useState(!!component.typeName.length && !!component.fieldName.length);
         const selectorBagService = DependencyContainer.get<ISelectorsBagService>(TYPES.SelectorsBagService);
+        const synchronizationService = DependencyContainer.get<ISynchronizationService>(TYPES.SynchronizationService);
         const selectorHighlighter: SelectorHighlighter = DependencyContainer.get<SelectorHighlighter>(
             TYPES.SelectorHighlighter,
         );
@@ -20,14 +23,9 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
         useLayoutEffect(() => {
             if (isDeleted) {
                 // .delete after animation completed
-                setTimeout(() => component.delete(), 300);
+                setTimeout(() => selectorBagService.deleteComponent(component), 300);
             }
         }, [isDeleted]);
-
-        function onDeleted() {
-            selectorBagService.deleteComponent(component);
-            setIsDeleted(true);
-        }
 
         function onChange(componentTypeName: string, componentFieldName: string) {
             if (component.typeName !== componentTypeName) {
@@ -47,7 +45,9 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
             setIsAllSet(!!componentTypeName.length && !!componentFieldName.length);
         }
 
-        function addComponent(e) {
+        function onTakeComponent(e) {
+            synchronizationService.addComponentInstance(component);
+            selectorBagService.deleteComponent(component);
             e.stopPropagation();
         }
 
@@ -65,14 +65,14 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
                 className={`component-instance blank-component
                     ${component.selected ? 'selected' : ''} 
                     ${isDeleted ? 'deleted' : ''}`}
-                onClick={onSelected}
+                onClick={onSelect}
             >
                 <span className="body-wrap">
                     <TypeNameEditor
                         component={component}
                         showPlaceholders={true}
                         initialCaretPosition={caretPosition}
-                        onDeleted={onDeleted}
+                        onDelete={() => setIsDeleted(true)}
                         onSelectNext={onSelectNext}
                         onSelectPrevious={onSelectPrevious}
                         onChange={onChange}
@@ -89,7 +89,7 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
                     <span
                         className={`add-component-button action-button ${isAllSet ? 'active' : ''}`}
                         title={`${isAllSet ? 'Add component to page object (Ctrl+Enter)' : 'Specify type and name'}`}
-                        onClick={addComponent}
+                        onClick={onTakeComponent}
                     >
                         Take
                     </span>
