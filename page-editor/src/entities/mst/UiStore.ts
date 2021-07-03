@@ -4,6 +4,7 @@ import { PageTypeModel } from './PageType';
 import PageInstance, { PageInstanceModel } from './PageInstance';
 import PageType from 'entities/mst/PageType';
 import ComponentInstance, { ComponentInstanceModel } from 'entities/mst/ComponentInstance';
+import ComponentsContainer from './ComponentsContainer';
 
 export const UiStoreModel = types
     .model({
@@ -18,7 +19,7 @@ export const UiStoreModel = types
         matchedPages: types.array(types.reference(PageInstanceModel)),
     })
     .views((self) => ({
-        get selectedPageObject(): PageType | undefined {
+        get selectedPageObject(): ComponentsContainer | undefined {
             return self.editedPageObjects.find((po) => po.selected);
         },
     }))

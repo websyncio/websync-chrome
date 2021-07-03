@@ -9,6 +9,8 @@ import SelectorHighlighter from 'services/SelectorHighlighterService';
 import XcssSelector from 'entities/XcssSelector';
 import ISynchronizationService from 'services/ISynchronizationService';
 import ComponentInstance from 'entities/mst/ComponentInstance';
+import { useRootStore } from 'context';
+import RootStore from 'entities/mst/RootStore';
 
 const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
     ({ component, caretPosition, onSelected: onSelect, onSelectNext, onSelectPrevious }) => {
@@ -19,6 +21,7 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
         const selectorHighlighter: SelectorHighlighter = DependencyContainer.get<SelectorHighlighter>(
             TYPES.SelectorHighlighter,
         );
+        const { uiStore }: RootStore = useRootStore();
 
         useLayoutEffect(() => {
             if (isDeleted) {
@@ -46,6 +49,11 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
         }
 
         function onTakeComponent(e) {
+            console.log('Take component', component);
+            if (!uiStore.selectedPageObject) {
+                throw new Error('No selected page object.');
+            }
+            component.setParent(uiStore.selectedPageObject);
             synchronizationService.addComponentInstance(component);
             selectorBagService.deleteComponent(component);
             e.stopPropagation();

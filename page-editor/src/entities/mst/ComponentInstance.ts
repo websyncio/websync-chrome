@@ -1,5 +1,6 @@
 import { types, Instance, getParentOfType } from 'mobx-state-tree';
 import { AttributeModel } from './Attribute';
+import ComponentsContainer from './ComponentsContainer';
 import { PageTypeModel } from './PageType';
 import { SelectableModel } from './Selectable';
 
@@ -8,6 +9,8 @@ export const ComponentInstanceModel = types.compose(
     types
         .model({
             id: types.identifier,
+            parentId: types.string,
+            fieldIndex: types.number,
             // try to fix - https://mobx-state-tree.js.org/tips/circular-deps
             componentType: types.string, //.maybe(types.reference(types.late(() => ComponentTypeModel))),
             fieldName: types.string,
@@ -51,9 +54,12 @@ export const ComponentInstanceModel = types.compose(
         }))
         .actions((self) => ({
             setComponentTypeName(newComponentTypeName) {
-                const typeNamespace = self.componentType.substring(0, self.componentType.lastIndexOf('.'));
+                let typeNamespace = '';
+                if (self.componentType) {
+                    typeNamespace = self.componentType.substring(0, self.componentType.lastIndexOf('.')).trim();
+                }
                 console.log('typeNamespace', typeNamespace);
-                self.componentType = typeNamespace + '.' + newComponentTypeName;
+                self.componentType = typeNamespace ? typeNamespace + '.' + newComponentTypeName : newComponentTypeName;
             },
             setFieldName(newFieldName) {
                 self.fieldName = newFieldName;
@@ -77,6 +83,9 @@ export const ComponentInstanceModel = types.compose(
             delete() {
                 const pageType = getParentOfType(self, PageTypeModel);
                 pageType.deleteComponentInstance(self);
+            },
+            setParent(componentsContainer: ComponentsContainer) {
+                self.parentId = componentsContainer.id;
             },
         })),
 );

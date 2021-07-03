@@ -16,6 +16,9 @@ export const ComponentsContainerModel = types
             const arr = self.id.split('.');
             return arr[arr.length - 1];
         },
+        getComponentInstance(componentId) {
+            return self.componentsInstances.find((ci) => ci.id == componentId);
+        },
     }))
     .actions((self) => ({
         addComponentInstance(component: ComponentInstance) {
