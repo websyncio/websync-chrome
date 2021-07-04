@@ -48,7 +48,7 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
             setIsAllSet(!!componentTypeName.length && !!componentFieldName.length);
         }
 
-        function onTakeComponent(e) {
+        function takeComponent() {
             console.log('Take component', component);
             if (!uiStore.selectedPageObject) {
                 throw new Error('No selected page object.');
@@ -56,6 +56,10 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
             component.setParent(uiStore.selectedPageObject);
             synchronizationService.addComponentInstance(component);
             selectorBagService.deleteComponent(component);
+        }
+
+        function onTakeComponentClick(e) {
+            takeComponent();
             e.stopPropagation();
         }
 
@@ -68,12 +72,21 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
             selectorHighlighter.removeHighlighting();
         }
 
+        function onKeyDown(e) {
+            const isEnter = e.key == 'Enter';
+            if (isAllSet && e.ctrlKey && isEnter) {
+                takeComponent();
+                e.stopPropagation();
+            }
+        }
+
         return (
             <div
                 className={`component-instance blank-component
                     ${component.selected ? 'selected' : ''} 
                     ${isDeleted ? 'deleted' : ''}`}
                 onClick={onSelect}
+                onKeyDown={onKeyDown}
             >
                 <span className="body-wrap">
                     <TypeNameEditor
@@ -97,7 +110,7 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
                     <span
                         className={`add-component-button action-button ${isAllSet ? 'active' : ''}`}
                         title={`${isAllSet ? 'Add component to page object (Ctrl+Enter)' : 'Specify type and name'}`}
-                        onClick={onTakeComponent}
+                        onClick={onTakeComponentClick}
                     >
                         Take
                     </span>

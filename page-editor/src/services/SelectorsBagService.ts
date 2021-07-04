@@ -47,7 +47,8 @@ export class SelectorsBagService implements ISelectorsBagService {
     }
 
     deleteComponent(component: ComponentInstance) {
-        component.delete();
+        console.log('delete component from selectors bag');
+        RootStore.uiStore.deleteBlankComponent(component);
         this.updateSelectorsList();
     }
 

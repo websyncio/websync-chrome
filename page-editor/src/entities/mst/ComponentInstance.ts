@@ -1,4 +1,4 @@
-import { types, Instance, getParentOfType } from 'mobx-state-tree';
+import { types, Instance, getParentOfType, destroy } from 'mobx-state-tree';
 import { AttributeModel } from './Attribute';
 import ComponentsContainer from './ComponentsContainer';
 import { PageTypeModel } from './PageType';
@@ -81,8 +81,9 @@ export const ComponentInstanceModel = types.compose(
                 self.initializationAttribute.updateParameterValue(parameterName, parameterValueIndex, parameterValue);
             },
             delete() {
-                const pageType = getParentOfType(self, PageTypeModel);
-                pageType.deleteComponentInstance(self);
+                destroy(self);
+                // const pageType = getParentOfType(self, PageTypeModel);
+                // pageType.deleteComponentInstance(self);
             },
             setParent(componentsContainer: ComponentsContainer) {
                 self.parentId = componentsContainer.id;

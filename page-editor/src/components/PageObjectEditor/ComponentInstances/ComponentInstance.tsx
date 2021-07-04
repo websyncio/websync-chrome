@@ -55,7 +55,7 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
 
         function initializationAttribute(attribute: AttributeModel) {
             if (attribute) {
-                if (Object.values(GenericAttributes).includes(attribute.name as GenericAttributes)) {
+                if (Object.values(GenericAttributes).includes(attribute.shortName as GenericAttributes)) {
                     return (
                         <RootSelectorAttribute
                             attribute={component.initializationAttribute}
@@ -65,8 +65,9 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                             }}
                         />
                     );
+                } else {
+                    console.error('Unsupported type of initialization attribute', attribute);
                 }
-                console.error('Unsupported type of initialization attribute', attribute);
             }
         }
 

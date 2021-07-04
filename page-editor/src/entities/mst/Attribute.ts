@@ -6,7 +6,12 @@ export const AttributeModel = types
         name: types.string,
         parameters: types.array(ParameterModel),
     })
-    .views(() => ({}))
+    .views((self) => ({
+        get shortName() {
+            const lastDotIndex = self.name.lastIndexOf('.');
+            return self.name.substring(lastDotIndex + 1);
+        },
+    }))
     .actions((self) => ({
         updateParameterValue(name, parameterValueIndex, parameterValue) {
             const parameter = self.parameters.find((p) => p.name == name);

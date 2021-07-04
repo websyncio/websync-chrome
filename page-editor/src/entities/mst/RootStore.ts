@@ -1,4 +1,5 @@
 import { types, Instance } from 'mobx-state-tree';
+import ComponentInstance from './ComponentInstance';
 import { ProjectStoreModel } from './ProjectStore';
 import { UiStoreModel } from './UiStore';
 

@@ -85,6 +85,10 @@ export const UiStoreModel = types
                 })),
             );
         },
+        deleteBlankComponent(component: ComponentInstance) {
+            self.blankComponents.remove(component);
+            component.delete();
+        },
     }));
 
 export default interface UiStore extends Instance<typeof UiStoreModel> {}

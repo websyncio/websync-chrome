@@ -7,7 +7,7 @@ import { injectable } from 'inversify';
 @injectable()
 export default class JDIAttributeToXcssMapper implements IAttributeToXcssMapper {
     GetXcss(attribute: Attribute): XcssSelector {
-        const xcss: string = this.ConvertToXcss(attribute.name, attribute.parameters[0].values[0]);
+        const xcss: string = this.ConvertToXcss(attribute.shortName, attribute.parameters[0].values[0]);
         return new XcssSelector(xcss, null, null);
     }
 
