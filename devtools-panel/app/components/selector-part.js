@@ -16,11 +16,16 @@ export default Ember.Component.extend({
 	selectorInspector: Ember.inject.service(),
 	pluralizer: Ember.inject.service(),
 	isXPath: false,
+
 	init(){
 		this._super(...arguments);
 		if(!this.get('part.isBlank')){
 			this.validatePart();
 		}
+		this.set('intervalId', setInterval(this.validatePart.bind(this), 1000));
+	},
+	willDestroyElement(){
+		clearInterval(this.get('intervalId'));
 	},
 	menuActions: [
 		{ label: 'Delete part', action: 'deletePart' },
