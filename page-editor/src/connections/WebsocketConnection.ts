@@ -67,7 +67,7 @@ export default class IdeConnection {
     }
 
     onMessage(e) {
-        console.log('Message received:', e);
+        console.log('Message received:', e.data);
         try {
             const messageData = JSON.parse(e.data);
             this.reactor.dispatchEvent(Events.onmessage, messageData);

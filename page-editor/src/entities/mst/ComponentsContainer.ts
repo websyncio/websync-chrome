@@ -7,7 +7,6 @@ export const ComponentsContainerModel = types
         SelectableModel,
         types.model({
             id: types.identifier,
-            baseType: types.string, // types.maybe(types.reference(types.late(() => ComponentsContainerModel))),
             componentsInstances: types.array(ComponentInstanceModel),
         }),
     )

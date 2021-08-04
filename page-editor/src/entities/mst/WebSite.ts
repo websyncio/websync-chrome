@@ -9,7 +9,7 @@ export const WebSiteModel = types
         SelectableModel,
         types.model({
             id: types.identifier,
-            baseWebSite: types.maybe(types.reference(types.late(() => WebSiteModel))),
+            baseWebSite: types.maybeNull(types.reference(types.late(() => WebSiteModel))),
             url: types.string,
             pageInstances: types.array(PageInstanceModel),
         }),

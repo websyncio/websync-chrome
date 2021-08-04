@@ -27,6 +27,7 @@ export default class JDIAttributeToXcssMapper implements IAttributeToXcssMapper 
             case GenericAttributes.UI:
             case GenericAttributes.XPath:
             case GenericAttributes.Css:
+            case GenericAttributes.FindBy:
                 return attributeValue;
             case GenericAttributes.ByText:
                 return `['${attributeValue}']`;

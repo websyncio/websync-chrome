@@ -22,10 +22,10 @@ export default Ember.Component.extend({
 		if(!this.get('part.isBlank')){
 			this.validatePart();
 		}
-		this.set('intervalId', setInterval(this.validatePart.bind(this), 1000));
+		//this.set('intervalId', setInterval(this.validatePart.bind(this), 1000));
 	},
 	willDestroyElement(){
-		clearInterval(this.get('intervalId'));
+		//clearInterval(this.get('intervalId'));
 	},
 	menuActions: [
 		{ label: 'Delete part', action: 'deletePart' },

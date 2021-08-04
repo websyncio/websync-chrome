@@ -6,6 +6,7 @@ export const ComponentTypeModel = types
         ComponentsContainerModel,
         types.model({
             isCustom: types.boolean,
+            baseType: types.maybeNull(types.reference(types.late(() => ComponentTypeModel))),
         }),
     )
     .views((self) => ({

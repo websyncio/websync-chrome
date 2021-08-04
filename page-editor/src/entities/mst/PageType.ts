@@ -7,6 +7,7 @@ export const PageTypeModel = types
         ComponentsContainerModel,
         types.model({
             url: types.maybeNull(types.string),
+            baseType: types.maybeNull(types.reference(types.late(() => PageTypeModel))),
         }),
     )
     .actions((self) => ({

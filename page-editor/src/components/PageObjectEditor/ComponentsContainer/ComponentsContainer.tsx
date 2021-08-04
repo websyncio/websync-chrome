@@ -55,6 +55,21 @@ const ComponentsContainer: React.FC<Props> = observer(({ pageObject }) => {
         urlSynchroService.redirectToUrl(`${getWebsiteUrl(pageInstance)}${pageInstance.url}`);
     }
 
+    function baseComponents(pageObject: any) {
+        const baseType: IComponentsContainer = pageObject.baseType;
+        if (baseType) {
+            return (
+                <>
+                    {baseComponents(baseType)}
+                    <ComponentInstancesList
+                        componentInstances={baseType.componentsInstances}
+                        componentView={ComponentInstance}
+                    />
+                </>
+            );
+        }
+    }
+
     return (
         <div className="components-container">
             <div className="container-name">
@@ -73,6 +88,7 @@ const ComponentsContainer: React.FC<Props> = observer(({ pageObject }) => {
                     </div>
                 )}
             </div>
+            {baseComponents(pageObject)}
             <ComponentInstancesList
                 componentInstances={pageObject.componentsInstances}
                 componentView={ComponentInstance}
