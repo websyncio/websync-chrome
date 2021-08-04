@@ -59,8 +59,11 @@ body.ember-application>.ember-view{
 }
 
 #root.with-page-editor{
-	border-bottom: 1px solid #eee;
-	height: 200px;
+	position: absolute;
+    width: 40%;
+    right: 0;
+    border-left: 1px solid #ccc;
+    height: 100%;
 }
 
 #selectorsConverter{
@@ -931,4 +934,5 @@ i.remove-root:hover{
 #pageEditor{
 	flex-grow: 1;
 	border-width: 0;
+	width: 60%;
 }
