@@ -53,7 +53,6 @@ export default Service.extend({
 	    this.requestSelectorEditorState();
 	},
 	receiveMessage(message){
-		console.log('page-editor-proxy received', message);
 		switch(message.type){
 			case MessageTypes.ValidateSelector:
 				this.validateSelector(message);

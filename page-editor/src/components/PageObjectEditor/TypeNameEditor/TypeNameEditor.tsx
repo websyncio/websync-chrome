@@ -40,7 +40,7 @@ const TypeNameEditor: React.FC<Props> = observer(
         let popper: any;
 
         useLayoutEffect(() => {
-            console.log('TypeNameEditor first render');
+            console.log('TypeNameEditor first render', component.fieldName);
             popper = createPopper(typeRef.current, popupRef.current, {
                 placement: 'bottom-start',
                 strategy: 'fixed',
@@ -154,7 +154,7 @@ const TypeNameEditor: React.FC<Props> = observer(
 
         useLayoutEffect(() => {
             if (isActive(typeRef.current) || isActive(nameRef.current)) {
-                console.log('set actual caret position: ' + actualCaretPosition);
+                console.log('TypeNameEditor. Set actual caret position: ' + actualCaretPosition);
                 setCaretPosition(actualCaretPosition, showSpace);
                 component.select();
             }

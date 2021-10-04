@@ -451,10 +451,8 @@ export default Ember.Controller.extend({
 
 		console.log('selector editor state changed. isAuxilliary: ' + this.get('withPageEditor'), state);
 		if(this.isEditedComponentUpdated(editedComponent, state.editedComponent)){
-			debugger;
 			this.onEditComponentSelector(state.editedComponent);
 		}else if(inputValue!=state.inputValue){
-			debugger;
 			this.setInputValue(state.inputValue);
 		}
 	},

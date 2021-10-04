@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import ComponentInstanceProps from 'components/PageObjectEditor/ComponentInstances/ComponentInstanceProps';
 import { observer } from 'mobx-react';
 import './ComponentInstancesList.sass';
@@ -15,6 +15,11 @@ interface Props {
 const ComponentInstancesList: React.FC<Props> = observer(
     ({ componentInstances, componentView: ComponentView, onSelectPrevious, onSelectNext }) => {
         const [caretPosition, setCaretPosition] = useState<number | null>(0);
+
+        useLayoutEffect(() => {
+            console.log('ComponentInstancesList is rerendered. caretPosition: ' + caretPosition);
+        });
+
         // function onRename(event, component) {
         //     if (event.target.contentEditable === true) {
         //         event.target.contentEditable = false;

@@ -11,15 +11,27 @@ import { useRootStore } from 'context';
 import './ComponentsContainer.sass';
 import { DependencyContainer, TYPES } from 'inversify.config';
 import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
+import { useState } from 'react';
 
 interface Props {
     ideProxy: IIdeProxy;
     pageObject: IComponentsContainer;
 }
 
+enum ComponentInstancesListName {
+    PageObjectComponents,
+    BlankComponents,
+}
+
 const ComponentsContainer: React.FC<Props> = observer(({ pageObject }) => {
     const { uiStore, projectStore }: RootStore = useRootStore();
-    const urlSynchroService = DependencyContainer.get<IUrlSynchronizationService>(TYPES.UrlSynchronizationService);
+    const urlSynchronizationService = DependencyContainer.get<IUrlSynchronizationService>(
+        TYPES.UrlSynchronizationService,
+    );
+    const [selectedComponentInstancesList, setSelectedComponentInstancesList] = useState(
+        ComponentInstancesListName.PageObjectComponents,
+    );
+    const [selectedLineIndex, setSelectedLineIndex] = useState(0);
 
     function selectComponent(components: IComponentInstance[], index: number) {
         components.forEach((c, i) => {
@@ -31,7 +43,7 @@ const ComponentsContainer: React.FC<Props> = observer(({ pageObject }) => {
         });
     }
 
-    selectComponent(pageObject.componentsInstances, 0);
+    selectComponent(pageObject.componentsInstances, selectedLineIndex);
     selectComponent(uiStore.blankComponents, -1);
 
     function selectFirstBlankComponent(): boolean {
@@ -52,7 +64,7 @@ const ComponentsContainer: React.FC<Props> = observer(({ pageObject }) => {
     }
 
     function redirectToUrl(pageInstance) {
-        urlSynchroService.redirectToUrl(`${getWebsiteUrl(pageInstance)}${pageInstance.url}`);
+        urlSynchronizationService.redirectToUrl(`${getWebsiteUrl(pageInstance)}${pageInstance.url}`);
     }
 
     function baseComponents(pageObject: any) {

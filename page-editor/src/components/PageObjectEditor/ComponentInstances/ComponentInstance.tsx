@@ -17,9 +17,15 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
         const [hasError, setHasError] = useState(false);
         const [isDeleted, setIsDeleted] = useState(false);
 
+        const [randomValue, setRandomValue] = useState(Math.random());
+
         const selectorsBagService = DependencyContainer.get<SelectorsBagService>(TYPES.SelectorsBagService);
         const synchronizationService = DependencyContainer.get<ISynchronizationService>(TYPES.SynchronizationService);
         // const frameworkComponentsProvider = DependencyContainer.get<IFrameworkComponentsProvider>(TYPES.FrameworkComponentsProvider);
+
+        useLayoutEffect(() => {
+            console.log('Components state ' + component.fieldName + ': ' + randomValue);
+        });
 
         useLayoutEffect(() => {
             if (isDeleted) {
