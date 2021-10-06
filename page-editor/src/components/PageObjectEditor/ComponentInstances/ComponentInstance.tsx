@@ -13,19 +13,21 @@ import './ComponentInstance.sass';
 import ISynchronizationService from 'services/ISynchronizationService';
 
 const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
-    ({ component, index, caretPosition, onSelected, onSelectNext, onSelectPrevious }) => {
+    ({
+        component,
+        isSelected,
+        index,
+        initialCaretPosition: caretPosition,
+        onSelectedStateChange,
+        onSelectNext,
+        onSelectPrevious,
+    }) => {
         const [hasError, setHasError] = useState(false);
         const [isDeleted, setIsDeleted] = useState(false);
-
-        const [randomValue, setRandomValue] = useState(Math.random());
 
         const selectorsBagService = DependencyContainer.get<SelectorsBagService>(TYPES.SelectorsBagService);
         const synchronizationService = DependencyContainer.get<ISynchronizationService>(TYPES.SynchronizationService);
         // const frameworkComponentsProvider = DependencyContainer.get<IFrameworkComponentsProvider>(TYPES.FrameworkComponentsProvider);
-
-        useLayoutEffect(() => {
-            console.log('Components state ' + component.fieldName + ': ' + randomValue);
-        });
 
         useLayoutEffect(() => {
             if (isDeleted) {
@@ -87,10 +89,10 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
         return (
             <div
                 className={`component-instance 
-                    ${component.selected ? 'selected' : ''} 
+                    ${isSelected ? 'selected' : ''} 
                     ${hasError ? 'has-error' : ''} 
                     ${isDeleted ? 'deleted' : ''}`}
-                onClick={onSelected}
+                onClick={() => onSelectedStateChange(true)}
             >
                 <span className="line-prefix">
                     <svg className="error-icon" width="14" height="14" viewBox="0 0 20 20" fill="red">
@@ -101,8 +103,10 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                 <span className="body-wrap">
                     <TypeNameEditor
                         component={component}
+                        isSelected={isSelected}
                         showPlaceholders={false}
                         initialCaretPosition={caretPosition}
+                        onSelectedStateChange={onSelectedStateChange}
                         onDelete={() => setIsDeleted(true)}
                         onSelectNext={onSelectNext}
                         onSelectPrevious={onSelectPrevious}

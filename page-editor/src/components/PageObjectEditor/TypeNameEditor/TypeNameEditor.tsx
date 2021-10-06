@@ -10,8 +10,10 @@ import './TypeNameEditor.sass';
 interface Props {
     component: ComponentInstanceModel;
     showPlaceholders: boolean;
+    isSelected: boolean;
     initialCaretPosition: number | null;
     onDelete: () => void;
+    onSelectedStateChange: (isSelected: boolean) => void;
     onSelectNext: (caretPosition: number) => boolean;
     onSelectPrevious: (caretPosition: number) => boolean;
     onChange: (componentType: string, componentName: string) => void;
@@ -21,8 +23,10 @@ const TypeNameEditor: React.FC<Props> = observer(
     ({
         component,
         showPlaceholders,
+        isSelected,
         initialCaretPosition,
-        onDelete: onDeleted,
+        onDelete,
+        onSelectedStateChange: onSelectedStateChange,
         onSelectNext,
         onSelectPrevious,
         onChange,
@@ -156,12 +160,12 @@ const TypeNameEditor: React.FC<Props> = observer(
             if (isActive(typeRef.current) || isActive(nameRef.current)) {
                 console.log('TypeNameEditor. Set actual caret position: ' + actualCaretPosition);
                 setCaretPosition(actualCaretPosition, showSpace);
-                component.select();
+                onSelectedStateChange(true);
             }
         });
 
         useLayoutEffect(() => {
-            if (component.selected) {
+            if (isSelected) {
                 if (!isActive(typeRef.current) && !isActive(nameRef.current)) {
                     const caretPosition = initialCaretPosition == null ? getFullLength() : initialCaretPosition;
                     console.log(
@@ -176,10 +180,10 @@ const TypeNameEditor: React.FC<Props> = observer(
                 }
             } else {
                 if (!showPlaceholders && !typeRef.current.textContent && !nameRef.current.textContent) {
-                    onDeleted(); //setIsDeleted(true);
+                    onDelete(); //setIsDeleted(true);
                 }
             }
-        }, [component.selected]);
+        }, [isSelected]);
 
         function deleteSpace(caretShift = 0) {
             setShowSpace(false);
@@ -439,6 +443,7 @@ const TypeNameEditor: React.FC<Props> = observer(
         function onKeyDown(e) {
             if (!e.altKey && !e.ctrlKey && !e.shiftKey) {
                 if (e.key == 'ArrowDown') {
+                    console.log('TypeNameEditor. ArrowDown');
                     if (onSelectNext(getCaretPosition())) {
                         typeRef.current.contentEditable = false;
                         nameRef.current.contentEditable = false;
@@ -467,8 +472,17 @@ const TypeNameEditor: React.FC<Props> = observer(
         function onBlur(event) {
             event.target.contentEditable = false;
             if (!isActive(typeRef.current) && !isActive(nameRef.current)) {
-                component.deselect();
+                console.log('Deselect blurred component', window.document.activeElement);
+                onSelectedStateChange(false);
+                // component.deselect();
             }
+        }
+
+        function onFocus(event) {
+            // if (isActive(typeRef.current) || isActive(nameRef.current)) {
+            //     console.log("Select focused component", window.document.activeElement);
+            //     onSelectedStateChange(true);
+            // }
         }
 
         function togglePopup() {
@@ -518,6 +532,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                     onMouseDown={(e) => makeNonEditable(e.target)}
                     onClick={(e) => onEditableClick(e.target)}
                     onBlur={onBlur}
+                    onFocus={onFocus}
                 >
                     {component.typeName}
                 </span>
@@ -555,6 +570,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                         onKeyDown={onNameKeyDown}
                         onKeyUp={(e) => onAttributeChange(e, setShowNamePlaceholder)}
                         onBlur={onBlur}
+                        onFocus={onFocus}
                         onMouseDown={(e) => makeNonEditable(e.target)}
                         onClick={(e) => onEditableClick(e.target)}
                     >

@@ -3,9 +3,10 @@ import IComponentInstance from 'entities/mst/ComponentInstance';
 
 export default interface ComponentInstanceProps {
     component: IComponentInstance;
+    isSelected: boolean;
     index: number;
-    caretPosition: number | null;
-    onSelected: () => void;
+    initialCaretPosition: number | null;
+    onSelectedStateChange: (isSelected: boolean) => void;
     onSelectNext: (caretPosition: number) => boolean;
     onSelectPrevious: (caretPosition: number) => boolean;
 }

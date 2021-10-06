@@ -6,6 +6,8 @@ import IComponentsContainer from 'entities/mst/ComponentsContainer';
 // import ComponentInstancesList from './ComponentInstancesList';
 import IIdeProxy from 'connections/IDE/IIdeConnection';
 import ComponentsContainer from './ComponentsContainer/ComponentsContainer';
+import { useRootStore } from 'context';
+import RootStore from 'entities/mst/RootStore';
 
 interface Props {
     ideProxy: IIdeProxy;
@@ -13,10 +15,13 @@ interface Props {
 }
 
 const PageObjectEditor: React.FC<Props> = observer(({ ideProxy, pageObject }) => {
-    // const { projectStore, uiStore }: RootStore = useRootStore();
+    const { projectStore, uiStore }: RootStore = useRootStore();
     return (
         <div id="pageObjectEditor" className="flex-auto">
             <ComponentsContainer ideProxy={ideProxy} pageObject={pageObject} />
+            <div>
+                {uiStore.editorSelectedLineIndex}-{uiStore.editorCaretPosition}
+            </div>
         </div>
     );
 });

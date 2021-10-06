@@ -17,6 +17,8 @@ export const UiStoreModel = types
         // selectedPageType: types.safeReference(PageTypeModel),s
         blankComponents: types.array(ComponentInstanceModel),
         matchedPages: types.array(types.reference(PageInstanceModel)),
+        editorSelectedLineIndex: types.optional(types.number, 0),
+        editorCaretPosition: types.optional(types.number, 0),
     })
     .views((self) => ({
         get selectedPageObject(): ComponentsContainer | undefined {
@@ -24,6 +26,12 @@ export const UiStoreModel = types
         },
     }))
     .actions((self) => ({
+        setEditorSelectedLineIndex(lineIndex: number) {
+            self.editorSelectedLineIndex = lineIndex;
+        },
+        setEditorCaretPosition(caretPosition: number) {
+            self.editorCaretPosition = caretPosition;
+        },
         // setSelectedPageType(pageType: PageType | undefined) {
         //     self.selectedPageType = pageType;
         // },

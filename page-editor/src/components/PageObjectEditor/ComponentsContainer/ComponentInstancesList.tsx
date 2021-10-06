@@ -4,20 +4,38 @@ import { observer } from 'mobx-react';
 import './ComponentInstancesList.sass';
 import IComponentInstance from 'entities/mst/ComponentInstance';
 import { useState } from 'react';
+import { useRootStore } from 'context';
+import RootStore from 'entities/mst/RootStore';
 
 interface Props {
+    isActive: boolean;
     componentInstances: IComponentInstance[];
     componentView: React.ComponentType<ComponentInstanceProps>;
+    onActiveStateChange?: (isActive: boolean) => void;
     onSelectNext?: () => boolean;
     onSelectPrevious?: () => boolean;
 }
 
 const ComponentInstancesList: React.FC<Props> = observer(
-    ({ componentInstances, componentView: ComponentView, onSelectPrevious, onSelectNext }) => {
-        const [caretPosition, setCaretPosition] = useState<number | null>(0);
+    ({
+        isActive: isActive,
+        componentInstances,
+        componentView: ComponentView,
+        onActiveStateChange,
+        onSelectPrevious,
+        onSelectNext,
+    }) => {
+        // const [selectedLineIndex, setSelectedComponentIndex] = useState(0);
+        // const [caretPosition, setCaretPosition] = useState<number | null>(0);
+        const { uiStore }: RootStore = useRootStore();
 
         useLayoutEffect(() => {
-            console.log('ComponentInstancesList is rerendered. caretPosition: ' + caretPosition);
+            console.log(
+                'ComponentInstancesList is rerendered. caretPosition: ' +
+                    uiStore.editorCaretPosition +
+                    ', isActive: ' +
+                    isActive,
+            );
         });
 
         // function onRename(event, component) {
@@ -72,18 +90,19 @@ const ComponentInstancesList: React.FC<Props> = observer(
         //     component.id = component.id.substring(0, lastDot + 1) + newName;
         // }
 
-        function onComponentSelected(component: IComponentInstance) {
-            setCaretPosition(null);
-            component.select();
-            componentInstances.forEach((c) => {
-                if (c !== component) {
-                    c.deselect();
-                }
-            });
+        function onSelectComponent(isSelected: boolean, component: IComponentInstance) {
+            const componentLineIndex = componentInstances.indexOf(component);
+            if (isSelected) {
+                onActiveStateChange && onActiveStateChange(true);
+                uiStore.setEditorSelectedLineIndex(componentLineIndex);
+            } else if (uiStore.editorSelectedLineIndex == componentLineIndex) {
+                onActiveStateChange && onActiveStateChange(false);
+                uiStore.setEditorSelectedLineIndex(-1);
+            }
         }
 
         function selectComponent(component: IComponentInstance, shift: number, caretPosition: number): boolean {
-            setCaretPosition(caretPosition);
+            uiStore.setEditorCaretPosition(caretPosition);
             const index = componentInstances.indexOf(component);
             const newIndex = index + shift;
             // .first or last line
@@ -100,32 +119,30 @@ const ComponentInstancesList: React.FC<Props> = observer(
                 return false;
             }
             // .select next component
-            componentInstances.forEach((c, i) => {
-                if (i == newIndex) {
-                    c.select();
-                } else {
-                    c.deselect();
-                }
-            });
+            console.log('ComponentInstancesList. Select component, lineIndex: ' + newIndex);
+            uiStore.setEditorSelectedLineIndex(newIndex);
+            //setSelectedComponentIndex(index);
+            // componentInstances.forEach((c, i) => {
+            //     if (i == newIndex) {
+            //         c.select();
+            //     } else {
+            //         c.deselect();
+            //     }
+            // });
             return true;
-        }
-
-        function onComponentKeyDown(e, component) {
-            if (!e.altKey && !e.ctrlKey && !e.shiftKey) {
-                console.log('onComponentKeyDown', component);
-            }
         }
 
         return (
             <div className="components-tree">
                 <ul>
-                    {componentInstances.map((component, index) => [
-                        <li key={component.id} onKeyDown={(e) => onComponentKeyDown(e, component)}>
+                    {componentInstances.map((component, lineIndex) => [
+                        <li key={component.id}>
                             <ComponentView
                                 component={component}
-                                index={index + 1}
-                                caretPosition={caretPosition}
-                                onSelected={() => onComponentSelected(component)}
+                                isSelected={isActive && uiStore.editorSelectedLineIndex === lineIndex}
+                                index={lineIndex + 1}
+                                initialCaretPosition={uiStore.editorCaretPosition}
+                                onSelectedStateChange={(isSelected) => onSelectComponent(isSelected, component)}
                                 onSelectNext={(caretPosition) => {
                                     return selectComponent(component, 1, caretPosition);
                                 }}

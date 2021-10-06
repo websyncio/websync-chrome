@@ -13,7 +13,7 @@ import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
 
 const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
-    ({ component, caretPosition, onSelected: onSelect, onSelectNext, onSelectPrevious }) => {
+    ({ component, isSelected, initialCaretPosition, onSelectedStateChange, onSelectNext, onSelectPrevious }) => {
         const [isDeleted, setIsDeleted] = useState(false);
         const [isAllSet, setIsAllSet] = useState(!!component.typeName.length && !!component.fieldName.length);
         const selectorBagService = DependencyContainer.get<ISelectorsBagService>(TYPES.SelectorsBagService);
@@ -83,16 +83,18 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
         return (
             <div
                 className={`component-instance blank-component
-                    ${component.selected ? 'selected' : ''} 
+                    ${isSelected ? 'selected' : ''} 
                     ${isDeleted ? 'deleted' : ''}`}
-                onClick={onSelect}
+                onClick={() => onSelectedStateChange(true)}
                 onKeyDown={onKeyDown}
             >
                 <span className="body-wrap">
                     <TypeNameEditor
                         component={component}
+                        isSelected={isSelected}
+                        onSelectedStateChange={onSelectedStateChange}
                         showPlaceholders={true}
-                        initialCaretPosition={caretPosition}
+                        initialCaretPosition={initialCaretPosition}
                         onDelete={() => setIsDeleted(true)}
                         onSelectNext={onSelectNext}
                         onSelectPrevious={onSelectPrevious}

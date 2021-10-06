@@ -12,13 +12,15 @@ import './ComponentsContainer.sass';
 import { DependencyContainer, TYPES } from 'inversify.config';
 import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
 import { useState } from 'react';
+import { useEffect } from 'react';
 
 interface Props {
     ideProxy: IIdeProxy;
     pageObject: IComponentsContainer;
 }
 
-enum ComponentInstancesListName {
+enum ListType {
+    Undefined,
     PageObjectComponents,
     BlankComponents,
 }
@@ -28,33 +30,41 @@ const ComponentsContainer: React.FC<Props> = observer(({ pageObject }) => {
     const urlSynchronizationService = DependencyContainer.get<IUrlSynchronizationService>(
         TYPES.UrlSynchronizationService,
     );
-    const [selectedComponentInstancesList, setSelectedComponentInstancesList] = useState(
-        ComponentInstancesListName.PageObjectComponents,
-    );
-    const [selectedLineIndex, setSelectedLineIndex] = useState(0);
+    const [activeList, setActiveList] = useState(ListType.PageObjectComponents);
 
-    function selectComponent(components: IComponentInstance[], index: number) {
-        components.forEach((c, i) => {
-            if (i == index) {
-                c.select();
-            } else {
-                c.deselect();
-            }
-        });
-    }
+    // function selectComponent(components: IComponentInstance[], index: number) {
+    //     components.forEach((c, i) => {
+    //         if (i == index) {
+    //             c.select();
+    //         } else {
+    //             c.deselect();
+    //         }
+    //     });
+    // }
 
-    selectComponent(pageObject.componentsInstances, selectedLineIndex);
-    selectComponent(uiStore.blankComponents, -1);
+    useEffect(function () {
+        console.log('ComponentsContainer. Rerendered');
+    });
 
     function selectFirstBlankComponent(): boolean {
-        selectComponent(pageObject.componentsInstances, -1);
-        selectComponent(uiStore.blankComponents, 0);
+        setActiveList(ListType.BlankComponents);
+        uiStore.setEditorSelectedLineIndex(0);
+        console.log(
+            'ComponentsContainer. LineIndex: ' + uiStore.editorSelectedLineIndex + ', activeList: ' + activeList,
+        );
+        // selectComponent(pageObject.componentsInstances, -1);
+        // selectComponent(uiStore.blankComponents, 0);
         return true;
     }
 
     function selectLastComponentInstance(): boolean {
-        selectComponent(pageObject.componentsInstances, pageObject.componentsInstances.length - 1);
-        selectComponent(uiStore.blankComponents, -1);
+        setActiveList(ListType.PageObjectComponents);
+        uiStore.setEditorSelectedLineIndex(pageObject.componentsInstances.length - 1);
+        console.log(
+            'ComponentsContainer. LineIndex: ' + uiStore.editorSelectedLineIndex + ', activeList: ' + activeList,
+        );
+        // selectComponent(pageObject.componentsInstances, pageObject.componentsInstances.length - 1);
+        // selectComponent(uiStore.blankComponents, -1);
         return true;
     }
 
@@ -74,6 +84,7 @@ const ComponentsContainer: React.FC<Props> = observer(({ pageObject }) => {
                 <>
                     {baseComponents(baseType)}
                     <ComponentInstancesList
+                        isActive={false}
                         componentInstances={baseType.componentsInstances}
                         componentView={ComponentInstance}
                     />
@@ -102,8 +113,12 @@ const ComponentsContainer: React.FC<Props> = observer(({ pageObject }) => {
             </div>
             {baseComponents(pageObject)}
             <ComponentInstancesList
+                isActive={activeList === ListType.PageObjectComponents}
                 componentInstances={pageObject.componentsInstances}
                 componentView={ComponentInstance}
+                onActiveStateChange={(isActive) =>
+                    setActiveList(isActive ? ListType.PageObjectComponents : ListType.Undefined)
+                }
                 onSelectNext={selectFirstBlankComponent}
             />
             <div className="blank-components">
@@ -113,8 +128,12 @@ const ComponentsContainer: React.FC<Props> = observer(({ pageObject }) => {
                     Specify type and name, then click Take button or press Ctrl+Enter
                 </div>
                 <ComponentInstancesList
+                    isActive={activeList === ListType.BlankComponents}
                     componentInstances={uiStore.blankComponents}
                     componentView={BlankComponentInstance}
+                    onActiveStateChange={(isActive) =>
+                        setActiveList(isActive ? ListType.BlankComponents : ListType.Undefined)
+                    }
                     onSelectPrevious={selectLastComponentInstance}
                 />
             </div>
