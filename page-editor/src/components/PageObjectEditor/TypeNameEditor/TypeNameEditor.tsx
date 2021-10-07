@@ -6,6 +6,8 @@ import ComponentInstanceModel from 'entities/mst/ComponentInstance';
 import React, { RefObject, useEffect, useLayoutEffect, useState } from 'react';
 import ComponentTypeSelector from '../TypeSelector/ComponentTypeSelector';
 import './TypeNameEditor.sass';
+import RootStore from 'entities/mst/RootStore';
+import { useRootStore } from 'context';
 
 interface Props {
     component: ComponentInstanceModel;
@@ -31,6 +33,7 @@ const TypeNameEditor: React.FC<Props> = observer(
         onSelectPrevious,
         onChange,
     }) => {
+        const { uiStore, projectStore }: RootStore = useRootStore();
         const typePlaceholder = '<set type>';
         const namePlaceholder = '<set name>';
         const popupRef: any = React.createRef();
@@ -42,6 +45,8 @@ const TypeNameEditor: React.FC<Props> = observer(
         const [showNamePlaceholder, setShowNamePlaceholder] = useState(showPlaceholders && !component.fieldName.length);
         const [actualCaretPosition, setActualCaretPosition] = useState(0);
         let popper: any;
+
+        const matchingTypes = projectStore.componentTypes.filter((t) => t.name === component.typeName);
 
         useLayoutEffect(() => {
             console.log('TypeNameEditor first render', component.fieldName);
@@ -478,13 +483,6 @@ const TypeNameEditor: React.FC<Props> = observer(
             }
         }
 
-        function onFocus(event) {
-            // if (isActive(typeRef.current) || isActive(nameRef.current)) {
-            //     console.log("Select focused component", window.document.activeElement);
-            //     onSelectedStateChange(true);
-            // }
-        }
-
         function togglePopup() {
             setIsOpen(!isOpen);
         }
@@ -524,7 +522,7 @@ const TypeNameEditor: React.FC<Props> = observer(
         return (
             <span onKeyDown={onKeyDown}>
                 <span
-                    className={`trigger type-name`}
+                    className={`trigger type-name ${matchingTypes.length !== 1 ? 'error' : ''}`}
                     ref={typeRef}
                     spellCheck="false"
                     onKeyDown={onTypeKeyDown}
@@ -532,7 +530,6 @@ const TypeNameEditor: React.FC<Props> = observer(
                     onMouseDown={(e) => makeNonEditable(e.target)}
                     onClick={(e) => onEditableClick(e.target)}
                     onBlur={onBlur}
-                    onFocus={onFocus}
                 >
                     {component.typeName}
                 </span>
@@ -570,7 +567,6 @@ const TypeNameEditor: React.FC<Props> = observer(
                         onKeyDown={onNameKeyDown}
                         onKeyUp={(e) => onAttributeChange(e, setShowNamePlaceholder)}
                         onBlur={onBlur}
-                        onFocus={onFocus}
                         onMouseDown={(e) => makeNonEditable(e.target)}
                         onClick={(e) => onEditableClick(e.target)}
                     >
