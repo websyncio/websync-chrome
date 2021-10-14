@@ -74,24 +74,23 @@ const TypeNameEditor: React.FC<Props> = observer(
             };
         }, []);
 
+        useLayoutEffect(() => {
+            if (popper) {
+                console.log('popper.forceUpdate();');
+                popper.forceUpdate();
+            }
+        }, [isEditorPopupOpen]);
+
+        useEffect(() => {
+            console.log('TypeNameEditor rerendered. useEffect', component.fieldName);
+        });
+
         function makeEditable(element) {
             typeRef.current.contentEditable = element == typeRef.current;
             //spaceRef.current.contentEditable = element==spaceRef.current;
             nameRef.current.contentEditable = element == nameRef.current;
             element.focus();
         }
-
-        useLayoutEffect(() => {
-            if (popper) {
-                console.log('popper.forceUpdate();');
-                popper.forceUpdate();
-            }
-            // makeEditable(typeRef.current);
-        }, [isEditorPopupOpen]);
-
-        useEffect(() => {
-            console.log('TypeNameEditor rerendered. useEffect', component.fieldName);
-        });
 
         function getTypeLength(): number {
             return showTypePlaceholder ? typePlaceholder.length : typeRef.current.textContent.length;
