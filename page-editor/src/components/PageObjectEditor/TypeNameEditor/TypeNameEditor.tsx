@@ -4,10 +4,15 @@ import FocusTrap from 'focus-trap-react';
 import { observer } from 'mobx-react';
 import ComponentInstanceModel from 'entities/mst/ComponentInstance';
 import React, { RefObject, useEffect, useLayoutEffect, useState } from 'react';
-import ComponentTypeSelector from '../TypeSelector/ComponentTypeSelector';
+import EditorPopup from '../EditorPopup/EditorPopup';
 import './TypeNameEditor.sass';
 import RootStore from 'entities/mst/RootStore';
 import { useRootStore } from 'context';
+import { PopupContent } from 'semantic-ui-react';
+import { getNextIndex } from 'utils/IndexUtils';
+import IEditorPopupAction from '../EditorPopup/IEditorPopupAction';
+import { ProposedComponentTypeAction } from './ProposedComponentTypeAction';
+import ComponentType from 'entities/mst/ComponentType';
 
 interface Props {
     component: ComponentInstanceModel;
@@ -40,10 +45,12 @@ const TypeNameEditor: React.FC<Props> = observer(
         const typeRef: RefObject<any> = React.createRef();
         const nameRef: any = React.createRef();
         const [showSpace, setShowSpace] = useState(true);
-        const [isOpen, setIsOpen] = useState(false);
+        const [isEditorPopupOpen, setIsEditorPopupOpen] = useState(false);
         const [showTypePlaceholder, setShowTypePlaceholder] = useState(showPlaceholders && !component.typeName.length);
         const [showNamePlaceholder, setShowNamePlaceholder] = useState(showPlaceholders && !component.fieldName.length);
         const [actualCaretPosition, setActualCaretPosition] = useState(0);
+        const [editorPopupSelectedActionIndex, setEditorPopupSelectedActionIndex] = useState(0);
+        const [editorPopupActions, setEditorPopupActions] = useState<IEditorPopupAction[]>([]);
         let popper: any;
 
         const matchingTypes = projectStore.componentTypes.filter((t) => t.name === component.typeName);
@@ -57,7 +64,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                     {
                         name: 'offset',
                         options: {
-                            offset: [0, 2],
+                            offset: [-3, 1],
                         },
                     },
                 ],
@@ -67,14 +74,23 @@ const TypeNameEditor: React.FC<Props> = observer(
             };
         }, []);
 
-        useEffect(() => {
+        function makeEditable(element) {
+            typeRef.current.contentEditable = element == typeRef.current;
+            //spaceRef.current.contentEditable = element==spaceRef.current;
+            nameRef.current.contentEditable = element == nameRef.current;
+            element.focus();
+        }
+
+        useLayoutEffect(() => {
             if (popper) {
+                console.log('popper.forceUpdate();');
                 popper.forceUpdate();
             }
-        }, [isOpen]);
+            // makeEditable(typeRef.current);
+        }, [isEditorPopupOpen]);
 
         useEffect(() => {
-            console.log('TypeNameEditor rerendered', component.fieldName);
+            console.log('TypeNameEditor rerendered. useEffect', component.fieldName);
         });
 
         function getTypeLength(): number {
@@ -91,13 +107,6 @@ const TypeNameEditor: React.FC<Props> = observer(
 
         function isActive(element): boolean {
             return window.document.activeElement === element;
-        }
-
-        function makeEditable(element) {
-            typeRef.current.contentEditable = element == typeRef.current;
-            //spaceRef.current.contentEditable = element==spaceRef.current;
-            nameRef.current.contentEditable = element == nameRef.current;
-            element.focus();
         }
 
         function setElementCaretPosition(element, position: number) {
@@ -228,11 +237,58 @@ const TypeNameEditor: React.FC<Props> = observer(
             }
         }
 
+        function getValueBeforeCaret(elementRef) {
+            const caretPosition = getElementCaretPosition(elementRef.current);
+            return elementRef.current.textContent.substring(0, caretPosition);
+        }
+
+        function applySelectedComponent(componentType: ComponentType) {
+            console.log('apply selected component', componentType);
+        }
+
+        function generatePopupActionsForProposedComponents(
+            typeName: string,
+            frameworkComponentTypes: ComponentType[],
+            customComponentTypes: ComponentType[],
+            applySelectedComponent: (componenType: ComponentType) => void,
+        ): IEditorPopupAction[] {
+            function filterComponentTypes(allComponentTypes) {
+                if (!typeName) {
+                    return allComponentTypes;
+                }
+                const typeNameStartWith = allComponentTypes.filter((c) => c.name.startsWith(typeName));
+                allComponentTypes = allComponentTypes.filter((c) => !typeNameStartWith.includes(c));
+                const typeNameContainsExact = allComponentTypes.filter((c) => c.name.includes(typeName));
+                return typeNameStartWith.concat(typeNameContainsExact);
+            }
+            const filteredFrameworkCompopentTypes = filterComponentTypes(projectStore.frameworkComponentTypes);
+            const filteredCustomCompopentTypes = filterComponentTypes(projectStore.customComponentTypes);
+            const filteredComponentTypes = filteredFrameworkCompopentTypes.concat(filteredCustomCompopentTypes);
+
+            return filteredComponentTypes.map((c) => new ProposedComponentTypeAction(c, applySelectedComponent));
+        }
+
+        function showPopupWithProposedComponents(searchString: string) {
+            const editorPopupActions = generatePopupActionsForProposedComponents(
+                searchString,
+                projectStore.frameworkComponentTypes,
+                projectStore.customComponentTypes,
+                applySelectedComponent,
+            );
+            console.log('setEditorPopupSelectedActionIndex');
+            setEditorPopupSelectedActionIndex(0);
+            console.log('setEditorPopupActions');
+            setEditorPopupActions(editorPopupActions);
+            console.log('setIsEditorPopupOpen');
+            setIsEditorPopupOpen(true);
+        }
+
         function onTypeKeyDown(e) {
             const isLeftArrow = e.key == 'ArrowLeft';
             const isRightArrow = e.key == 'ArrowRight';
             const isDelete = e.key == 'Delete';
             const isBackspace = e.key == 'Backspace';
+            const isEnter = e.key == 'Enter';
             const typeLength = typeRef.current.textContent.length;
             const elementCaretPosition = getElementCaretPosition(e.target);
             const isStart = elementCaretPosition == 0;
@@ -249,6 +305,8 @@ const TypeNameEditor: React.FC<Props> = observer(
                         //setElementCaretPosition(nameRef.current, 0);
                         return;
                     }
+                } else if (e.altKey) {
+                    return;
                 } else {
                     // NAVIGATION WITH CTRL
                     if (isRightArrow) {
@@ -276,9 +334,16 @@ const TypeNameEditor: React.FC<Props> = observer(
 
                     // HOT KEYS WITH CTRL
                     if (e.key === ' ') {
-                        setIsOpen(true);
+                        showPopupWithProposedComponents(getValueBeforeCaret(typeRef));
                         e.preventDefault();
                     }
+                }
+            }
+            if (e.altKey) {
+                // HOT KEYS WITH ALT
+                if (isEnter) {
+                    setIsEditorPopupOpen(true);
+                    e.preventDefault();
                 }
             } else {
                 // NAVIGATION
@@ -446,26 +511,50 @@ const TypeNameEditor: React.FC<Props> = observer(
         }
 
         function onKeyDown(e) {
+            const isArrowLeft = e.key == 'ArrowLeft';
+            const isArrowRight = e.key == 'ArrowRight';
+            const isArrowDown = e.key == 'ArrowDown';
+            const isArrowUp = e.key == 'ArrowUp';
+            const isEnter = e.key == 'Enter';
+
             if (!e.altKey && !e.ctrlKey && !e.shiftKey) {
-                if (e.key == 'ArrowDown') {
-                    console.log('TypeNameEditor. ArrowDown');
-                    if (onSelectNext(getCaretPosition())) {
-                        typeRef.current.contentEditable = false;
-                        nameRef.current.contentEditable = false;
+                if (isEditorPopupOpen) {
+                    if (isArrowDown || isArrowUp) {
+                        setEditorPopupSelectedActionIndex(
+                            getNextIndex(editorPopupSelectedActionIndex, editorPopupActions.length, isArrowUp),
+                        );
+                        e.preventDefault();
                     }
-                    e.preventDefault();
-                } else if (e.key == 'Enter') {
-                    if (onSelectNext(0)) {
-                        typeRef.current.contentEditable = false;
-                        nameRef.current.contentEditable = false;
+                } else {
+                    if (isArrowLeft) {
+                        if (actualCaretPosition > 0) {
+                            setActualCaretPosition(actualCaretPosition - 1);
+                            e.preventDefault();
+                        }
+                    } else if (isArrowRight) {
+                        if (actualCaretPosition < getFullLength() - 1) {
+                            setActualCaretPosition(actualCaretPosition + 1);
+                            e.preventDefault();
+                        }
+                    } else if (isArrowDown) {
+                        if (onSelectNext(getCaretPosition())) {
+                            typeRef.current.contentEditable = false;
+                            nameRef.current.contentEditable = false;
+                        }
+                        e.preventDefault();
+                    } else if (isEnter) {
+                        if (onSelectNext(0)) {
+                            typeRef.current.contentEditable = false;
+                            nameRef.current.contentEditable = false;
+                        }
+                        e.preventDefault();
+                    } else if (isArrowUp) {
+                        if (onSelectPrevious(getCaretPosition())) {
+                            typeRef.current.contentEditable = false;
+                            nameRef.current.contentEditable = false;
+                        }
+                        e.preventDefault();
                     }
-                    e.preventDefault();
-                } else if (e.key == 'ArrowUp') {
-                    if (onSelectPrevious(getCaretPosition())) {
-                        typeRef.current.contentEditable = false;
-                        nameRef.current.contentEditable = false;
-                    }
-                    e.preventDefault();
                 }
             }
         }
@@ -475,16 +564,21 @@ const TypeNameEditor: React.FC<Props> = observer(
         }
 
         function onBlur(event) {
-            event.target.contentEditable = false;
-            if (!isActive(typeRef.current) && !isActive(nameRef.current)) {
-                console.log('Deselect blurred component', window.document.activeElement);
-                onSelectedStateChange(false);
-                // component.deselect();
+            console.log('TypeNameEditor onBlur', event.target);
+            if (isEditorPopupOpen) {
+                return;
+            } else {
+                event.target.contentEditable = false;
+                if (!isActive(typeRef.current) && !isActive(nameRef.current)) {
+                    console.log('Deselect blurred component', window.document.activeElement);
+                    onSelectedStateChange(false);
+                    // component.deselect();
+                }
             }
         }
 
         function togglePopup() {
-            setIsOpen(!isOpen);
+            setIsEditorPopupOpen(!isEditorPopupOpen);
         }
 
         function onComponentTypeSelected() {
@@ -499,6 +593,9 @@ const TypeNameEditor: React.FC<Props> = observer(
         }
 
         function onAttributeChange(e, setShowPlaceholder) {
+            if (e.altKey || e.ctrlKey) {
+                return;
+            }
             const isWordCharacter = e.key.length === 1;
             const isBackspaceOrDelete = e.key === 'Backspace' || e.key === 'Delete';
             if (isWordCharacter || isBackspaceOrDelete) {
@@ -519,9 +616,26 @@ const TypeNameEditor: React.FC<Props> = observer(
             setActualCaretPosition(getCaretPosition());
         }
 
+        // function popupContent(){
+        //     if(matchingTypes.length===1){
+        //         return selectComponentTypePopup(matchingTypes);
+        //     }else if(matchingTypes.length===0){
+        //         return createComponentTypePopup(component.typeName);
+        //     }
+        //     return editorPopup();
+        // }
+
+        // function onEditorPopupFocused(e){
+        //     // Popup should not be focued. Send focus back to editor
+        //     console.log("onEditorPopupFocused");
+        //     e.preventDefault();
+        //     typeRef.current.focus();
+        // }
+
         return (
             <span onKeyDown={onKeyDown}>
                 <span
+                    tabIndex={-1}
                     className={`trigger type-name ${matchingTypes.length !== 1 ? 'error' : ''}`}
                     ref={typeRef}
                     spellCheck="false"
@@ -540,17 +654,19 @@ const TypeNameEditor: React.FC<Props> = observer(
                 )}
                 <Portal>
                     <span className="popup__container" ref={popupRef}>
-                        {isOpen && (
+                        {isEditorPopupOpen && (
                             <FocusTrap
                                 focusTrapOptions={{
+                                    fallbackFocus: () => typeRef.current,
                                     onDeactivate: togglePopup,
                                     clickOutsideDeactivates: true,
                                 }}
                             >
-                                <div className="popup">
-                                    <div tabIndex={0}>
-                                        <ComponentTypeSelector onSelected={onComponentTypeSelected} />
-                                    </div>
+                                <div className="editor-popup">
+                                    <EditorPopup
+                                        actions={editorPopupActions}
+                                        selectedActionIndex={editorPopupSelectedActionIndex}
+                                    />
                                 </div>
                             </FocusTrap>
                         )}

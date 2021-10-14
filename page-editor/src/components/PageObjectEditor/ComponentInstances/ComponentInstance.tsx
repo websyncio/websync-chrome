@@ -13,15 +13,7 @@ import './ComponentInstance.sass';
 import ISynchronizationService from 'services/ISynchronizationService';
 
 const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
-    ({
-        component,
-        isSelected,
-        index,
-        initialCaretPosition: caretPosition,
-        onSelectedStateChange,
-        onSelectNext,
-        onSelectPrevious,
-    }) => {
+    ({ component, isSelected, index, initialCaretPosition, onSelectedStateChange, onSelectNext, onSelectPrevious }) => {
         const [hasError, setHasError] = useState(false);
         const [isDeleted, setIsDeleted] = useState(false);
 
@@ -105,7 +97,7 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                         component={component}
                         isSelected={isSelected}
                         showPlaceholders={false}
-                        initialCaretPosition={caretPosition}
+                        initialCaretPosition={initialCaretPosition}
                         onSelectedStateChange={onSelectedStateChange}
                         onDelete={() => setIsDeleted(true)}
                         onSelectNext={onSelectNext}

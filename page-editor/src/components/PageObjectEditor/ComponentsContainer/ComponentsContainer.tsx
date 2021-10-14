@@ -93,8 +93,12 @@ const ComponentsContainer: React.FC<Props> = observer(({ pageObject }) => {
         }
     }
 
+    function onFocus() {
+        console.log('onFocus', document.activeElement);
+    }
+
     return (
-        <div className="components-container">
+        <div className="components-container" onFocus={onFocus}>
             <div className="container-name">
                 <strong>{pageObject.name}</strong>
                 {projectStore.selectedPageInstance &&
