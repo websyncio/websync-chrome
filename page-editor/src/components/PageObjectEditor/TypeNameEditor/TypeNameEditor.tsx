@@ -3,7 +3,7 @@ import Portal from 'components-common/Portal';
 import FocusTrap from 'focus-trap-react';
 import { observer } from 'mobx-react';
 import ComponentInstanceModel from 'entities/mst/ComponentInstance';
-import React, { RefObject, useEffect, useLayoutEffect, useState } from 'react';
+import React, { RefObject, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import EditorPopup from '../EditorPopup/EditorPopup';
 import './TypeNameEditor.sass';
 import RootStore from 'entities/mst/RootStore';
@@ -42,8 +42,8 @@ const TypeNameEditor: React.FC<Props> = observer(
         const typePlaceholder = '<set type>';
         const namePlaceholder = '<set name>';
         const popupRef: any = React.createRef();
-        const typeRef: RefObject<any> = React.createRef();
-        const nameRef: any = React.createRef();
+        const typeRef: RefObject<any> = useRef(null);
+        const nameRef: any = useRef(null);
         const [showSpace, setShowSpace] = useState(true);
         const [isEditorPopupOpen, setIsEditorPopupOpen] = useState(false);
         const [showTypePlaceholder, setShowTypePlaceholder] = useState(showPlaceholders && !component.typeName.length);
@@ -252,7 +252,11 @@ const TypeNameEditor: React.FC<Props> = observer(
         }
 
         function applySelectedComponent(componentType: ComponentType) {
-            console.log('apply selected component', componentType);
+            // TODO: we have to store id of selected component type
+            onChange(componentType.name, nameRef.current.textContent);
+            setShowTypePlaceholder(false);
+            setActualCaretPosition(0);
+            setIsEditorPopupOpen(false);
         }
 
         function generatePopupActionsForProposedComponents(
@@ -535,6 +539,8 @@ const TypeNameEditor: React.FC<Props> = observer(
                             getNextIndex(editorPopupSelectedActionIndex, editorPopupActions.length, isArrowUp),
                         );
                         e.preventDefault();
+                    } else if (isEnter) {
+                        editorPopupActions[editorPopupSelectedActionIndex].execute();
                     }
                 } else {
                     if (isArrowDown) {
