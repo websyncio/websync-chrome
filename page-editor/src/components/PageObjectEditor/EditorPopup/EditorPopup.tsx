@@ -29,7 +29,7 @@ const EditorPopup: React.FC<Props> = observer(({ actions, selectedActionIndex })
 
     return (
         <div className="component-type-selector">
-            <ul>{actionsList()}</ul>
+            {actions.length ? <ul>{actionsList()}</ul> : <div className="no-suggestions">No suggestions</div>}
         </div>
     );
 });

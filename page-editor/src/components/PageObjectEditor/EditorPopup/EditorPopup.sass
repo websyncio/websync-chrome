@@ -5,12 +5,18 @@
     color: blue
 
 .component-type-selector
+    border: 1px solid rgb(148, 166, 202)
+    background-color: rgb(233, 238, 255)    
+    font-family: Menlo,monospace
+    .no-suggestions
+        font-weight: bold
+        padding-right: 50px;
+        padding-left: 4px;
+        line-height: 12px;
+        font-size: 12px;
     >ul
-        border: 1px solid rgb(148, 166, 202)
-        padding: 1px 1px 1px 2px
-        font-family: Menlo,monospace
         font-size: 13px
-        background-color: rgb(233, 238, 255)
+        padding: 1px
         >li
             padding-right: 50px
             &.selected

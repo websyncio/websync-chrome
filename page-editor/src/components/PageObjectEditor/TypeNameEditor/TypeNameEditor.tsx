@@ -236,9 +236,19 @@ const TypeNameEditor: React.FC<Props> = observer(
             }
         }
 
-        function getValueBeforeCaret(elementRef) {
-            const caretPosition = getElementCaretPosition(elementRef.current);
-            return elementRef.current.textContent.substring(0, caretPosition);
+        function getValueBeforeCaret(caretPosition: number) {
+            const typeLength = typeRef.current.textContent.length;
+            const nameLength = nameRef.current.textContent.length;
+            if (caretPosition <= typeLength) {
+                return typeRef.current.textContent.substring(0, caretPosition);
+            }
+            if (caretPosition == typeLength + 1) {
+                return null;
+            }
+            if (caretPosition > typeLength + 1 + nameLength) {
+                throw new Error('Invalid caret position.');
+            }
+            return nameRef.current.textContent.substring(0, caretPosition - typeLength - 1);
         }
 
         function applySelectedComponent(componentType: ComponentType) {
@@ -268,17 +278,19 @@ const TypeNameEditor: React.FC<Props> = observer(
         }
 
         function showPopupWithProposedComponents(searchString: string) {
+            if (searchString === null) {
+                // .find a better way
+                setIsEditorPopupOpen(false);
+                return;
+            }
             const editorPopupActions = generatePopupActionsForProposedComponents(
                 searchString,
                 projectStore.frameworkComponentTypes,
                 projectStore.customComponentTypes,
                 applySelectedComponent,
             );
-            console.log('setEditorPopupSelectedActionIndex');
             setEditorPopupSelectedActionIndex(0);
-            console.log('setEditorPopupActions');
             setEditorPopupActions(editorPopupActions);
-            console.log('setIsEditorPopupOpen');
             setIsEditorPopupOpen(true);
         }
 
@@ -333,7 +345,7 @@ const TypeNameEditor: React.FC<Props> = observer(
 
                     // HOT KEYS WITH CTRL
                     if (e.key === ' ') {
-                        showPopupWithProposedComponents(getValueBeforeCaret(typeRef));
+                        showPopupWithProposedComponents(getValueBeforeCaret(actualCaretPosition));
                         e.preventDefault();
                     }
                 }
@@ -525,18 +537,14 @@ const TypeNameEditor: React.FC<Props> = observer(
                         e.preventDefault();
                     }
                 } else {
-                    if (isArrowLeft) {
-                        if (actualCaretPosition > 0) {
-                            setActualCaretPosition(actualCaretPosition - 1);
-                            e.preventDefault();
-                        }
-                    } else if (isArrowRight) {
-                        if (actualCaretPosition < getFullLength() - 1) {
-                            setActualCaretPosition(actualCaretPosition + 1);
-                            e.preventDefault();
-                        }
-                    } else if (isArrowDown) {
+                    if (isArrowDown) {
                         if (onSelectNext(getCaretPosition())) {
+                            typeRef.current.contentEditable = false;
+                            nameRef.current.contentEditable = false;
+                        }
+                        e.preventDefault();
+                    } else if (isArrowUp) {
+                        if (onSelectPrevious(getCaretPosition())) {
                             typeRef.current.contentEditable = false;
                             nameRef.current.contentEditable = false;
                         }
@@ -547,10 +555,21 @@ const TypeNameEditor: React.FC<Props> = observer(
                             nameRef.current.contentEditable = false;
                         }
                         e.preventDefault();
-                    } else if (isArrowUp) {
-                        if (onSelectPrevious(getCaretPosition())) {
-                            typeRef.current.contentEditable = false;
-                            nameRef.current.contentEditable = false;
+                    }
+                }
+                if (isArrowLeft) {
+                    if (actualCaretPosition > 0) {
+                        setActualCaretPosition(actualCaretPosition - 1);
+                        if (isEditorPopupOpen) {
+                            showPopupWithProposedComponents(getValueBeforeCaret(actualCaretPosition - 1));
+                        }
+                        e.preventDefault();
+                    }
+                } else if (isArrowRight) {
+                    if (actualCaretPosition < getFullLength() - 1) {
+                        setActualCaretPosition(actualCaretPosition + 1);
+                        if (isEditorPopupOpen) {
+                            showPopupWithProposedComponents(getValueBeforeCaret(actualCaretPosition + 1));
                         }
                         e.preventDefault();
                     }
@@ -563,7 +582,6 @@ const TypeNameEditor: React.FC<Props> = observer(
         }
 
         function onBlur(event) {
-            console.log('TypeNameEditor onBlur', event.target);
             if (isEditorPopupOpen) {
                 return;
             } else {
@@ -607,6 +625,12 @@ const TypeNameEditor: React.FC<Props> = observer(
                 console.log('attribute changed, type: ', typeRef.current.textContent);
                 console.log('attribute changed, name: ', nameRef.current.textContent);
                 onChange(typeRef.current.textContent, nameRef.current.textContent);
+
+                if (isEditorPopupOpen && e.target === typeRef.current) {
+                    const searchString = getValueBeforeCaret(caretPosition);
+                    console.log('update popup actions', searchString);
+                    showPopupWithProposedComponents(searchString);
+                }
             }
         }
 
