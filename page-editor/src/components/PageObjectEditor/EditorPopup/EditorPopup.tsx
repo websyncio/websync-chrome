@@ -21,14 +21,20 @@ const EditorPopup: React.FC<Props> = observer(({ actions, selectedActionIndex })
                     onClick={() => onSelected(item)}
                     className={`${index === selectedActionIndex ? 'selected' : ''}`}
                 >
-                    {item.name}
+                    {item.iconLetter && (
+                        <div className="action-icon">
+                            <span className="circle" style={{ backgroundColor: item.iconColor }} />
+                            <span className="letter">{item.iconLetter}</span>
+                        </div>
+                    )}
+                    <span className="action-name">{item.name}</span>
                 </li>
             );
         });
     }
 
     return (
-        <div className="component-type-selector">
+        <div className="editor-popup">
             {actions.length ? <ul>{actionsList()}</ul> : <div className="no-suggestions">No suggestions</div>}
         </div>
     );

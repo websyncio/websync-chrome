@@ -604,10 +604,6 @@ const TypeNameEditor: React.FC<Props> = observer(
             setIsEditorPopupOpen(!isEditorPopupOpen);
         }
 
-        function onComponentTypeSelected() {
-            console.log('onComponentTypeSelected not implemlemented');
-        }
-
         function setPlaceholder(element, setShowPlaceholder: (boolean) => void) {
             if (!showPlaceholders) {
                 return;

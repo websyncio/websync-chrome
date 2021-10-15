@@ -1,5 +1,7 @@
 export default interface IEditorPopupAction {
-    icon: string | null;
+    iconLetter: string | undefined;
+    iconColor: string | undefined;
+    iconTitle: string | undefined;
     name: string;
     execute: () => void;
 }
