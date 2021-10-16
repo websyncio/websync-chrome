@@ -125,7 +125,10 @@ const Selector: React.FC<Props> = observer(({ parameterName, selector, onEdit, o
                     onDoubleClick={(event) => onRename(event)}
                     onKeyDown={(event) => onNameKeyDown(event)}
                     onBlur={(event) => onNameBlur(event)}
-                    onClick={onEdit}
+                    onMouseDown={(e) => {
+                        onEdit();
+                        e.preventDefault();
+                    }}
                 >
                     {`${selector.xcss}`}
                 </span>

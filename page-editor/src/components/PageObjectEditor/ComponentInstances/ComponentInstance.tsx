@@ -15,18 +15,18 @@ import ISynchronizationService from 'services/ISynchronizationService';
 const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
     ({ component, isSelected, index, initialCaretPosition, onSelectedStateChange, onSelectNext, onSelectPrevious }) => {
         const [hasError, setHasError] = useState(false);
-        const [isDeleted, setIsDeleted] = useState(false);
+        // const [isDeleted, setIsDeleted] = useState(false);
 
         const selectorsBagService = DependencyContainer.get<SelectorsBagService>(TYPES.SelectorsBagService);
         const synchronizationService = DependencyContainer.get<ISynchronizationService>(TYPES.SynchronizationService);
         // const frameworkComponentsProvider = DependencyContainer.get<IFrameworkComponentsProvider>(TYPES.FrameworkComponentsProvider);
 
-        useLayoutEffect(() => {
-            if (isDeleted) {
-                // .delete after animation completed
-                setTimeout(() => synchronizationService.deleteComponentInstance(component), 300);
-            }
-        }, [isDeleted]);
+        // useLayoutEffect(() => {
+        //     if (isDeleted) {
+        //         // .delete after animation completed
+        //         setTimeout(() => synchronizationService.deleteComponentInstance(component), 300);
+        //     }
+        // }, [isDeleted]);
 
         // function onRename(event) {
         //     // if (event.target.contentEditable === true) {
@@ -78,12 +78,16 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
             synchronizationService.updateComponentInstance(component);
         }
 
+        function deleteComponentInstance() {
+            synchronizationService.deleteComponentInstance(component);
+        }
+
         return (
             <div
                 className={`component-instance 
                     ${isSelected ? 'selected' : ''} 
                     ${hasError ? 'has-error' : ''} 
-                    ${isDeleted ? 'deleted' : ''}`}
+                    `}
                 onClick={() => onSelectedStateChange(true)}
             >
                 <span className="line-prefix">
@@ -99,13 +103,24 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                         showPlaceholders={false}
                         initialCaretPosition={initialCaretPosition}
                         onSelectedStateChange={onSelectedStateChange}
-                        onDelete={() => setIsDeleted(true)}
+                        onDelete={deleteComponentInstance}
                         onSelectNext={onSelectNext}
                         onSelectPrevious={onSelectPrevious}
                         onChange={onChange}
                     />
                     &nbsp;
                     {initializationAttribute(component.initializationAttribute)}
+                    {isSelected && (
+                        <span
+                            className="action-button"
+                            onMouseDown={(e) => {
+                                deleteComponentInstance();
+                                e.preventDefault();
+                            }}
+                        >
+                            Delete
+                        </span>
+                    )}
                 </span>
             </div>
         );

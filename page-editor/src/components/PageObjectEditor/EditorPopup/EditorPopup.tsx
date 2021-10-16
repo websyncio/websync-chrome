@@ -24,7 +24,9 @@ const EditorPopup: React.FC<Props> = observer(({ actions, selectedActionIndex })
                     {item.iconLetter && (
                         <div className="action-icon">
                             <span className="circle" style={{ backgroundColor: item.iconColor }} />
-                            <span className="letter">{item.iconLetter}</span>
+                            <span className="letter" title={item.iconTitle}>
+                                {item.iconLetter}
+                            </span>
                         </div>
                     )}
                     <span className="action-name">{item.name}</span>

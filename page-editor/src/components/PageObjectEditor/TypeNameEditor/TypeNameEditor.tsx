@@ -532,6 +532,11 @@ const TypeNameEditor: React.FC<Props> = observer(
             const isArrowUp = e.key == 'ArrowUp';
             const isEnter = e.key == 'Enter';
 
+            if (e.shiftKey && !e.ctrlKey && !e.altKey && e.key == 'Delete') {
+                onDelete();
+                return;
+            }
+
             if (!e.altKey && !e.ctrlKey && !e.shiftKey) {
                 if (isEditorPopupOpen) {
                     if (isArrowDown || isArrowUp) {
@@ -588,6 +593,7 @@ const TypeNameEditor: React.FC<Props> = observer(
         }
 
         function onBlur(event) {
+            console.log('on blur', event);
             if (isEditorPopupOpen) {
                 return;
             } else {
