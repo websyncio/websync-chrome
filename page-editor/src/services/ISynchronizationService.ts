@@ -1,4 +1,6 @@
 import ComponentInstance from 'entities/mst/ComponentInstance';
+import ComponentsContainer from 'entities/mst/ComponentsContainer';
+import ComponentType from 'entities/mst/ComponentType';
 import PageInstance from 'entities/mst/PageInstance';
 import WebSite from 'entities/mst/WebSite';
 
@@ -10,7 +12,7 @@ export default interface IProjectSynchronizationService {
     updatePageInstanceUrl(pageInstance: PageInstance, newUrl: string): void;
     // createSite();
     // createPageType();
-    // createComponentType();
+    createComponentType(typeName: string, parent: ComponentsContainer, baseType: string | null): void;
     // updateSite();
     // updatePageType();
     // updateComponentType();

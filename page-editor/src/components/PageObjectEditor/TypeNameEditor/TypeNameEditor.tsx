@@ -13,6 +13,7 @@ import { getNextIndex } from 'utils/IndexUtils';
 import IEditorPopupAction from '../EditorPopup/IEditorPopupAction';
 import { ProposedComponentTypeAction } from './ProposedComponentTypeAction';
 import ComponentType from 'entities/mst/ComponentType';
+import CreateComponentTypeAction from './CreateComponentTypeAction';
 
 interface Props {
     component: ComponentInstanceModel;
@@ -298,6 +299,31 @@ const TypeNameEditor: React.FC<Props> = observer(
             setIsEditorPopupOpen(true);
         }
 
+        function onComponentCreated() {
+            // What else to do here?
+            //  - show tab for created component?
+            setIsEditorPopupOpen(false);
+        }
+
+        function showCreateNewTypePopup(typeName: string) {
+            const createNewTypeAction = new CreateComponentTypeAction(
+                typeName,
+                uiStore.selectedPageObject!,
+                onComponentCreated,
+            );
+            setEditorPopupSelectedActionIndex(0);
+            setEditorPopupActions([createNewTypeAction]);
+            setIsEditorPopupOpen(true);
+        }
+
+        function showSelectExactTypePopup(typeOptions: ComponentType) {
+            console.log('It should be similar as proposed components but without search string');
+            // const selectTypeOption = new CreateComponentTypeAction(typeName, uiStore.selectedPageObject!);
+            // setEditorPopupSelectedActionIndex(0);
+            // setEditorPopupActions([createNewTypeAction]);
+            // setIsEditorPopupOpen(true);
+        }
+
         function onTypeKeyDown(e) {
             const isLeftArrow = e.key == 'ArrowLeft';
             const isRightArrow = e.key == 'ArrowRight';
@@ -357,8 +383,12 @@ const TypeNameEditor: React.FC<Props> = observer(
             if (e.altKey) {
                 // HOT KEYS WITH ALT
                 if (isEnter) {
-                    setIsEditorPopupOpen(true);
-                    e.preventDefault();
+                    if (matchingTypes.length === 0) {
+                        showCreateNewTypePopup(typeRef.current.textContent);
+                        e.preventDefault();
+                    } else if (matchingTypes.length > 1) {
+                        showSelectExactTypePopup(matchingTypes);
+                    }
                 }
             } else {
                 // NAVIGATION
@@ -709,7 +739,6 @@ const TypeNameEditor: React.FC<Props> = observer(
                         ref={nameRef}
                         spellCheck="false"
                         className={`field-name`}
-                        title="Double Click to Edit Name"
                         // onDoubleClick={onRename}
                         onKeyDown={onNameKeyDown}
                         onKeyUp={(e) => onAttributeChange(e, setShowNamePlaceholder)}

@@ -28,6 +28,17 @@ export default class IDEAConnection implements IIdeConnection {
         return IDEAConnection._inst;
     }
 
+    createComponentType(projectName: string, typeName: string, parentType: string, baseType: string | null) {
+        const message = {
+            type: 'create-component-type',
+            projectName,
+            typeName: typeName,
+            parentType: parentType,
+            baseType: baseType,
+        };
+        this.connection.send(message);
+    }
+
     updateComponentInstance(projectName: string, componentInstance: ComponentInstance) {
         const message = {
             type: 'update-component-instance',

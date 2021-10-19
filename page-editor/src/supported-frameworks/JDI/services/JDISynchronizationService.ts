@@ -1,15 +1,25 @@
 import IDEAConnection from 'connections/IDE/IDEAConnection';
 import { RootStore } from 'context';
 import ComponentInstance from 'entities/mst/ComponentInstance';
+import ComponentsContainer from 'entities/mst/ComponentsContainer';
+import ComponentType, { ComponentTypeModel } from 'entities/mst/ComponentType';
 import PageInstance from 'entities/mst/PageInstance';
 import WebSite from 'entities/mst/WebSite';
 import { injectable, inject } from 'inversify';
 import { TYPES } from 'inversify.config';
 import IProjectSynchronizerService from 'services/ISynchronizationService';
+import { getFullTypeName, getNamespace } from 'utils/TypeNameUtils';
+import { BASE_ELEMENT_TYPE } from '../JDIElements';
 
 @injectable()
 export default class JDISynchronizationService implements IProjectSynchronizerService {
     constructor(@inject(TYPES.IDEAConnection) private ideaConnection: IDEAConnection) {}
+    createComponentType(typeName: string, parent: ComponentsContainer, baseType: string | null): void {
+        if (!RootStore.uiStore.selectedProject) {
+            throw new Error('Project not set');
+        }
+        this.ideaConnection.createComponentType(RootStore.uiStore.selectedProject!, typeName, parent.id, baseType);
+    }
 
     updateComponentInstance(component: ComponentInstance): void {
         if (!RootStore.uiStore.selectedProject) {

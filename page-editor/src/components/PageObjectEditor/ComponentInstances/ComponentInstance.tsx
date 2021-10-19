@@ -117,6 +117,7 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                                 deleteComponentInstance();
                                 e.preventDefault();
                             }}
+                            title="Delete component from page object (Shift+Delete)"
                         >
                             Delete
                         </span>
