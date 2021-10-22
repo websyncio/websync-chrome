@@ -1,0 +1,38 @@
+.notification
+    position: absolute
+    right: 4px
+    bottom: 4px
+    width: 200px
+    font-size: 12px !important;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: transparent radial-gradient(ellipse at center center, rgba(207, 232, 252,0.5) 0%, rgba(207, 232, 252,0.7) 100%) repeat scroll 0% 0% !important;
+    border-radius: 2px !important;
+    padding: 3px 5px 3px !important;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6) !important;
+    cursor: default !important;
+    animation: blur-notification 5000ms forwards;
+    z-index: 30;
+
+@keyframes blur-notification
+  0%
+    opacity: 0
+    //    we do not need this when element is displayed for the first time but I do not know how to get rid of it
+  5%
+    opacity: 1
+  90%
+  	opacity: 1
+  100%
+    opacity: 0
+
+// .notification:hover{
+// 	opacity: 1 !important;
+// }
+        
+.notification.error
+    background: transparent linear-gradient(rgba(255,26,0,0.6) 0%,rgba(255,26,0,0.7) 100%) repeat scroll 0% 0% !important
+        
+.notification .title
+	font-weight: bold !important
+
+.notification .message
+	margin-left: 10px !important

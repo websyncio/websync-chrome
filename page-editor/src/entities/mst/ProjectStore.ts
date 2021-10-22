@@ -53,6 +53,9 @@ export const ProjectStoreModel = types
         updateComponentType(componentTypeJson) {
             console.log('component is updated:', componentTypeJson);
         },
+        updateProject(projectJson) {
+            applySnapshot(self, projectJson);
+        },
     }));
 
 export default interface ProjectStore extends Instance<typeof ProjectStoreModel> {}

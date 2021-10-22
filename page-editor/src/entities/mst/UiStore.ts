@@ -5,6 +5,7 @@ import PageInstance, { PageInstanceModel } from './PageInstance';
 import PageType from 'entities/mst/PageType';
 import ComponentInstance, { ComponentInstanceModel } from 'entities/mst/ComponentInstance';
 import ComponentsContainer from './ComponentsContainer';
+import { NotificationModel } from './Notification';
 
 export const UiStoreModel = types
     .model({
@@ -19,6 +20,7 @@ export const UiStoreModel = types
         matchedPages: types.array(types.reference(PageInstanceModel)),
         editorSelectedLineIndex: types.optional(types.number, 0),
         editorCaretPosition: types.optional(types.number, 0),
+        notification: types.maybeNull(NotificationModel),
     })
     .views((self) => ({
         get selectedPageObject(): ComponentsContainer | undefined {
@@ -26,6 +28,16 @@ export const UiStoreModel = types
         },
     }))
     .actions((self) => ({
+        showNotification(title: string | null, message: string, isError: boolean) {
+            self.notification = NotificationModel.create({
+                message,
+                title,
+                isError,
+            });
+        },
+        hideNotification() {
+            self.notification = null;
+        },
         setEditorSelectedLineIndex(lineIndex: number) {
             self.editorSelectedLineIndex = lineIndex;
         },

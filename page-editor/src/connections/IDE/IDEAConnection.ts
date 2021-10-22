@@ -115,6 +115,13 @@ export default class IDEAConnection implements IIdeConnection {
     }
 
     onMessage(message) {
+        if (message.type.endsWith('-response') && !message.isSuccessful) {
+            RootStore.uiStore.showNotification(null, message.error, true);
+            setTimeout(function () {
+                RootStore.uiStore.hideNotification();
+            }, 5000);
+            return;
+        }
         switch (message.type) {
             case 'get-projects-list-response':
                 this.onProjectsReceived(message.data);
@@ -131,6 +138,9 @@ export default class IDEAConnection implements IIdeConnection {
                 return;
             case 'update-page':
                 RootStore.projectStore.updatePageType(message.pageType);
+                return;
+            case 'update-project':
+                RootStore.projectStore.updateProject(message.project);
                 return;
             default:
                 console.log('unknown message type, ignored: ', message);

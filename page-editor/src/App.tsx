@@ -13,6 +13,7 @@ import { useRootStore } from 'context';
 // import SelectorsBagService from 'services/SelectorsBagService';
 import { DependencyContainer, TYPES } from 'inversify.config';
 import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
+import { NotificationToast } from 'components/NotificationToast/NotificationToast';
 
 const App: React.FC = observer(() => {
     const ideProxies: IIdeProxy[] = [IDEAConnection.instance()];
@@ -125,14 +126,19 @@ const App: React.FC = observer(() => {
         return ideProxy;
     }
 
-    console.log(projectStore.webSites.length);
-
     return (
         <div className="App full-height">
             {uiStore.selectedProjectIsLoaded ? (
                 <ProjectViewer ideProxy={getIdeProxyForSelectedProject()} />
             ) : (
                 <ProjectSelector ideProxies={ideProxies} />
+            )}
+            {uiStore.notification && (
+                <NotificationToast
+                    title={uiStore.notification.title}
+                    message={uiStore.notification.message}
+                    isError={uiStore.notification.isError}
+                />
             )}
             {/* <Connection
                     ref={this.connection}
