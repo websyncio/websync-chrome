@@ -13,10 +13,13 @@ import { DependencyContainer, TYPES } from 'inversify.config';
 import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import TreeOutline from 'components-common/TreeOutline/TreeOutline';
 
 interface Props {
-    ideProxy: IIdeProxy;
     pageObject: IComponentsContainer;
+    basePageObject: IComponentsContainer;
+    isExpanded: boolean;
+    onExpand: (expandParent: boolean) => void;
 }
 
 enum ListType {
@@ -25,11 +28,8 @@ enum ListType {
     BlankComponents,
 }
 
-const ComponentsContainer: React.FC<Props> = observer(({ pageObject }) => {
+const ComponentsContainer: React.FC<Props> = observer(({ pageObject, basePageObject, isExpanded, onExpand }) => {
     const { uiStore, projectStore }: RootStore = useRootStore();
-    const urlSynchronizationService = DependencyContainer.get<IUrlSynchronizationService>(
-        TYPES.UrlSynchronizationService,
-    );
     const [activeList, setActiveList] = useState(ListType.PageObjectComponents);
 
     // function selectComponent(components: IComponentInstance[], index: number) {
@@ -41,10 +41,6 @@ const ComponentsContainer: React.FC<Props> = observer(({ pageObject }) => {
     //         }
     //     });
     // }
-
-    useEffect(function () {
-        console.log('ComponentsContainer. Rerendered');
-    });
 
     function selectFirstBlankComponent(): boolean {
         setActiveList(ListType.BlankComponents);
@@ -68,79 +64,63 @@ const ComponentsContainer: React.FC<Props> = observer(({ pageObject }) => {
         return true;
     }
 
-    function getWebsiteUrl(pageInstance) {
-        const website = projectStore.webSites.find((ws) => ws.pageInstances.some((pi) => pi.id === pageInstance.id));
-        return website ? website.url : '';
-    }
-
-    function redirectToUrl(pageInstance) {
-        urlSynchronizationService.redirectToUrl(`${getWebsiteUrl(pageInstance)}${pageInstance.url}`);
-    }
-
-    function baseComponents(pageObject: any) {
-        const baseType: IComponentsContainer = pageObject.baseType;
-        if (baseType) {
-            return (
-                <>
-                    {baseComponents(baseType)}
-                    <ComponentInstancesList
-                        isActive={false}
-                        componentInstances={baseType.componentsInstances}
-                        componentView={ComponentInstance}
-                    />
-                </>
-            );
-        }
-    }
-
     function onFocus() {
         console.log('onFocus', document.activeElement);
     }
 
+    function onParentClick() {
+        onExpand(true);
+    }
+
+    function onHeaderClick() {
+        if (!isExpanded) {
+            onExpand(false);
+        }
+    }
+
     return (
         <div className="components-container" onFocus={onFocus}>
-            <div className="container-name">
-                <strong>{pageObject.name}</strong>
-                {projectStore.selectedPageInstance &&
-                uiStore.matchedPages.map((mp) => mp.id).includes(projectStore.selectedPageInstance.id) ? (
-                    <div> Page matched </div>
-                ) : (
-                    <div>
-                        {' '}
-                        Page not matched{' '}
-                        <button onClick={() => redirectToUrl(projectStore.selectedPageInstance)}>
-                            {' '}
-                            Redirect to page
-                        </button>{' '}
-                    </div>
+            <div className={`header ${isExpanded ? 'expanded' : ''}`} onClick={onHeaderClick}>
+                {!isExpanded && <TreeOutline expanded={isExpanded} />}
+                <span className="title">{pageObject.name}</span>
+                {basePageObject && (
+                    <>
+                        &nbsp;extends&nbsp;
+                        <a href="#" onClick={onParentClick}>
+                            {basePageObject.name}
+                        </a>
+                    </>
                 )}
             </div>
-            {baseComponents(pageObject)}
-            <ComponentInstancesList
-                isActive={activeList === ListType.PageObjectComponents}
-                componentInstances={pageObject.componentsInstances}
-                componentView={ComponentInstance}
-                onActiveStateChange={(isActive) =>
-                    setActiveList(isActive ? ListType.PageObjectComponents : ListType.Undefined)
-                }
-                onSelectNext={selectFirstBlankComponent}
-            />
-            <div className="blank-components">
-                <div className="blank-components-header">
-                    {/* <span className="title">New Components</span> */}
-                    {/* &nbsp; */}
-                    Specify type and name, then click Take button or press Ctrl+Enter
-                </div>
-                <ComponentInstancesList
-                    isActive={activeList === ListType.BlankComponents}
-                    componentInstances={uiStore.blankComponents}
-                    componentView={BlankComponentInstance}
-                    onActiveStateChange={(isActive) =>
-                        setActiveList(isActive ? ListType.BlankComponents : ListType.Undefined)
-                    }
-                    onSelectPrevious={selectLastComponentInstance}
-                />
-            </div>
+            {isExpanded && (
+                <>
+                    <ComponentInstancesList
+                        isActive={activeList === ListType.PageObjectComponents}
+                        componentInstances={pageObject.componentsInstances}
+                        componentView={ComponentInstance}
+                        onActiveStateChange={(isActive) =>
+                            setActiveList(isActive ? ListType.PageObjectComponents : ListType.Undefined)
+                        }
+                        onSelectNext={selectFirstBlankComponent}
+                    />
+                    <div className="blank-components">
+                        <div className="blank-components-header">
+                            {/* <span className="title">New Components</span> */}
+                            {/* &nbsp; */}
+                            Specify type and name, then click Take button or press Ctrl+Enter
+                        </div>
+                        <ComponentInstancesList
+                            isActive={activeList === ListType.BlankComponents}
+                            componentInstances={uiStore.blankComponents}
+                            componentView={BlankComponentInstance}
+                            onActiveStateChange={(isActive) =>
+                                setActiveList(isActive ? ListType.BlankComponents : ListType.Undefined)
+                            }
+                            onSelectPrevious={selectLastComponentInstance}
+                        />
+                    </div>
+                </>
+            )}
         </div>
     );
 });

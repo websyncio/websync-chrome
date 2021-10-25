@@ -13,9 +13,7 @@ import IIdeProxy from 'connections/IDE/IIdeConnection';
 import { DependencyContainer, TYPES } from 'inversify.config';
 import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
 
-interface Props {
-    ideProxy: IIdeProxy;
-}
+interface Props {}
 
 const Explorer: React.FC<Props> = observer(() => {
     const { projectStore }: RootStore = useRootStore();

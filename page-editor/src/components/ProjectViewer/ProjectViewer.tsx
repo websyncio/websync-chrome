@@ -18,9 +18,9 @@ const ProjectViewer: React.FC<Props> = observer(({ ideProxy }) => {
         <div id="projectViewer" className="full-height">
             <ProjectViewerHeader />
             {uiStore.selectedPageObject ? (
-                <PageObjectEditor ideProxy={ideProxy} pageObject={uiStore.selectedPageObject} />
+                <PageObjectEditor pageObject={uiStore.selectedPageObject} />
             ) : (
-                <ProjectExplorer ideProxy={ideProxy} />
+                <ProjectExplorer />
             )}
         </div>
     );

@@ -6,6 +6,7 @@ import IComponentInstance from 'entities/mst/ComponentInstance';
 import { useState } from 'react';
 import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
+import IComponentsContainer from 'entities/mst/ComponentsContainer';
 
 interface Props {
     isActive: boolean;
@@ -18,7 +19,7 @@ interface Props {
 
 const ComponentInstancesList: React.FC<Props> = observer(
     ({
-        isActive: isActive,
+        isActive,
         componentInstances,
         componentView: ComponentView,
         onActiveStateChange,
@@ -133,7 +134,7 @@ const ComponentInstancesList: React.FC<Props> = observer(
         }
 
         return (
-            <div className="components-tree">
+            <div className="components-list">
                 <ul>
                     {componentInstances.map((component, lineIndex) => [
                         <li key={component.id}>
