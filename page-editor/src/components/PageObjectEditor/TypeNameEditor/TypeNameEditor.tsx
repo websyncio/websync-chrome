@@ -52,6 +52,7 @@ const TypeNameEditor: React.FC<Props> = observer(
         const [actualCaretPosition, setActualCaretPosition] = useState(0);
         const [editorPopupSelectedActionIndex, setEditorPopupSelectedActionIndex] = useState(0);
         const [editorPopupActions, setEditorPopupActions] = useState<IEditorPopupAction[]>([]);
+        const [isCtrlPressed, setIsCtrlPressed] = useState(false);
         let popper: any;
 
         const matchingTypes = projectStore.componentTypes.filter((t) => t.name === component.typeName);
@@ -83,8 +84,10 @@ const TypeNameEditor: React.FC<Props> = observer(
         }, [isEditorPopupOpen]);
 
         useEffect(() => {
-            console.log('TypeNameEditor rerendered. useEffect', component.fieldName);
-        });
+            if (!isSelected) {
+                setIsCtrlPressed(false);
+            }
+        }, [isSelected]);
 
         function makeEditable(element) {
             typeRef.current.contentEditable = element == typeRef.current;
@@ -308,7 +311,7 @@ const TypeNameEditor: React.FC<Props> = observer(
         function showCreateNewTypePopup(typeName: string) {
             const createNewTypeAction = new CreateComponentTypeAction(
                 typeName,
-                uiStore.selectedPageObject!,
+                uiStore.selectedTab?.componentsContainer.id,
                 onComponentCreated,
             );
             setEditorPopupSelectedActionIndex(0);
@@ -562,6 +565,10 @@ const TypeNameEditor: React.FC<Props> = observer(
             const isArrowUp = e.key == 'ArrowUp';
             const isEnter = e.key == 'Enter';
 
+            if (e.key == 'Control' && !e.altKey) {
+                setIsCtrlPressed(true);
+            }
+
             if (e.shiftKey && !e.ctrlKey && !e.altKey && e.key == 'Delete') {
                 onDelete();
                 return;
@@ -615,6 +622,12 @@ const TypeNameEditor: React.FC<Props> = observer(
                         e.preventDefault();
                     }
                 }
+            }
+        }
+
+        function onKeyUp(e) {
+            if (e.key == 'Control') {
+                setIsCtrlPressed(false);
             }
         }
 
@@ -693,16 +706,25 @@ const TypeNameEditor: React.FC<Props> = observer(
         //     typeRef.current.focus();
         // }
 
+        function onTypeNameClick(e) {
+            makeNonEditable(e.target);
+            if (isCtrlPressed && matchingTypes.length === 1) {
+                uiStore.addTabForEditedComponent(component);
+            }
+        }
+
         return (
-            <span onKeyDown={onKeyDown}>
+            <span onKeyDown={onKeyDown} onKeyUp={onKeyUp} className={`${isCtrlPressed ? 'ctrl-pressed' : ''}`}>
                 <span
                     tabIndex={-1}
-                    className={`trigger type-name ${matchingTypes.length !== 1 ? 'error' : ''}`}
+                    className={`trigger type-name ${
+                        matchingTypes.length === 1 ? 'has-matchingtype' : matchingTypes.length === 0 ? 'error' : ''
+                    }`}
                     ref={typeRef}
                     spellCheck="false"
                     onKeyDown={onTypeKeyDown}
                     onKeyUp={(e) => onAttributeChange(e, setShowTypePlaceholder)}
-                    onMouseDown={(e) => makeNonEditable(e.target)}
+                    onMouseDown={onTypeNameClick}
                     onClick={(e) => onEditableClick(e.target)}
                     onBlur={onBlur}
                 >

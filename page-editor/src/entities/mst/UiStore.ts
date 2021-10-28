@@ -1,11 +1,41 @@
 import { types, Instance, applySnapshot } from 'mobx-state-tree';
 import IdeConnection, { IdeConnectionModel } from './IdeConnection';
-import { PageTypeModel } from './PageType';
 import PageInstance, { PageInstanceModel } from './PageInstance';
-import PageType from 'entities/mst/PageType';
+import PageType, { PageTypeModel } from 'entities/mst/PageType';
 import ComponentInstance, { ComponentInstanceModel } from 'entities/mst/ComponentInstance';
-import ComponentsContainer from './ComponentsContainer';
+import ComponentsContainer, { ComponentsContainerModel } from './ComponentsContainer';
 import { NotificationModel } from './Notification';
+import { ComponentTypeModel } from './ComponentType';
+import { SelectableModel } from './Selectable';
+import { ComponentType } from 'react';
+
+export enum ProjectTabType {
+    PageType = 'PageType',
+    ComponentIntance = 'ComponentIntance',
+}
+
+export const ProjectTabModel = types
+    .compose(
+        SelectableModel,
+        types.model({
+            type: types.enumeration<ProjectTabType>(Object.values(ProjectTabType)),
+            editedObject: types.reference(types.union(ComponentInstanceModel, PageTypeModel)),
+        }),
+    )
+    .views((self) => ({
+        get componentsContainer() {
+            switch (self.type) {
+                case ProjectTabType.ComponentIntance:
+                    return (self.editedObject as ComponentInstance).componentType;
+                case ProjectTabType.PageType:
+                    return self.editedObject as PageType;
+                default:
+                    throw new Error('Unknown tab type.');
+            }
+        },
+    }));
+
+export interface ProjectTab extends Instance<typeof ProjectTabModel> {}
 
 export const UiStoreModel = types
     .model({
@@ -13,9 +43,7 @@ export const UiStoreModel = types
         selectedIdeConnectionType: types.maybeNull(types.string),
         selectedProject: types.maybeNull(types.string),
         selectedProjectIsLoaded: types.optional(types.boolean, false),
-        editedPageObjects: types.array(types.reference(PageTypeModel)),
-        // selectedWebSite: types.safeReference(WebSiteModel),
-        // selectedPageType: types.safeReference(PageTypeModel),s
+        openedTabs: types.array(ProjectTabModel),
         blankComponents: types.array(ComponentInstanceModel),
         matchedPages: types.array(types.reference(PageInstanceModel)),
         editorSelectedLineIndex: types.optional(types.number, 0),
@@ -23,8 +51,11 @@ export const UiStoreModel = types
         notification: types.maybeNull(NotificationModel),
     })
     .views((self) => ({
-        get selectedPageObject(): ComponentsContainer | undefined {
-            return self.editedPageObjects.find((po) => po.selected);
+        // get selectedPageObject() {
+        //     return self.editedPageObjects.find((po) => po.selected);
+        // },
+        get selectedTab(): ProjectTab | undefined {
+            return self.openedTabs.find((t) => t.selected);
         },
     }))
     .actions((self) => ({
@@ -47,12 +78,21 @@ export const UiStoreModel = types
         // setSelectedPageType(pageType: PageType | undefined) {
         //     self.selectedPageType = pageType;
         // },
-        selectPageObject(pageObject: PageType) {
-            self.editedPageObjects.forEach((po) => po.deselect());
-            pageObject.select();
+        selectTab(tab: ProjectTab | undefined) {
+            if (!tab) {
+                return;
+            }
+            self.openedTabs.forEach((po) => po.deselect());
+            tab.select();
         },
         showExplorer() {
-            self.editedPageObjects.forEach((po) => po.deselect());
+            self.openedTabs.forEach((po) => po.deselect());
+        },
+        findTabFor(editedObject) {
+            return self.openedTabs.find((t) => t.editedObject === editedObject);
+        },
+        selectPageObject(pageType: PageType) {
+            this.selectTab(this.findTabFor(pageType));
         },
         addIdeConnection(type: string) {
             this.removeIdeConnection(type);
@@ -79,15 +119,38 @@ export const UiStoreModel = types
             self.selectedIdeConnectionType = ideConnectionType;
             self.selectedProject = projectName;
         },
-        addEditedPageObject(pageObject: PageType) {
-            if (!self.editedPageObjects.find((po) => po == pageObject)) {
-                self.editedPageObjects.push(pageObject);
+        showTabForEditedPage(pageType: PageType) {
+            let tab = this.findTabFor(pageType);
+            if (!tab) {
+                tab = ProjectTabModel.create({
+                    type: ProjectTabType.PageType,
+                    editedObject: pageType.id,
+                });
+                self.openedTabs.push(tab);
             }
-            this.selectPageObject(pageObject);
+            // if (!self.editedPageObjects.find((po) => po == pageObject)) {
+            //     self.editedPageObjects.push(pageObject);
+            // }
+            this.selectTab(tab);
+            // this.selectPageObject(pageObject);
         },
-        removeEditedPageObject(pageObject: PageType) {
-            self.editedPageObjects.remove(pageObject);
+        addTabForEditedComponent(componentInstance: ComponentInstance) {
+            let tab = this.findTabFor(componentInstance);
+            if (!tab) {
+                tab = ProjectTabModel.create({
+                    type: ProjectTabType.ComponentIntance,
+                    editedObject: componentInstance.id,
+                });
+                self.openedTabs.push(tab);
+            }
+            this.selectTab(tab);
         },
+        closeTab(tab: ProjectTab) {
+            self.openedTabs.remove(tab);
+        },
+        // removeEditedPageObject(pageObject: ComponentsContainer) {
+        //     self.editedPageObjects.remove(pageObject);
+        // },
         updateMathchedPages(pageInstances: PageInstance[]) {
             self.matchedPages.replace(pageInstances);
         },

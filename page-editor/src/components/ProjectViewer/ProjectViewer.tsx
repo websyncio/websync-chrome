@@ -5,23 +5,33 @@ import RootStore from 'entities/mst/RootStore';
 import IIdeProxy from 'connections/IDE/IIdeConnection';
 import ProjectExplorer from '../ProjectExplorer/ProjectExplorer';
 import ProjectViewerHeader from '../ProjectViewerHeader/ProjectViewerHeader';
-import PageObjectEditor from '../PageObjectEditor/PageObjectEditor';
+import PageEditor from '../PageObjectEditor/PageEditor';
+import PageType from 'entities/mst/PageType';
+import { ProjectTab, ProjectTabType } from 'entities/mst/UiStore';
+import ComponentEditor from 'components/PageObjectEditor/ComponentEditor';
+import ComponentInstance from 'entities/mst/ComponentInstance';
 // import Explorer from './Explorer/Explorer';
 
-interface Props {
-    ideProxy: IIdeProxy;
-}
+interface Props {}
 
-const ProjectViewer: React.FC<Props> = observer(({ ideProxy }) => {
+const ProjectViewer: React.FC<Props> = observer(() => {
     const { uiStore }: RootStore = useRootStore();
+
+    function tabContent(tab: ProjectTab) {
+        switch (tab.type) {
+            case ProjectTabType.PageType:
+                return <PageEditor pageObject={tab.editedObject} />;
+            case ProjectTabType.ComponentIntance:
+                return <ComponentEditor componentInstance={tab.editedObject} />;
+            default:
+                throw new Error('Invalid tab type.');
+        }
+    }
+
     return (
         <div id="projectViewer" className="full-height">
             <ProjectViewerHeader />
-            {uiStore.selectedPageObject ? (
-                <PageObjectEditor pageObject={uiStore.selectedPageObject} />
-            ) : (
-                <ProjectExplorer />
-            )}
+            {uiStore.selectedTab ? tabContent(uiStore.selectedTab) : <ProjectExplorer />}
         </div>
     );
 });

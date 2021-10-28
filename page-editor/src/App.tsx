@@ -118,21 +118,17 @@ const App: React.FC = observer(() => {
     //     this.context.setProjectStore(projectStore);
     // };
 
-    function getIdeProxyForSelectedProject(): IIdeProxy {
-        const ideProxy = ideProxies.find((p) => p.type == uiStore.selectedIdeConnectionType);
-        if (!ideProxy) {
-            throw new Error('Invalid connection type: ' + uiStore.selectedIdeConnectionType);
-        }
-        return ideProxy;
-    }
+    // function getIdeProxyForSelectedProject(): IIdeProxy {
+    //     const ideProxy = ideProxies.find((p) => p.type == uiStore.selectedIdeConnectionType);
+    //     if (!ideProxy) {
+    //         throw new Error('Invalid connection type: ' + uiStore.selectedIdeConnectionType);
+    //     }
+    //     return ideProxy;
+    // }
 
     return (
         <div className="App full-height">
-            {uiStore.selectedProjectIsLoaded ? (
-                <ProjectViewer ideProxy={getIdeProxyForSelectedProject()} />
-            ) : (
-                <ProjectSelector ideProxies={ideProxies} />
-            )}
+            {uiStore.selectedProjectIsLoaded ? <ProjectViewer /> : <ProjectSelector ideProxies={ideProxies} />}
             {uiStore.notification && (
                 <NotificationToast
                     title={uiStore.notification.title}

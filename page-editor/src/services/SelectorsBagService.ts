@@ -66,7 +66,7 @@ export class SelectorsBagService implements ISelectorsBagService {
         const componentsData = RootStore.uiStore.blankComponents.map((c) => ({
             id: c.id,
             name: c.fieldName,
-            type: c.componentType,
+            type: c.componentTypeId,
         }));
         this.selectorEditorConnection.postMessage(
             MessageTypes.SelectorsListUpdated,
@@ -101,12 +101,13 @@ export class SelectorsBagService implements ISelectorsBagService {
 
     onSelectorUpdated(data) {
         console.log('update component selector in projectStore here', data);
-        if (!RootStore.uiStore.selectedPageObject) {
+        const componentsContainer = RootStore.uiStore.selectedTab?.componentsContainer;
+        if (!componentsContainer) {
             throw new Error('No selected page object to update.');
         }
-        const componentInstance:
-            | ComponentInstance
-            | undefined = RootStore.uiStore.selectedPageObject.getComponentInstance(data.componentId);
+        const componentInstance: ComponentInstance | undefined = componentsContainer.getComponentInstance(
+            data.componentId,
+        );
         if (!componentInstance) {
             throw new Error('No component to update. componentId: ' + data.componentId);
         }

@@ -15,7 +15,7 @@ interface Props {
     pageObject: IComponentsContainer;
 }
 
-const PageObjectEditor: React.FC<Props> = observer(({ pageObject }) => {
+const PageEditor: React.FC<Props> = observer(({ pageObject }) => {
     const { projectStore, uiStore }: RootStore = useRootStore();
     const [expandedContainerIndex, setExpandedContainerIndex] = useState(0);
     const urlSynchronizationService = DependencyContainer.get<IUrlSynchronizationService>(
@@ -53,7 +53,7 @@ const PageObjectEditor: React.FC<Props> = observer(({ pageObject }) => {
     }
 
     return (
-        <div id="pageObjectEditor" className="flex-auto">
+        <div className="page-editor flex-auto">
             <div className="container-name">
                 <strong>{pageObject.name}</strong>
                 {projectStore.selectedPageInstance &&
@@ -75,4 +75,4 @@ const PageObjectEditor: React.FC<Props> = observer(({ pageObject }) => {
     );
 });
 
-export default PageObjectEditor;
+export default PageEditor;

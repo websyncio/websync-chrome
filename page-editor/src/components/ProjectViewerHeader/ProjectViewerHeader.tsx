@@ -3,9 +3,9 @@ import { observer } from 'mobx-react';
 import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
 import './ProjectViewerHeader.sass';
-import PageType from 'entities/mst/PageType';
 import CloseButton from 'components-common/CloseButton/CloseButton';
 import PageInstance from 'entities/mst/PageInstance';
+import { ProjectTab, ProjectTabType } from 'entities/mst/UiStore';
 
 interface Props {}
 
@@ -18,20 +18,31 @@ const Header: React.FC<Props> = observer(() => {
     }
 
     function onMatchedPageClick(pi: PageInstance) {
-        uiStore.addEditedPageObject(pi.pageType);
+        uiStore.showTabForEditedPage(pi.pageType);
     }
 
-    function editedPageObjects() {
-        return uiStore.editedPageObjects.map((po: PageType) => (
-            <div
-                key={po.id}
-                className={`header-tab ${po.selected ? 'selected' : ''}`}
-                onClick={() => uiStore.selectPageObject(po)}
-            >
-                <span>{po.name}</span>
-                <CloseButton onClick={() => uiStore.removeEditedPageObject(po)} />
-            </div>
-        ));
+    function tabContent(t: ProjectTab) {
+        if (t.type === ProjectTabType.ComponentIntance) {
+            return <span>{t.editedObject.componentType.name}</span>;
+        } else if (t.type === ProjectTabType.PageType) {
+            return <span>{t.editedObject.name}</span>;
+        }
+        throw new Error('Unknown tab type');
+    }
+
+    function openedTabs() {
+        return uiStore.openedTabs.map((t: ProjectTab) => {
+            return (
+                <div
+                    key={t.editedObject.id}
+                    className={`header-tab ${t.selected ? 'selected' : ''}`}
+                    onClick={() => uiStore.selectTab(t)}
+                >
+                    {tabContent(t)}
+                    <CloseButton onClick={() => uiStore.closeTab(t)} />
+                </div>
+            );
+        });
     }
 
     function matchedPages() {
@@ -57,12 +68,12 @@ const Header: React.FC<Props> = observer(() => {
                 <path fill="#5a5a5a" d="M6,6V3L0,8l6,5v-3c4-1,7-0.5,10,2C14,7,10.5,6,6,6z" />
             </svg>
             <div
-                className={`header-tab project-explorer ${uiStore.selectedPageObject ? '' : 'selected'}`}
+                className={`header-tab project-explorer ${uiStore.selectedTab ? '' : 'selected'}`}
                 onClick={() => uiStore.showExplorer()}
             >
                 Project Explorer ({uiStore.selectedProject})
             </div>
-            {editedPageObjects()}
+            {openedTabs()}
             <div className="matched-pages-container">
                 <span>Matched pages: </span>
                 {matchedPages()}

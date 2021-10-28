@@ -1,8 +1,9 @@
 import { types, Instance, getParentOfType, destroy } from 'mobx-state-tree';
+import { getNamespace } from 'utils/TypeNameUtils';
 import { AttributeModel } from './Attribute';
 import ComponentsContainer from './ComponentsContainer';
-import { PageTypeModel } from './PageType';
-import { SelectableModel } from './Selectable';
+import ProjectStore, { ProjectStoreModel } from 'entities/mst/ProjectStore';
+import { ComponentType } from 'react';
 
 export const ComponentInstanceModel = types
     .model({
@@ -10,7 +11,7 @@ export const ComponentInstanceModel = types
         parentId: types.string,
         fieldIndex: types.number,
         // try to fix - https://mobx-state-tree.js.org/tips/circular-deps
-        componentType: types.string, //.maybe(types.reference(types.late(() => ComponentTypeModel))),
+        componentTypeId: types.string, // types.maybe(types.safeReference(types.late(() => ComponentTypeModel))),
         fieldName: types.string,
         name: types.maybeNull(types.string),
         initializationAttribute: types.optional(AttributeModel, {
@@ -21,9 +22,13 @@ export const ComponentInstanceModel = types
     //     isBlank: false
     // }))
     .views((self) => ({
+        get componentType() {
+            const projectStore = getParentOfType(self, ProjectStoreModel);
+            return projectStore.componentTypes.find((t) => t.id === self.componentTypeId);
+        },
         get typeName() {
-            if (self.componentType) {
-                const arr = self.componentType.split('.');
+            if (self.componentTypeId) {
+                const arr = self.componentTypeId.split('.');
                 return arr[arr.length - 1].trim();
             }
             return '';
@@ -53,11 +58,11 @@ export const ComponentInstanceModel = types
     .actions((self) => ({
         setComponentTypeName(newComponentTypeName) {
             let typeNamespace = '';
-            if (self.componentType) {
-                typeNamespace = self.componentType.substring(0, self.componentType.lastIndexOf('.')).trim();
+            if (self.componentTypeId) {
+                typeNamespace = getNamespace(self.componentTypeId);
             }
             console.log('typeNamespace', typeNamespace);
-            self.componentType = typeNamespace ? typeNamespace + '.' + newComponentTypeName : newComponentTypeName;
+            self.componentTypeId = typeNamespace ? typeNamespace + '.' + newComponentTypeName : newComponentTypeName;
         },
         setFieldName(newFieldName) {
             self.fieldName = newFieldName;
@@ -83,7 +88,7 @@ export const ComponentInstanceModel = types
             // const pageType = getParentOfType(self, PageTypeModel);
             // pageType.deleteComponentInstance(self);
         },
-        setParent(componentsContainer: ComponentsContainer) {
+        setParent(componentsContainer) {
             self.parentId = componentsContainer.id;
         },
     }));

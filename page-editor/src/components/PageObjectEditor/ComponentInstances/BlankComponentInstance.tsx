@@ -11,6 +11,8 @@ import ISynchronizationService from 'services/ISynchronizationService';
 import ComponentInstance from 'entities/mst/ComponentInstance';
 import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
+import { ProjectTab, ProjectTabType } from 'entities/mst/UiStore';
+import PageType from 'entities/mst/PageType';
 
 const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
     ({ component, isSelected, initialCaretPosition, onSelectedStateChange, onSelectNext, onSelectPrevious }) => {
@@ -50,10 +52,10 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
 
         function takeComponent() {
             console.log('Take component', component);
-            if (!uiStore.selectedPageObject) {
-                throw new Error('No selected page object.');
+            if (!uiStore.selectedTab?.componentsContainer) {
+                throw new Error('Unable to define components container for the component instance.');
             }
-            component.setParent(uiStore.selectedPageObject);
+            component.setParent(uiStore.selectedTab.componentsContainer);
             synchronizationService.addComponentInstance(component);
             selectorBagService.deleteComponent(component);
         }

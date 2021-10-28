@@ -68,8 +68,9 @@ const ComponentsContainer: React.FC<Props> = observer(({ pageObject, basePageObj
         console.log('onFocus', document.activeElement);
     }
 
-    function onParentClick() {
+    function onParentClick(e) {
         onExpand(true);
+        e.stopPropagation();
     }
 
     function onHeaderClick() {

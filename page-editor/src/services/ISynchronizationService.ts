@@ -12,7 +12,7 @@ export default interface IProjectSynchronizationService {
     updatePageInstanceUrl(pageInstance: PageInstance, newUrl: string): void;
     // createSite();
     // createPageType();
-    createComponentType(typeName: string, parent: ComponentsContainer, baseType: string | null): void;
+    createComponentType(typeName: string, parentId: string, baseType: string | null): void;
     // updateSite();
     // updatePageType();
     // updateComponentType();

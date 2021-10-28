@@ -21,7 +21,7 @@ const WebSitesTree: React.FC<Props> = observer(({ websites, onSelected }) => {
     }
 
     function editPageObject(po) {
-        uiStore.addEditedPageObject(po);
+        uiStore.showTabForEditedPage(po);
     }
 
     function pageList(website: WebSite) {
