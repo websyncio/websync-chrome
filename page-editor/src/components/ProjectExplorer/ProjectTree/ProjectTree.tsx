@@ -34,7 +34,8 @@ const WebSitesTree: React.FC<Props> = observer(({ websites, onSelected }) => {
                         onClick={() => onSelected(website, p)}
                         onDoubleClick={() => editPageObject(p.pageType)}
                     >
-                        {p.pageType.name}
+                        <i className="tree-icon page-icon" />
+                        <span className="tree-name">{p.pageType.name}</span>
                         {uiStore.matchedPages.map((mp) => mp.id).includes(p.id) && <span className="match-circle" />}
                     </li>
                 ))}
@@ -53,7 +54,8 @@ const WebSitesTree: React.FC<Props> = observer(({ websites, onSelected }) => {
                     onClick={() => onSelected(website, null)}
                 >
                     <TreeOutline onClick={() => expand(website)} expanded={website.expanded} />
-                    <span className="name">{website.name}</span>
+                    <i className="tree-icon website-icon" />
+                    <span className="tree-name">{website.name}</span>
                 </li>
                 {website.expanded && pageList(website)}
             </>

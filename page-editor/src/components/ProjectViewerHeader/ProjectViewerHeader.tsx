@@ -23,9 +23,19 @@ const Header: React.FC<Props> = observer(() => {
 
     function tabContent(t: ProjectTab) {
         if (t.type === ProjectTabType.ComponentIntance) {
-            return <span>{t.editedObject.componentType.name}</span>;
+            return (
+                <>
+                    <i className="tab-icon component-icon" />
+                    <span className="tab-name">{t.editedObject.componentType.name}</span>
+                </>
+            );
         } else if (t.type === ProjectTabType.PageType) {
-            return <span>{t.editedObject.name}</span>;
+            return (
+                <>
+                    <i className="tab-icon page-icon" />
+                    <span className="tab-name">{t.editedObject.name}</span>
+                </>
+            );
         }
         throw new Error('Unknown tab type');
     }
