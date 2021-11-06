@@ -1,17 +1,14 @@
 import { types, Instance, applySnapshot } from 'mobx-state-tree';
 import IdeConnection, { IdeConnectionModel } from './IdeConnection';
-import PageInstance, { PageInstanceModel } from './PageInstance';
-import PageType, { PageTypeModel } from 'entities/mst/PageType';
+import PageInstance, { PageInstanceModel } from 'entities/mst/PageInstance';
+import PageType from 'entities/mst/PageType';
 import ComponentInstance, { ComponentInstanceModel } from 'entities/mst/ComponentInstance';
-import ComponentsContainer, { ComponentsContainerModel } from './ComponentsContainer';
 import { NotificationModel } from './Notification';
-import { ComponentTypeModel } from './ComponentType';
 import { SelectableModel } from './Selectable';
-import { ComponentType } from 'react';
 import WebSite, { WebSiteModel } from './WebSite';
 
 export enum ProjectTabType {
-    PageType = 'PageType',
+    PageInstance = 'PageInstance',
     ComponentIntance = 'ComponentIntance',
 }
 
@@ -20,7 +17,7 @@ export const ProjectTabModel = types
         SelectableModel,
         types.model({
             type: types.enumeration<ProjectTabType>(Object.values(ProjectTabType)),
-            editedObject: types.reference(types.union(ComponentInstanceModel, PageTypeModel)),
+            editedObject: types.reference(types.union(ComponentInstanceModel, PageInstanceModel)),
         }),
     )
     .views((self) => ({
@@ -28,8 +25,8 @@ export const ProjectTabModel = types
             switch (self.type) {
                 case ProjectTabType.ComponentIntance:
                     return (self.editedObject as ComponentInstance).componentType;
-                case ProjectTabType.PageType:
-                    return self.editedObject as PageType;
+                case ProjectTabType.PageInstance:
+                    return (self.editedObject as PageInstance).pageType;
                 default:
                     throw new Error('Unknown tab type.');
             }
@@ -122,12 +119,12 @@ export const UiStoreModel = types
             self.selectedIdeConnectionType = ideConnectionType;
             self.selectedProject = projectName;
         },
-        showTabForEditedPage(pageType: PageType) {
-            let tab = this.findTabFor(pageType);
+        showTabForEditedPage(pageInstance: PageInstance) {
+            let tab = this.findTabFor(pageInstance);
             if (!tab) {
                 tab = ProjectTabModel.create({
-                    type: ProjectTabType.PageType,
-                    editedObject: pageType.id,
+                    type: ProjectTabType.PageInstance,
+                    editedObject: pageInstance.id,
                 });
                 self.openedTabs.push(tab);
             }

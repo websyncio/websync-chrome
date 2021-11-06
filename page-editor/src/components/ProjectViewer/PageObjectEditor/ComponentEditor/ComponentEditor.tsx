@@ -24,6 +24,7 @@ const ComponentEditor: React.FC<Props> = observer(({ componentType, componentIns
         const baseType: IComponentsContainer = pageObject.baseType;
         return (
             <>
+                {/* <MatchUrlNotifications currentPageInstance={componentInstance}/> */}
                 {baseType && componentContainers(inheritanceLevel + 1, pageObject.baseType)}
                 <ComponentsContainer
                     pageObject={pageObject}

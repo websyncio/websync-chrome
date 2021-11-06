@@ -20,24 +20,24 @@ const WebSitesTree: React.FC<Props> = observer(({ websites, onSelected }) => {
         website.toggleExpanded();
     }
 
-    function editPageObject(po) {
-        uiStore.showTabForEditedPage(po);
+    function editPageObject(pi: PageInstance) {
+        uiStore.showTabForEditedPage(pi);
     }
 
     function pageList(website: WebSite) {
         return (
             <ul className="pages-list">
-                {website.pageInstances.map((p) => (
+                {website.pageInstances.map((pi) => (
                     <li
-                        className={`website-page selectable ${p.selected ? 'selected' : ''}`}
-                        key={p.pageType.name}
-                        onClick={() => onSelected(website, p)}
-                        onDoubleClick={() => editPageObject(p.pageType)}
+                        className={`website-page selectable ${pi.selected ? 'selected' : ''}`}
+                        key={pi.pageType.name}
+                        onClick={() => onSelected(website, pi)}
+                        onDoubleClick={() => editPageObject(pi)}
                         title="Double click to edit page"
                     >
                         <i className="tree-icon page-icon" />
-                        <span className="tree-name">{p.pageType.name}</span>
-                        {uiStore.matchingPages.map((mp) => mp.id).includes(p.id) && <span className="match-circle" />}
+                        <span className="tree-name">{pi.pageType.name}</span>
+                        {uiStore.matchingPages.map((mp) => mp.id).includes(pi.id) && <span className="match-circle" />}
                     </li>
                 ))}
             </ul>

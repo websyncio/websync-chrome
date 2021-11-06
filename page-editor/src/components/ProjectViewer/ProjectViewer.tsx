@@ -10,6 +10,7 @@ import ComponentEditor from 'components/ProjectViewer/PageObjectEditor/Component
 import WebsiteSelector from 'components/ProjectViewer/WebsiteSelector/WebsiteSelector';
 import WebSite from 'entities/mst/WebSite';
 import PageInstance from 'entities/mst/PageInstance';
+import ComponentInstance from 'entities/mst/ComponentInstance';
 // import Explorer from './Explorer/Explorer';
 
 interface Props {}
@@ -36,10 +37,10 @@ const ProjectViewer: React.FC<Props> = observer(() => {
 
     function tabContent(tab: ProjectTab) {
         switch (tab.type) {
-            case ProjectTabType.PageType:
-                return <PageEditor pageObject={tab.editedObject} />;
+            case ProjectTabType.PageInstance:
+                return <PageEditor pageInstance={tab.editedObject as PageInstance} />;
             case ProjectTabType.ComponentIntance:
-                return <ComponentEditor componentInstance={tab.editedObject} />;
+                return <ComponentEditor componentInstance={tab.editedObject as ComponentInstance} />;
             default:
                 throw new Error('Invalid tab type.');
         }

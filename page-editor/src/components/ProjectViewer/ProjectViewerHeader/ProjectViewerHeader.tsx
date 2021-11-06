@@ -6,6 +6,8 @@ import './ProjectViewerHeader.sass';
 import CloseButton from 'components-common/CloseButton/CloseButton';
 import PageInstance from 'entities/mst/PageInstance';
 import { ProjectTab, ProjectTabType } from 'entities/mst/UiStore';
+import ComponentInstance from 'entities/mst/ComponentInstance';
+import MatchingPage from './MatchingPage/MatchingPage';
 
 interface Props {}
 
@@ -18,7 +20,7 @@ const Header: React.FC<Props> = observer(() => {
     }
 
     function onMatchedPageClick(pi: PageInstance) {
-        uiStore.showTabForEditedPage(pi.pageType);
+        uiStore.showTabForEditedPage(pi);
     }
 
     function tabContent(t: ProjectTab) {
@@ -26,14 +28,14 @@ const Header: React.FC<Props> = observer(() => {
             return (
                 <>
                     <i className="tab-icon component-icon" />
-                    <span className="tab-name">{t.editedObject.componentType.name}</span>
+                    <span className="tab-name">{(t.editedObject as ComponentInstance).componentType.name}</span>
                 </>
             );
-        } else if (t.type === ProjectTabType.PageType) {
+        } else if (t.type === ProjectTabType.PageInstance) {
             return (
                 <>
                     <i className="tab-icon page-icon" />
-                    <span className="tab-name">{t.editedObject.name}</span>
+                    <span className="tab-name">{(t.editedObject as PageInstance).pageType.name}</span>
                 </>
             );
         }
@@ -84,10 +86,9 @@ const Header: React.FC<Props> = observer(() => {
                 Project Explorer ({uiStore.selectedProject})
             </div>
             {openedTabs()}
-            <div className="matched-pages-container">
-                <span>Matched pages: </span>
-                {matchedPages()}
-            </div>
+            <span className="header-actions">
+                <MatchingPage />
+            </span>
         </div>
     );
 });

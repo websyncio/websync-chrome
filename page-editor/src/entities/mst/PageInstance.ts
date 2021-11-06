@@ -1,6 +1,7 @@
-import { types, Instance } from 'mobx-state-tree';
+import { types, Instance, getParentOfType } from 'mobx-state-tree';
 import { PageTypeModel } from './PageType';
 import { SelectableModel } from './Selectable';
+import WebSite, { WebSiteModel } from './WebSite';
 
 export const PageInstanceModel = types
     .compose(
@@ -12,6 +13,11 @@ export const PageInstanceModel = types
             url: types.optional(types.string, ''),
         }),
     )
+    .views((self) => ({
+        get website(): WebSite {
+            return getParentOfType(self, WebSiteModel);
+        },
+    }))
     .actions((self) => ({
         setUrl(newUrl) {
             self.url = newUrl;
