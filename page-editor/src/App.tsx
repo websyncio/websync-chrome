@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import 'App.sass';
 
 import 'semantic-ui-css/semantic.min.css';
@@ -19,7 +19,13 @@ const App: React.FC = observer(() => {
     const ideProxies: IIdeProxy[] = [IDEAConnection.instance()];
     const { projectStore, uiStore }: RootStore = useRootStore();
 
-    DependencyContainer.get<IUrlSynchronizationService>(TYPES.UrlSynchronizationService);
+    const urlSynchronizationService = DependencyContainer.get<IUrlSynchronizationService>(
+        TYPES.UrlSynchronizationService,
+    );
+
+    useEffect(() => {
+        urlSynchronizationService.requestCurrentUrl();
+    }, []);
 
     // useLayoutEffect(() => {
     //     SelectorsBagService.init();

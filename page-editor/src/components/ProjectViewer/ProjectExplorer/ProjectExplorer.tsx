@@ -9,18 +9,11 @@ import './ProjectExplorer.sass';
 import WebSiteDetails from './ProjectTreeItemDetails/WebSiteDetails';
 import PageInstanceDetails from './ProjectTreeItemDetails/PageInstanceDetails';
 // import Selectable from 'entities/mst/Selectable';
-import IIdeProxy from 'connections/IDE/IIdeConnection';
-import { DependencyContainer, TYPES } from 'inversify.config';
-import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
 
 interface Props {}
 
 const Explorer: React.FC<Props> = observer(() => {
     const { projectStore }: RootStore = useRootStore();
-
-    const urlSynchronizationService = DependencyContainer.get<IUrlSynchronizationService>(
-        TYPES.UrlSynchronizationService,
-    );
 
     // const [selectedWebSite, setSelectedWebSite] = useState<WebSite | undefined>(undefined);
     // const [selectedPageInstance, setSelectedPageInstance] = useState<PageInstance | undefined>(undefined);
@@ -38,10 +31,6 @@ const Explorer: React.FC<Props> = observer(() => {
             ws.select();
         }
     }
-
-    useEffect(() => {
-        urlSynchronizationService.initUrlSynchro();
-    }, []);
 
     return (
         <div id="projectExplorer" className="hbox full-height">

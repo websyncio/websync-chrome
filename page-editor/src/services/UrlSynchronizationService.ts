@@ -6,6 +6,7 @@ import SelectorEditorConnection, { MessageTypes, MessageTargets } from '../conne
 import { RootStore } from '../context';
 import PageInstance from 'entities/mst/PageInstance';
 import Reactor from '../utils/Reactor';
+import WebSite from 'entities/mst/WebSite';
 
 @injectable()
 export class UrlSynchronizationService implements IUrlSynchronizationService {
@@ -18,27 +19,28 @@ export class UrlSynchronizationService implements IUrlSynchronizationService {
     }
 
     onUrlChanged(data) {
+        console.log('on url changed', data);
         const { url } = data;
-        this.reactor.dispatchEvent(MessageTypes.UrlChanged);
-        const matchedPages: PageInstance[] = [];
-        RootStore.projectStore.webSites.map((site) => {
-            console.log('onurlchanged');
-            if (url.toLowerCase().indexOf(site.url.toLowerCase()) === 0) {
-                const urlC = new URL(url.toLowerCase());
-                const pathname = urlC.pathname;
+        this.reactor.dispatchEvent(MessageTypes.UrlChanged, data);
 
-                site.pageInstances.map((pi: PageInstance) => {
-                    if (pathname === pi.url) {
-                        matchedPages.push(pi);
-                    }
-                });
-            }
-            return site;
-        });
-        RootStore.uiStore.updateMathchedPages(matchedPages);
+        // const matchingWebsite: WebSite = RootStore.projectStore.webSites.find((ws) => {
+        //     return url.toLowerCase().indexOf(ws.url.toLowerCase()) === 0;
+        // });
+
+        // const matchingPages: PageInstance[] = [];
+        // const pathname = new URL(url.toLowerCase()).pathname;
+        // matchingWebsite.pageInstances.forEach((pi: PageInstance) => {
+        //     if (pathname === pi.url) {
+        //         matchingPages.push(pi);
+        //     }
+        // });
+
+        RootStore.uiStore.setCurrentUrl(url);
+        // RootStore.uiStore.setMatchingWebsite(matchingWebsite);
+        // RootStore.uiStore.setMathchingPages(matchingPages);
     }
 
-    initUrlSynchro() {
+    requestCurrentUrl() {
         this.selectorEditorConnection.postMessage(MessageTypes.GetUrlRequest, null, MessageTargets.ContentPage);
     }
 

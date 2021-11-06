@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import IComponentsContainer from 'entities/mst/ComponentsContainer';
-import ComponentsContainer from './ComponentsContainer/ComponentsContainer';
+import ComponentsContainer from '../ComponentsContainer/ComponentsContainer';
 import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
 import ComponentInstance from 'entities/mst/ComponentInstance';

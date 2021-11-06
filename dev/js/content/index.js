@@ -178,6 +178,7 @@ function sendUrlChangedMessage() {
 	let data = {
 		url: getCurrentUrl()
 	};
+	console.log('send url changed message', data);
 	sendMessageToBackground(BackgroundMessages.UrlChanged, Sources.PageEditor, data);
 }
 

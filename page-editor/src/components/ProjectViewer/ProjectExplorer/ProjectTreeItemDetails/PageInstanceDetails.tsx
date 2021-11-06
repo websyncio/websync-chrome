@@ -34,7 +34,7 @@ const PageInstanceDetails: React.FC<Props> = observer(({ pageInstance }) => {
     return (
         <div className="details-wrap">
             <div className="pageinstance-name">
-                {uiStore.matchedPages.map((mp) => mp.id).includes(pageInstance.id) ? (
+                {uiStore.matchingPages.map((mp) => mp.id).includes(pageInstance.id) ? (
                     <div> Page matched </div>
                 ) : (
                     <div>

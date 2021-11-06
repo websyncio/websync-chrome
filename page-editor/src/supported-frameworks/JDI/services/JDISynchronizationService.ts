@@ -10,6 +10,9 @@ import IProjectSynchronizerService from 'services/ISynchronizationService';
 @injectable()
 export default class JDISynchronizationService implements IProjectSynchronizerService {
     constructor(@inject(TYPES.IDEAConnection) private ideaConnection: IDEAConnection) {}
+    createWebsite(name: string, url: string) {
+        throw new Error('Method not implemented.');
+    }
     createComponentType(typeName: string, parentId: string, baseType: string | null): void {
         if (!RootStore.uiStore.selectedProject) {
             throw new Error('Project not set');

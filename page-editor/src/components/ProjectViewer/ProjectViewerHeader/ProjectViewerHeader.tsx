@@ -56,7 +56,7 @@ const Header: React.FC<Props> = observer(() => {
     }
 
     function matchedPages() {
-        return uiStore.matchedPages.map((pi: PageInstance) => (
+        return uiStore.matchingPages.map((pi: PageInstance) => (
             <div key={pi.id} onClick={() => onMatchedPageClick(pi)} className="matched-page">
                 <span> {pi.name} </span>
             </div>

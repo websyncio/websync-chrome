@@ -8,6 +8,7 @@ import { NotificationModel } from './Notification';
 import { ComponentTypeModel } from './ComponentType';
 import { SelectableModel } from './Selectable';
 import { ComponentType } from 'react';
+import WebSite, { WebSiteModel } from './WebSite';
 
 export enum ProjectTabType {
     PageType = 'PageType',
@@ -45,10 +46,12 @@ export const UiStoreModel = types
         selectedProjectIsLoaded: types.optional(types.boolean, false),
         openedTabs: types.array(ProjectTabModel),
         blankComponents: types.array(ComponentInstanceModel),
-        matchedPages: types.array(types.reference(PageInstanceModel)),
+        matchingPages: types.array(types.reference(PageInstanceModel)),
         editorSelectedLineIndex: types.optional(types.number, 0),
         editorCaretPosition: types.optional(types.number, 0),
         notification: types.maybeNull(NotificationModel),
+        matchingWebsite: types.maybe(types.reference(WebSiteModel)),
+        currentUrl: types.maybeNull(types.string),
     })
     .views((self) => ({
         // get selectedPageObject() {
@@ -151,8 +154,11 @@ export const UiStoreModel = types
         // removeEditedPageObject(pageObject: ComponentsContainer) {
         //     self.editedPageObjects.remove(pageObject);
         // },
-        updateMathchedPages(pageInstances: PageInstance[]) {
-            self.matchedPages.replace(pageInstances);
+        setMatchingWebsite(website: WebSite) {
+            self.matchingWebsite = website;
+        },
+        setMathchingPages(pageInstances: PageInstance[]) {
+            self.matchingPages.replace(pageInstances);
         },
         generateBlankComponents(selectors) {
             applySnapshot(
@@ -171,6 +177,9 @@ export const UiStoreModel = types
         deleteBlankComponent(component: ComponentInstance) {
             self.blankComponents.remove(component);
             component.delete();
+        },
+        setCurrentUrl(url) {
+            self.currentUrl = url;
         },
     }));
 
