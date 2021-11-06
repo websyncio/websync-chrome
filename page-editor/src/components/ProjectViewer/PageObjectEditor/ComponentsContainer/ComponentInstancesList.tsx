@@ -1,5 +1,5 @@
 import React, { useLayoutEffect } from 'react';
-import ComponentInstanceProps from 'components/PageObjectEditor/ComponentInstances/ComponentInstanceProps';
+import ComponentInstanceProps from 'components/ProjectViewer/PageObjectEditor/ComponentInstances/ComponentInstanceProps';
 import { observer } from 'mobx-react';
 import './ComponentInstancesList.sass';
 import IComponentInstance from 'entities/mst/ComponentInstance';

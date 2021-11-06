@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useState } from 'react';
 import IComponentInstance from 'entities/mst/ComponentInstance';
 import AttributeModel from 'entities/mst/Attribute';
 import ParameterModel from 'entities/mst/Parameter';
-import RootSelectorAttribute from 'components/PageObjectEditor/InitializationAttributes/RootSelectorAttribute';
+import RootSelectorAttribute from 'components/ProjectViewer/PageObjectEditor/InitializationAttributes/RootSelectorAttribute';
 import { GenericAttributes } from 'supported-frameworks/JDI/JDIInitializationAttributes';
 import { observer } from 'mobx-react';
 import TypeNameEditor from '../TypeNameEditor/TypeNameEditor';

@@ -2,7 +2,7 @@ import React from 'react';
 import AttributeModel from 'entities/mst/Attribute';
 import ParameterModel from 'entities/mst/Parameter';
 import { observer } from 'mobx-react';
-import Selector from 'components/PageObjectEditor/InitializationAttributes/Selector';
+import Selector from 'components/ProjectViewer/PageObjectEditor/InitializationAttributes/Selector';
 import './RootSelectorAttribute.sass';
 import IAttributeToXcssMapper from 'services/IAttributeToXcssMapper';
 import { DependencyContainer, TYPES } from 'inversify.config';

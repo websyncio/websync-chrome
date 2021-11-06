@@ -1,7 +1,7 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { observer } from 'mobx-react';
-import ComponentInstanceProps from 'components/PageObjectEditor/ComponentInstances/ComponentInstanceProps';
-import TypeNameEditor from 'components/PageObjectEditor/TypeNameEditor/TypeNameEditor';
+import ComponentInstanceProps from 'components/ProjectViewer/PageObjectEditor/ComponentInstances/ComponentInstanceProps';
+import TypeNameEditor from 'components/ProjectViewer/PageObjectEditor/TypeNameEditor/TypeNameEditor';
 import './BlankComponentInstance.sass';
 import { DependencyContainer, TYPES } from 'inversify.config';
 import ISelectorsBagService from 'services/ISelectorsBagService';

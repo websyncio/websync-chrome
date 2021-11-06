@@ -102,7 +102,8 @@ const PageEditor: React.FC<Props> = observer(({ pageObject }) => {
         <div className="page-editor flex-auto">
             <ul className="page-editor-header">
                 <li className="current-page-status">
-                    {pageObject.name} does not match current browser URL, would you like to{' '}
+                    <span className="page-name">{pageObject.name}</span> does not match current browser URL, would you
+                    like to{' '}
                     <span className="action-button" onClick={navigateToPage}>
                         Navigate to {pageObject.name}
                     </span>{' '}
