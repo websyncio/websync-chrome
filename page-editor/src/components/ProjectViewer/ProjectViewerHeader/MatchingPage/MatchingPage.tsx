@@ -16,10 +16,21 @@ const MatchingPage: React.FC<Props> = observer(() => {
         uiStore.showTabForEditedPage(pageInstance);
     }
 
+    function createPage() {
+        console.log('Create page');
+    }
+
     function matchingPage() {
         switch (uiStore.matchingPages.length) {
             case 0:
-                return <>No matching page</>;
+                return (
+                    <>
+                        No matching page:{' '}
+                        <span className="action-button" onClick={createPage}>
+                            Create Page
+                        </span>
+                    </>
+                );
             case 1:
                 return (
                     <>

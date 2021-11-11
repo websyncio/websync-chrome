@@ -43,35 +43,36 @@ const MatchUrlNotifications: React.FC<Props> = observer(({ currentPageInstance }
     }
 
     function matchingPageStatus() {
-        if (uiStore.matchingPages.length === 1) {
-            if (uiStore.matchingPages[0] !== currentPageInstance) {
-                return (
-                    <li className="matching-page-status">
-                        Browser URL match{' '}
-                        <span className="page-name" onClick={() => editPageObject(uiStore.matchingPages[0])}>
-                            {uiStore.matchingPages[0].name}
-                        </span>
-                        in <span className="site-name">{uiStore.matchingWebsite.name}</span>. Would you like to
-                        <span className="action-button" onClick={() => editPageObject(uiStore.matchingPages[0])}>
-                            Edit {uiStore.matchingPages[0].name}
-                        </span>{' '}
-                        ?
-                    </li>
-                );
-            }
-        } else if (uiStore.matchingPages.length > 1) {
+        // if (uiStore.matchingPages.length === 1) {
+        //     if (uiStore.matchingPages[0] !== currentPageInstance) {
+        //         return (
+        //             <li className="matching-page-status">
+        //                 Browser URL match{' '}
+        //                 <span className="page-name" onClick={() => editPageObject(uiStore.matchingPages[0])}>
+        //                     {uiStore.matchingPages[0].name}
+        //                 </span>
+        //                 in <span className="site-name">{uiStore.matchingWebsite.name}</span>. Would you like to
+        //                 <span className="action-button" onClick={() => editPageObject(uiStore.matchingPages[0])}>
+        //                     Edit {uiStore.matchingPages[0].name}
+        //                 </span>{' '}
+        //                 ?
+        //             </li>
+        //         );
+        //     }
+        // } else
+        if (uiStore.matchingPages.length > 1) {
             return (
                 <li className="matching-page-status">
-                    Several pages match current browser URL: {matchingPagesList(uiStore.matchingPages)}
+                    Several pages match current URL: {matchingPagesList(uiStore.matchingPages)}
                 </li>
             );
-        } else {
+        } else if (uiStore.matchingPages.length === 0) {
             return (
                 <li className="matching-page-status">
-                    Browser URL matches <span className="site-name">{uiStore.matchingWebsite.name}</span>, but does not
+                    Current URL matches <span className="site-name">{uiStore.matchingWebsite.name}</span>, but does not
                     match any page in it. Would you like to{' '}
                     <span className="action-button" onClick={createNewPage}>
-                        Create New Page
+                        Create Page
                     </span>{' '}
                     in <span className="site-name">{uiStore.matchingWebsite.name}</span> for this URL?
                 </li>
@@ -80,15 +81,11 @@ const MatchUrlNotifications: React.FC<Props> = observer(({ currentPageInstance }
     }
 
     function currentPageMatchStatus() {
-        if (
-            currentPageInstance &&
-            uiStore.matchingPages.length === 1 &&
-            uiStore.matchingPages[0] !== currentPageInstance
-        ) {
+        if (currentPageInstance && !uiStore.matchingPages.find((p) => p === currentPageInstance)) {
             return (
                 <li className="current-page-status">
                     <span className="page-name">{currentPageInstance.pageType.name}</span> does NOT match current
-                    browser URL, would you like to{' '}
+                    current URL, would you like to{' '}
                     <span className="action-button" onClick={() => navigateToPage(currentPageInstance)}>
                         Navigate to {currentPageInstance.name}
                     </span>{' '}
@@ -101,7 +98,7 @@ const MatchUrlNotifications: React.FC<Props> = observer(({ currentPageInstance }
     return (
         <ul className="match-url-notifications">
             {currentPageMatchStatus()}
-            {matchingPageStatus()}
+            {/* {matchingPageStatus()} */}
         </ul>
     );
 });

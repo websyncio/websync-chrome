@@ -21,10 +21,12 @@ const WebsiteSelector: React.FC<Props> = observer(({}) => {
 
     function getCurrentHost() {
         if (uiStore.currentUrl) {
-            return new URL(uiStore.currentUrl).host;
+            return new URL(uiStore.currentUrl).origin;
         }
         return '';
     }
+
+    const currentHost: string = getCurrentHost();
 
     function navigateTo(url: string) {
         urlSynchronizationService.redirectToUrl(url);
@@ -32,8 +34,8 @@ const WebsiteSelector: React.FC<Props> = observer(({}) => {
 
     function websitesList() {
         return projectStore.webSites.map((ws) => (
-            <div key={ws.id}>
-                <i className="page-icon" />
+            <div className="flex-left website" key={ws.id}>
+                <i className="website-icon" />
                 <span>{ws.name}</span>:&nbsp;
                 <a href="#" onClick={() => navigateTo(ws.url)}>
                     {ws.url}
@@ -47,22 +49,39 @@ const WebsiteSelector: React.FC<Props> = observer(({}) => {
     }
 
     return (
-        <div className="website-selector">
+        <div className="website-selector full-height flex-center">
             <div className="flex-center">
-                <span>{uiStore.currentUrl}</span>
+                <span className="current-url">{uiStore.currentUrl}</span>
             </div>
-            <div className="flex-center">
-                <div className="current-host">{getCurrentHost()}</div>
-                <div className="websites-list">{websitesList()}</div>
+            <div className="flex-center no-matching-website-panel">
+                <i className="warning-icon" />
+                <div className="warning">
+                    <div>
+                        Current host <span className="current-host">{currentHost}</span> does not match any website in
+                        project <strong>{uiStore.selectedProject}</strong>.
+                    </div>
+                    <div>You may match it manually.</div>
+                </div>
             </div>
-            <div className="flex-center">
-                <span
-                    className={`action-button`}
-                    title={`${'Add component to page object (Ctrl+Enter)'}`}
-                    onClick={onCreateWebSite}
-                >
-                    Create WebSite
-                </span>
+            <div className="flex-center mx-auto select-website-panel">
+                <div className="flex-column current-host-container">
+                    Match <span className="current-host">{currentHost}</span> with:
+                </div>
+                <div className="flex-column websites-list-container">{websitesList()}</div>
+            </div>
+            <div className="text-divider mx-auto">or</div>
+            <div className="flex-center create-website-panel">
+                <div className="message">
+                    You may{' '}
+                    <span
+                        className={`create-website-button action-button`}
+                        title={`${'Add component to page object (Ctrl+Enter)'}`}
+                        onClick={onCreateWebSite}
+                    >
+                        Create Website
+                    </span>{' '}
+                    for <span className="current-host">{currentHost}</span>.
+                </div>
             </div>
         </div>
     );
