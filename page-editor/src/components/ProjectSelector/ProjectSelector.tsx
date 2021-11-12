@@ -14,7 +14,7 @@ interface Props {
 }
 
 const ProjectSelector: React.FC<Props> = observer(({ ideProxies }) => {
-    const rootStore: RootStore = useRootStore();
+    const { projectStore, uiStore } = useRootStore();
     const selectorsBagService = DependencyContainer.get<ISelectorsBagService>(TYPES.SelectorsBagService);
 
     function onProjectSelected(ideConnection: IdeConnection, projectName: string) {
@@ -23,7 +23,7 @@ const ProjectSelector: React.FC<Props> = observer(({ ideProxies }) => {
         if (!ideProxy) {
             throw new Error('Invalid connection type: ' + ideConnection.type);
         }
-        rootStore.uiStore.setSelectedProject(ideConnection.type, projectName);
+        uiStore.setSelectedProject(ideConnection.type, projectName);
         ideProxy.requestProjectData(projectName);
         selectorsBagService.requestSelectorsList();
     }
@@ -33,7 +33,7 @@ const ProjectSelector: React.FC<Props> = observer(({ ideProxies }) => {
             <IdeProject
                 key={p}
                 projectName={p}
-                isSelected={rootStore.uiStore.selectedProject == p}
+                isSelected={uiStore.selectedProject == p}
                 onProjectSelected={() => onProjectSelected(ideConnection, p)}
             />
         ));
@@ -48,7 +48,26 @@ const ProjectSelector: React.FC<Props> = observer(({ ideProxies }) => {
         );
     }
 
-    return <div id="projectSelector">{rootStore.uiStore.ideConnections.map(ideConnection)}</div>;
+    return (
+        <div className="projects-selector flex-center full-height">
+            {uiStore.ideConnections.length ? (
+                <div id="projectSelector">{uiStore.ideConnections.map(ideConnection)}</div>
+            ) : (
+                <div className="no-connections-panel">
+                    <h4>No IDE connections</h4>
+                    <div style={{ marginBottom: '2px' }}>To work with WebSync, please:</div>
+                    <ul className="obligatory-actions">
+                        <li>
+                            Install WebSync extension to <i className="idea-icon" /> IDEA
+                        </li>
+                        <li>
+                            Start <i className="idea-icon" /> IDEA and open the project with your tests
+                        </li>
+                    </ul>
+                </div>
+            )}
+        </div>
+    );
 });
 
 export default ProjectSelector;

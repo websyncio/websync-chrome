@@ -75,12 +75,13 @@ const WebsiteSelector: React.FC<Props> = observer(({}) => {
                     You may{' '}
                     <span
                         className={`create-website-button action-button`}
-                        title={`${'Add component to page object (Ctrl+Enter)'}`}
+                        title={`Create Website for ${currentHost}`}
                         onClick={onCreateWebSite}
                     >
                         Create Website
                     </span>{' '}
-                    for <span className="current-host">{currentHost}</span>.
+                    for <span className="current-host">{currentHost}</span> in project{' '}
+                    <strong>{uiStore.selectedProject}</strong>.
                 </div>
             </div>
         </div>

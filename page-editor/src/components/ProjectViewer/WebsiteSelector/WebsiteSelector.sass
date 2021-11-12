@@ -1,38 +1,3 @@
-.flex-center
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-.flex-left
-    display: flex;
-    justify-content: left;
-    align-items: center;
-
-.flex-column
-    flex-basis: 100%
-
-.mx-auto
-    margin-left: auto
-    margin-right: auto
-
-
-.text-divider
-  display: flex;
-  align-items: center;
-  --text-divider-gap: 1rem; // set a customizable gap between label and lines
-
-.text-divider::before,
-.text-divider::after 
-  content: '';
-  height: 1px;
-  background-color: silver;
-  flex-grow: 1;
-
-.text-divider::before
-  margin-right: var(--text-divider-gap);
-
-.text-divider::after 
-  margin-left: var(--text-divider-gap);
 
 .no-matching-website-panel
     margin-top: 10px
@@ -98,6 +63,8 @@
         width: 16px
         height: 16px
         display: inline-block
+        margin-top: 2px
+        margin-right: 2px
 
     .current-host
         font-weight: 500

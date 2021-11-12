@@ -33,6 +33,41 @@ ul
 .details-wrap
     padding: 2px
 
+.flex-center
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+.flex-left
+    display: flex;
+    justify-content: left;
+    align-items: center;
+
+.flex-column
+    flex-basis: 100%
+
+.mx-auto
+    margin-left: auto
+    margin-right: auto
+
+
+.text-divider
+  display: flex;
+  align-items: center;
+  --text-divider-gap: 1rem; // set a customizable gap between label and lines
+
+.text-divider::before,
+.text-divider::after 
+  content: '';
+  height: 1px;
+  background-color: silver;
+  flex-grow: 1;
+
+.text-divider::before
+  margin-right: var(--text-divider-gap);
+
+.text-divider::after 
+  margin-left: var(--text-divider-gap);
 
 .website-icon
     background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAABKklEQVQ4jaXSvSvFYRQH8I8bAwZKFtdEMZikZDAzGq6Bv8Fgx59gIW8LGQzXxKKQ2eIlFIli9FIUk0GX4Xfo1y+Xck89T+f5nrfvc86hQqkqg7djCB3xvsImbv5KWI9VPOEDM5gN/QkrqCvHoBE7OMA9ujAatnWcoQU9GMRLtvoS5kI/RW/K1hcYzGMhG5xDAbWhD2fYfWG5+EIh9OTCtKRRrZjCA7bRFGc7sEnkcR0xqiPBMyYwgGMU0YxFlCLJI/oxjl2cp79QCMcNvEXiIi7iFAN7C59SxHwzOMUWxrCGdxxiL+yNge2HT02qqZU1MS2LkhF9McqO8ST0Bakxpqs0SBbpCHd+XqQ8uiWL9JplIOitKL/Ky35Z5bS0YQSd8b6UTOK2jP//5RMJ50rVT2spYgAAAABJRU5ErkJggg==")
@@ -45,5 +80,9 @@ ul
 
 .component-icon
     background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAZQAAAGUBqtYXrwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAKCSURBVDiNpVNNT1NBFD1zZ+a1pSA2UqTGaIgEiFYSEiXEpQtjm8adScuq6NKtf8C9v4AovJgQCRrjpl0TjIRIaMizEhYiwTRWaLV8tJbHe2/GBbz6EU1MPLs5c+/ce8+5w7TW8JHL5eJa6xuMsU/4M6JEVEgkEq99gmWnNoLATrAJunkl9BWD4foK57xXa336t+QqERXXm23XX9Uidoi8XCPctKnp7fXZoFHS1OtHep53IZlMms+2z7w0t2K5ZDJpKqViraqkz9ugUdnoHBAzd4eKAIoZc2WtU6IPAIio7ge7gjMAYIztA0AH2TXSbG56/PIHABCZqeI1aN0PJkZ2HczHDJT85IZLEcOlIIBtn9tXgYgCu5+ZfPuGMWwwX8SxieWuRLQ2GJEHVSIaVUpZs7VzJWXDSPd87GaM9XPOF/dcfvF5pWtpdny4AgAibb67CngXmBEYqHhyNSIPqgDgOE6de+oQLsFxnLphGACAL46Mcs3vpU1rjRTbFDPZS0sAljKT1i3l6Ta/VSFEzHHpmxuigBCiJaACcU1kzWTjLwCA/uL3P+PHCEQDxNlqS33XLUuh6tTEoeu6ZcMwYkcVlceUGkqblvHLCGMTy11R7gz6D0gp2z1OO0rAkFK2+/wp6VQ85uVns8citmyUgZGtQzEfkagCQCqVKjx5ZPUSKJhKpQq5XK4fACpOoIdDPvBtFE/H4wsAFjLmypy/SD7CQtV2OYyfuQ6yawT9cPrO8SKlH1tx4jjLtBjedbARM1BSSrVaFq6nAUBr3QEcLxLT6THTKjCIzyLET7wHdkpNhpN+Eud8PZ/PZ293H53z+TKIqOzfa8U2g+QtNsK7Nvvf7/wdA3sjR/Vn+bQAAAAASUVORK5CYII=")
+    background-size: contain
+
+.idea-icon
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' id='Layer_1' x='0px' y='0px' viewBox='0 0 70 70' style='enable-background:new 0 0 70 70;' xml:space='preserve'%3E%3Cg%3E%3Cg%3E%3ClinearGradient id='SVGID_1_' gradientUnits='userSpaceOnUse' x1='0.7898' y1='40.0893' x2='33.3172' y2='40.0893'%3E%3Cstop offset='0.2581' style='stop-color:%23F97A12'/%3E%3Cstop offset='0.4591' style='stop-color:%23B07B58'/%3E%3Cstop offset='0.7241' style='stop-color:%23577BAE'/%3E%3Cstop offset='0.9105' style='stop-color:%231E7CE5'/%3E%3Cstop offset='1' style='stop-color:%23087CFA'/%3E%3C/linearGradient%3E%3Cpolygon style='fill:url(%23SVGID_1_);' points='17.7,54.6 0.8,41.2 9.2,25.6 33.3,35 '/%3E%3ClinearGradient id='SVGID_2_' gradientUnits='userSpaceOnUse' x1='25.7674' y1='24.88' x2='79.424' y2='54.57'%3E%3Cstop offset='0' style='stop-color:%23F97A12'/%3E%3Cstop offset='7.179946e-002' style='stop-color:%23CB7A3E'/%3E%3Cstop offset='0.1541' style='stop-color:%239E7B6A'/%3E%3Cstop offset='0.242' style='stop-color:%23757B91'/%3E%3Cstop offset='0.3344' style='stop-color:%23537BB1'/%3E%3Cstop offset='0.4324' style='stop-color:%23387CCC'/%3E%3Cstop offset='0.5381' style='stop-color:%23237CE0'/%3E%3Cstop offset='0.6552' style='stop-color:%23147CEF'/%3E%3Cstop offset='0.7925' style='stop-color:%230B7CF7'/%3E%3Cstop offset='1' style='stop-color:%23087CFA'/%3E%3C/linearGradient%3E%3Cpolygon style='fill:url(%23SVGID_2_);' points='70,18.7 68.7,59.2 41.8,70 25.6,59.6 49.3,35 38.9,12.3 48.2,1.1 '/%3E%3ClinearGradient id='SVGID_3_' gradientUnits='userSpaceOnUse' x1='63.2277' y1='42.9153' x2='48.2903' y2='-1.7191'%3E%3Cstop offset='0' style='stop-color:%23FE315D'/%3E%3Cstop offset='7.840246e-002' style='stop-color:%23CB417E'/%3E%3Cstop offset='0.1601' style='stop-color:%239E4E9B'/%3E%3Cstop offset='0.2474' style='stop-color:%23755BB4'/%3E%3Cstop offset='0.3392' style='stop-color:%235365CA'/%3E%3Cstop offset='0.4365' style='stop-color:%23386DDB'/%3E%3Cstop offset='0.5414' style='stop-color:%232374E9'/%3E%3Cstop offset='0.6576' style='stop-color:%231478F3'/%3E%3Cstop offset='0.794' style='stop-color:%230B7BF8'/%3E%3Cstop offset='1' style='stop-color:%23087CFA'/%3E%3C/linearGradient%3E%3Cpolygon style='fill:url(%23SVGID_3_);' points='70,18.7 48.7,43.9 38.9,12.3 48.2,1.1 '/%3E%3ClinearGradient id='SVGID_4_' gradientUnits='userSpaceOnUse' x1='10.7204' y1='16.473' x2='55.5237' y2='90.58'%3E%3Cstop offset='0' style='stop-color:%23FE315D'/%3E%3Cstop offset='4.023279e-002' style='stop-color:%23F63462'/%3E%3Cstop offset='0.1037' style='stop-color:%23DF3A71'/%3E%3Cstop offset='0.1667' style='stop-color:%23C24383'/%3E%3Cstop offset='0.2912' style='stop-color:%23AD4A91'/%3E%3Cstop offset='0.5498' style='stop-color:%23755BB4'/%3E%3Cstop offset='0.9175' style='stop-color:%231D76ED'/%3E%3Cstop offset='1' style='stop-color:%23087CFA'/%3E%3C/linearGradient%3E%3Cpolygon style='fill:url(%23SVGID_4_);' points='33.7,58.1 5.6,68.3 10.1,52.5 16,33.1 0,27.7 10.1,0 32.1,2.7 53.7,27.4 '/%3E%3C/g%3E%3Cg%3E%3Crect x='13.7' y='13.5' style='fill:%23000000;' width='43.2' height='43.2'/%3E%3Crect x='17.7' y='48.6' style='fill:%23FFFFFF;' width='16.2' height='2.7'/%3E%3Cpolygon style='fill:%23FFFFFF;' points='29.4,22.4 29.4,19.1 20.4,19.1 20.4,22.4 23,22.4 23,33.7 20.4,33.7 20.4,37 29.4,37 29.4,33.7 26.9,33.7 26.9,22.4 '/%3E%3Cpath style='fill:%23FFFFFF;' d='M38,37.3c-1.4,0-2.6-0.3-3.5-0.8c-0.9-0.5-1.7-1.2-2.3-1.9l2.5-2.8c0.5,0.6,1,1,1.5,1.3 c0.5,0.3,1.1,0.5,1.7,0.5c0.7,0,1.3-0.2,1.8-0.7c0.4-0.5,0.6-1.2,0.6-2.3V19.1h4v11.7c0,1.1-0.1,2-0.4,2.8c-0.3,0.8-0.7,1.4-1.3,2 c-0.5,0.5-1.2,1-2,1.2C39.8,37.1,39,37.3,38,37.3'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")
     background-size: contain
 
