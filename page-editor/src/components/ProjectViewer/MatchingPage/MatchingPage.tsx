@@ -25,8 +25,8 @@ const MatchingPage: React.FC<Props> = observer(() => {
             case 0:
                 return (
                     <>
-                        No matching page:{' '}
-                        <span className="action-button" onClick={createPage}>
+                        No matching page in {uiStore.matchingWebsite.name}
+                        <span className="create-page-btn ws-btn ws-btn__primary" onClick={createPage}>
                             Create Page
                         </span>
                     </>
@@ -34,8 +34,12 @@ const MatchingPage: React.FC<Props> = observer(() => {
             case 1:
                 return (
                     <>
-                        Matching page:{' '}
-                        <a className="page-name" onClick={() => editPageObject(uiStore.matchingPages[0])}>
+                        {uiStore.matchingWebsite.name}&nbsp;/&nbsp;
+                        <a
+                            className="page-name"
+                            onClick={() => editPageObject(uiStore.matchingPages[0])}
+                            title={`Matching page for ${uiStore.currentUrl}`}
+                        >
                             {uiStore.matchingPages[0].pageType.name}
                         </a>
                     </>
@@ -45,7 +49,7 @@ const MatchingPage: React.FC<Props> = observer(() => {
         }
     }
 
-    return <span className="matching-page">{matchingPage()}</span>;
+    return <div className="flex-center matching-page">{matchingPage()}</div>;
 });
 
 export default MatchingPage;

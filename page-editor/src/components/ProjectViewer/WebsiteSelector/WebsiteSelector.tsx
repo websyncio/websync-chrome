@@ -53,28 +53,27 @@ const WebsiteSelector: React.FC<Props> = observer(({}) => {
             <div className="flex-center">
                 <span className="current-url">{uiStore.currentUrl}</span>
             </div>
-            <div className="flex-center no-matching-website-panel">
-                <i className="warning-icon" />
-                <div className="warning">
-                    <div>
-                        Current host <span className="current-host">{currentHost}</span> does not match any website in
-                        project <strong>{uiStore.selectedProject}</strong>.
-                    </div>
-                    <div>You may match it manually.</div>
-                </div>
-            </div>
             <div className="flex-center mx-auto select-website-panel">
-                <div className="flex-column current-host-container">
-                    Match <span className="current-host">{currentHost}</span> with:
+                <div className="flex-center current-host-container">
+                    <div>
+                        <i className="warning-icon" />
+                    </div>
+                    <div className="warning">
+                        <div>
+                            Current host <span className="current-host">{currentHost}</span> does not match any website
+                            in project <strong>{uiStore.selectedProject}</strong>.
+                        </div>
+                        <div>You may match it manually.</div>
+                    </div>
                 </div>
-                <div className="flex-column websites-list-container">{websitesList()}</div>
+                <div className="websites-list-container">{websitesList()}</div>
             </div>
             <div className="text-divider mx-auto">or</div>
             <div className="flex-center create-website-panel">
                 <div className="message">
                     You may{' '}
                     <span
-                        className={`create-website-button action-button`}
+                        className={`create-website-button ws-btn ws-btn__primary`}
                         title={`Create Website for ${currentHost}`}
                         onClick={onCreateWebSite}
                     >

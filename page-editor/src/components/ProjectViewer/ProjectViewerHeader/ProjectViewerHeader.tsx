@@ -7,7 +7,7 @@ import CloseButton from 'components-common/CloseButton/CloseButton';
 import PageInstance from 'entities/mst/PageInstance';
 import { ProjectTab, ProjectTabType } from 'entities/mst/UiStore';
 import ComponentInstance from 'entities/mst/ComponentInstance';
-import MatchingPage from './MatchingPage/MatchingPage';
+import MatchingPage from '../MatchingPage/MatchingPage';
 
 interface Props {}
 
@@ -86,9 +86,7 @@ const Header: React.FC<Props> = observer(() => {
                 Project Explorer ({uiStore.selectedProject})
             </div>
             {openedTabs()}
-            <span className="header-actions">
-                <MatchingPage />
-            </span>
+            <span className="header-actions"></span>
         </div>
     );
 });

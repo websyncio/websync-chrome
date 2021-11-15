@@ -1,10 +1,8 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { useRootStore } from 'context';
-import RootStore from 'entities/mst/RootStore';
 import IIdeProxy from 'connections/IDE/IIdeConnection';
 import IdeConnection from 'entities/mst/IdeConnection';
-import IdeProject from './IdeProject';
 import './ProjectSelector.sass';
 import { DependencyContainer, TYPES } from 'inversify.config';
 import ISelectorsBagService from 'services/ISelectorsBagService';
@@ -30,19 +28,26 @@ const ProjectSelector: React.FC<Props> = observer(({ ideProxies }) => {
 
     function ideProjects(ideConnection: IdeConnection) {
         return ideConnection.projectsList.map((p) => (
-            <IdeProject
-                key={p}
-                projectName={p}
-                isSelected={uiStore.selectedProject == p}
-                onProjectSelected={() => onProjectSelected(ideConnection, p)}
-            />
+            <div key={p} className="ide-project" onClick={() => onProjectSelected(ideConnection, p)}>
+                <i className="jdi-icon" />
+                {p}
+                {uiStore.selectedProject == p && <span className="loader" />}
+            </div>
         ));
+    }
+
+    function getIDEIcon(ideType: string) {
+        if (ideType.toLowerCase() == 'idea') {
+            return <i className="idea-icon" />;
+        }
     }
 
     function ideConnection(ideConnection: IdeConnection) {
         return (
             <>
-                <div className="ide-info">{ideConnection.type}</div>
+                <div className="ide-info">
+                    {getIDEIcon(ideConnection.type)} {ideConnection.type} projects:
+                </div>
                 <div className="ide-projects">{ideProjects(ideConnection)}</div>
             </>
         );
@@ -51,10 +56,10 @@ const ProjectSelector: React.FC<Props> = observer(({ ideProxies }) => {
     return (
         <div className="projects-selector flex-center full-height">
             {uiStore.ideConnections.length ? (
-                <div id="projectSelector">{uiStore.ideConnections.map(ideConnection)}</div>
+                <div className="projects-list-panel">{uiStore.ideConnections.map(ideConnection)}</div>
             ) : (
                 <div className="no-connections-panel">
-                    <h4>No IDE connections</h4>
+                    <h4>No IDE connections!</h4>
                     <div style={{ marginBottom: '2px' }}>To work with WebSync, please:</div>
                     <ul className="obligatory-actions">
                         <li>

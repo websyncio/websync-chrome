@@ -11,6 +11,7 @@ import WebsiteSelector from 'components/ProjectViewer/WebsiteSelector/WebsiteSel
 import WebSite from 'entities/mst/WebSite';
 import PageInstance from 'entities/mst/PageInstance';
 import ComponentInstance from 'entities/mst/ComponentInstance';
+import MatchingPage from './MatchingPage/MatchingPage';
 // import Explorer from './Explorer/Explorer';
 
 interface Props {}
@@ -52,6 +53,7 @@ const ProjectViewer: React.FC<Props> = observer(() => {
                 <div id="projectViewer" className="full-height">
                     <ProjectViewerHeader />
                     {uiStore.selectedTab ? tabContent(uiStore.selectedTab) : <ProjectExplorer />}
+                    <MatchingPage />
                 </div>
             ) : (
                 <WebsiteSelector />

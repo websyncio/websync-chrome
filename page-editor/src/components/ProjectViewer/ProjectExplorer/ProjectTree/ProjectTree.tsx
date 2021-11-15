@@ -29,7 +29,7 @@ const WebSitesTree: React.FC<Props> = observer(({ websites, onSelected }) => {
             <ul className="pages-list">
                 {website.pageInstances.map((pi) => (
                     <li
-                        className={`website-page selectable ${pi.selected ? 'selected' : ''}`}
+                        className={`tree-item website-page selectable ${pi.selected ? 'selected' : ''}`}
                         key={pi.pageType.name}
                         onClick={() => onSelected(website, pi)}
                         onDoubleClick={() => editPageObject(pi)}
@@ -37,7 +37,7 @@ const WebSitesTree: React.FC<Props> = observer(({ websites, onSelected }) => {
                     >
                         <i className="tree-icon page-icon" />
                         <span className="tree-name">{pi.pageType.name}</span>
-                        {uiStore.matchingPages.map((mp) => mp.id).includes(pi.id) && <span className="match-circle" />}
+                        {uiStore.matchingPages.includes(pi) && <span className="match-circle" />}
                     </li>
                 ))}
             </ul>
@@ -49,7 +49,7 @@ const WebSitesTree: React.FC<Props> = observer(({ websites, onSelected }) => {
             <>
                 <li
                     key={website.id}
-                    className={`website selectable ${website.expanded ? 'expanded' : ''} ${
+                    className={`tree-item website selectable ${website.expanded ? 'expanded' : ''} ${
                         website.selected ? 'selected' : ''
                     }`}
                     onClick={() => onSelected(website, null)}
@@ -57,6 +57,7 @@ const WebSitesTree: React.FC<Props> = observer(({ websites, onSelected }) => {
                     <TreeOutline onClick={() => expand(website)} expanded={website.expanded} />
                     <i className="tree-icon website-icon" />
                     <span className="tree-name">{website.name}</span>
+                    {uiStore.matchingWebsite === website && <span className="match-circle" />}
                 </li>
                 {website.expanded && pageList(website)}
             </>

@@ -87,7 +87,7 @@ const MatchUrlNotifications: React.FC<Props> = observer(({ currentPageInstance }
                     <span className="page-name">{currentPageInstance.pageType.name}</span> does NOT match current
                     current URL, would you like to{' '}
                     <span className="action-button" onClick={() => navigateToPage(currentPageInstance)}>
-                        Navigate to {currentPageInstance.name}
+                        Navigate to {currentPageInstance.pageType.name}
                     </span>{' '}
                     ?
                 </li>
