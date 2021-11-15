@@ -19,23 +19,6 @@ interface Props {}
 const ProjectViewer: React.FC<Props> = observer(() => {
     const { uiStore, projectStore }: RootStore = useRootStore();
 
-    const matchingWebsite: WebSite = projectStore.webSites.find((ws) => {
-        return uiStore.currentUrl!.toLowerCase().indexOf(ws.url.toLowerCase()) === 0;
-    });
-
-    const matchingPages: PageInstance[] = [];
-    const pathname = new URL(uiStore.currentUrl!.toLowerCase()).pathname;
-    if (matchingWebsite) {
-        matchingWebsite.pageInstances.forEach((pi: PageInstance) => {
-            if (pathname === pi.url) {
-                matchingPages.push(pi);
-            }
-        });
-    }
-
-    uiStore.setMatchingWebsite(matchingWebsite);
-    uiStore.setMathchingPages(matchingPages);
-
     function tabContent(tab: ProjectTab) {
         switch (tab.type) {
             case ProjectTabType.PageInstance:

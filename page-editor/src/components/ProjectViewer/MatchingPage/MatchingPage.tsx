@@ -1,10 +1,8 @@
 import { useRootStore } from 'context';
 import PageInstance from 'entities/mst/PageInstance';
 import RootStore from 'entities/mst/RootStore';
-import { DependencyContainer, TYPES } from 'inversify.config';
 import { observer } from 'mobx-react';
 import React from 'react';
-import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
 import './MatchingPage.sass';
 
 interface Props {}

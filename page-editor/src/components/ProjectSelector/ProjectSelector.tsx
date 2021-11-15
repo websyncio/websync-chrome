@@ -6,6 +6,8 @@ import IdeConnection from 'entities/mst/IdeConnection';
 import './ProjectSelector.sass';
 import { DependencyContainer, TYPES } from 'inversify.config';
 import ISelectorsBagService from 'services/ISelectorsBagService';
+import WebSite from 'entities/mst/WebSite';
+import PageInstance from 'entities/mst/PageInstance';
 
 interface Props {
     ideProxies: IIdeProxy[];

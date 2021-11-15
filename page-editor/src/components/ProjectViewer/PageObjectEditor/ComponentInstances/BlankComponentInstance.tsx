@@ -116,7 +116,7 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
                         title={`${isAllSet ? 'Add component to page object (Ctrl+Enter)' : 'Specify type and name'}`}
                         onClick={onTakeComponentClick}
                     >
-                        Take
+                        Add
                     </span>
                 </span>
             </div>

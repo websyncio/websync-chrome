@@ -5,6 +5,7 @@ import { DependencyContainer, TYPES } from 'inversify.config';
 import IProjectSynchronizationService from 'services/ISynchronizationService';
 import './WebsiteSelector.sass';
 import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
+import WebSite from 'entities/mst/WebSite';
 
 interface Props {}
 
@@ -32,12 +33,22 @@ const WebsiteSelector: React.FC<Props> = observer(({}) => {
         urlSynchronizationService.redirectToUrl(url);
     }
 
+    function setMatchingWebsite(ws: WebSite) {
+        uiStore.setMatchingWebsite(ws);
+    }
+
     function websitesList() {
         return projectStore.webSites.map((ws) => (
-            <div className="flex-left website" key={ws.id}>
+            <div className="flex-left website" key={ws.id} onClick={() => setMatchingWebsite(ws)}>
                 <i className="website-icon" />
                 <span>{ws.name}</span>:&nbsp;
-                <a href="#" onClick={() => navigateTo(ws.url)}>
+                <a
+                    href="#"
+                    onClick={(e) => {
+                        navigateTo(ws.url);
+                        e.stopPropagation();
+                    }}
+                >
                     {ws.url}
                 </a>
             </div>
