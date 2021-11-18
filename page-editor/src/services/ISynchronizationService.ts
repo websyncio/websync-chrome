@@ -1,10 +1,8 @@
 import ComponentInstance from 'entities/mst/ComponentInstance';
-import ComponentsContainer from 'entities/mst/ComponentsContainer';
-import ComponentType from 'entities/mst/ComponentType';
 import PageInstance from 'entities/mst/PageInstance';
 import WebSite from 'entities/mst/WebSite';
-
 export default interface IProjectSynchronizationService {
+    createPageType(name: string, url: string, website: string);
     createWebsite(name: string, url: string);
     addComponentInstance(component: ComponentInstance): void;
     updateComponentInstance(component: ComponentInstance): void;

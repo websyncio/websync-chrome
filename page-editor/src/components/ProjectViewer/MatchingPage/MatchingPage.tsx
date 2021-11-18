@@ -1,3 +1,4 @@
+import CreatePageModal from 'components/Modals/CreatePageModal';
 import { useRootStore } from 'context';
 import PageInstance from 'entities/mst/PageInstance';
 import RootStore from 'entities/mst/RootStore';
@@ -9,13 +10,14 @@ interface Props {}
 
 const MatchingPage: React.FC<Props> = observer(() => {
     const { projectStore, uiStore }: RootStore = useRootStore();
+    const [createPageModalIsOpen, setCreatePageModalIsOpen] = React.useState(false);
 
     function editPageObject(pageInstance: PageInstance) {
         uiStore.showTabForEditedPage(pageInstance);
     }
 
     function createPage() {
-        console.log('Create page');
+        setCreatePageModalIsOpen(true);
     }
 
     function matchingPage() {
@@ -47,7 +49,16 @@ const MatchingPage: React.FC<Props> = observer(() => {
         }
     }
 
-    return <div className="flex-center matching-page">{matchingPage()}</div>;
+    function closeCreatePageModal() {
+        setCreatePageModalIsOpen(false);
+    }
+
+    return (
+        <>
+            <div className="flex-center matching-page">{matchingPage()}</div>
+            <CreatePageModal isOpen={createPageModalIsOpen} onRequestClose={closeCreatePageModal} />
+        </>
+    );
 });
 
 export default MatchingPage;

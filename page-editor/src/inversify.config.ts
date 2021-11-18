@@ -11,6 +11,8 @@ import SelectorHighlighter from 'services/SelectorHighlighterService';
 import IDEAConnection from 'connections/IDE/IDEAConnection';
 import ISelectorsBagService from 'services/ISelectorsBagService';
 import IAttributeToXcssMapper from 'services/IAttributeToXcssMapper';
+import IUrlMatcher from 'services/IUrlMatcher';
+import JDIUrlMatcher from 'supported-frameworks/JDI/services/JDIUrlMatcher';
 
 export const TYPES = {
     SynchronizationService: Symbol.for('ProjectSynchronizationService'),
@@ -20,6 +22,7 @@ export const TYPES = {
     SelectorHighlighter: Symbol.for('SelectorHighlighter'),
     IDEAConnection: Symbol.for('IDEAConnection'),
     UrlSynchronizationService: Symbol.for('UrlSynchronizationService'),
+    UrlMatcher: Symbol.for('UrlMatcher'),
     AttributeToXcssMapper: Symbol.for('AttributeToXcssMapper'),
 };
 
@@ -28,7 +31,8 @@ export const DependencyContainer = new Container();
 DependencyContainer.bind<UrlSynchronizationService>(TYPES.UrlSynchronizationService)
     .toDynamicValue(() => {
         const connection = DependencyContainer.get<SelectorEditorConnection>(TYPES.SelectorEditorConnection);
-        return new UrlSynchronizationService(connection);
+        const urlMatcher = DependencyContainer.get<IUrlMatcher>(TYPES.UrlMatcher);
+        return new UrlSynchronizationService(connection, urlMatcher);
     })
     .inSingletonScope();
 
@@ -63,10 +67,13 @@ DependencyContainer.bind<IDEAConnection>(TYPES.IDEAConnection).to(IDEAConnection
 DependencyContainer.bind<ISynchronizationService>(TYPES.SynchronizationService)
     .toDynamicValue(() => {
         const connection = DependencyContainer.get<IDEAConnection>(TYPES.IDEAConnection);
-        return new JDISynchronizationService(connection);
+        const urlMatcher = DependencyContainer.get<IUrlMatcher>(TYPES.UrlMatcher);
+        return new JDISynchronizationService(connection, urlMatcher);
     })
     .inSingletonScope();
 
 DependencyContainer.bind<IAttributeToXcssMapper>(TYPES.AttributeToXcssMapper)
     .to(JDIAttributeToXcssMapper)
     .inSingletonScope();
+
+DependencyContainer.bind<IUrlMatcher>(TYPES.UrlMatcher).to(JDIUrlMatcher).inSingletonScope();

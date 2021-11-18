@@ -1,4 +1,4 @@
-import IDEAConnection from 'connections/IDE/IDEAConnection';
+import IDEAConnection, { MessageTypes } from 'connections/IDE/IDEAConnection';
 import { RootStore } from 'context';
 import ComponentInstance from 'entities/mst/ComponentInstance';
 import PageInstance from 'entities/mst/PageInstance';
@@ -6,13 +6,72 @@ import WebSite from 'entities/mst/WebSite';
 import { injectable, inject } from 'inversify';
 import { TYPES } from 'inversify.config';
 import IProjectSynchronizerService from 'services/ISynchronizationService';
+import IUrlMatcher from 'services/IUrlMatcher';
 
 @injectable()
 export default class JDISynchronizationService implements IProjectSynchronizerService {
-    constructor(@inject(TYPES.IDEAConnection) private ideaConnection: IDEAConnection) {}
-    createWebsite(name: string, url: string) {
-        throw new Error('Method not implemented.');
+    constructor(
+        @inject(TYPES.IDEAConnection) private ideaConnection: IDEAConnection,
+        @inject(TYPES.UrlMatcher) private urlMatcher: IUrlMatcher,
+    ) {
+        ideaConnection.addListener(MessageTypes.ProjectDataReceived, this.onProjectDataReceived.bind(this));
+        ideaConnection.addListener(MessageTypes.ProjectUpdated, this.onProjectUpdated.bind(this));
     }
+
+    onProjectUpdated(projectData) {
+        RootStore.uiStore.setMatchingWebsite(null);
+        RootStore.uiStore.setMathchingPages([]);
+        RootStore.projectStore.updateProject(projectData);
+        this.matchPage();
+    }
+
+    onProjectDataReceived(connectionType, projectData) {
+        RootStore.uiStore.setMatchingWebsite(null);
+        RootStore.uiStore.setMathchingPages([]);
+        RootStore.setProjectData(connectionType, projectData);
+        this.matchPage();
+    }
+
+    matchPage() {
+        if (RootStore.uiStore.currentUrl) {
+            const matchingWebsite: WebSite = this.urlMatcher.matchWebsite(
+                RootStore.projectStore,
+                RootStore.uiStore.currentUrl,
+            );
+            const matchingPages: PageInstance[] = this.urlMatcher.matchPage(
+                matchingWebsite,
+                RootStore.uiStore.currentUrl,
+            );
+            RootStore.uiStore.setMatchingWebsite(matchingWebsite);
+            RootStore.uiStore.setMathchingPages(matchingPages);
+        }
+    }
+
+    createPageType(name: string, url: string) {
+        if (!RootStore.uiStore.selectedProject) {
+            throw new Error('Project not set');
+        }
+        if (!RootStore.uiStore.matchingWebsite) {
+            throw new Error('No matching website');
+        }
+
+        this.ideaConnection.createPageType(
+            RootStore.uiStore.selectedProject,
+            name,
+            RootStore.uiStore.matchingWebsite.id,
+            null,
+            url,
+        );
+    }
+
+    createWebsite(name: string, host: string) {
+        if (!RootStore.uiStore.selectedProject) {
+            throw new Error('Project not set');
+        }
+
+        this.ideaConnection.createWebsite(RootStore.uiStore.selectedProject, name, host);
+    }
+
     createComponentType(typeName: string, parentId: string, baseType: string | null): void {
         if (!RootStore.uiStore.selectedProject) {
             throw new Error('Project not set');

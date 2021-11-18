@@ -7,12 +7,16 @@ import { RootStore } from '../context';
 import PageInstance from 'entities/mst/PageInstance';
 import Reactor from '../utils/Reactor';
 import WebSite from 'entities/mst/WebSite';
+import IUrlMatcher from './IUrlMatcher';
 
 @injectable()
 export class UrlSynchronizationService implements IUrlSynchronizationService {
     reactor: Reactor;
 
-    constructor(@inject(TYPES.SelectorEditorConnection) private selectorEditorConnection: SelectorEditorConnection) {
+    constructor(
+        @inject(TYPES.SelectorEditorConnection) private selectorEditorConnection: SelectorEditorConnection,
+        @inject(TYPES.UrlMatcher) private urlMatcher: IUrlMatcher,
+    ) {
         this.reactor = new Reactor();
         this.reactor.registerEvent(MessageTypes.UrlChanged);
         selectorEditorConnection.addListener(MessageTypes.UrlChanged, this.onUrlChanged.bind(this));
@@ -21,23 +25,16 @@ export class UrlSynchronizationService implements IUrlSynchronizationService {
     onUrlChanged(data) {
         console.log('on url changed', data);
         const { url } = data;
+        if (!url) {
+            throw new Error('Url can not be null');
+        }
         this.reactor.dispatchEvent(MessageTypes.UrlChanged, data);
-
-        // const matchingWebsite: WebSite = RootStore.projectStore.webSites.find((ws) => {
-        //     return url.toLowerCase().indexOf(ws.url.toLowerCase()) === 0;
-        // });
-
-        // const matchingPages: PageInstance[] = [];
-        // const pathname = new URL(url.toLowerCase()).pathname;
-        // matchingWebsite.pageInstances.forEach((pi: PageInstance) => {
-        //     if (pathname === pi.url) {
-        //         matchingPages.push(pi);
-        //     }
-        // });
-
         RootStore.uiStore.setCurrentUrl(url);
-        // RootStore.uiStore.setMatchingWebsite(matchingWebsite);
-        // RootStore.uiStore.setMathchingPages(matchingPages);
+
+        const matchingWebsite: WebSite = this.urlMatcher.matchWebsite(RootStore.projectStore, url);
+        const matchingPages: PageInstance[] = this.urlMatcher.matchPage(matchingWebsite, url);
+        RootStore.uiStore.setMatchingWebsite(matchingWebsite);
+        RootStore.uiStore.setMathchingPages(matchingPages);
     }
 
     requestCurrentUrl() {

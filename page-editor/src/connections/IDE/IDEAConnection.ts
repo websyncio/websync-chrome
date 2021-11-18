@@ -6,17 +6,27 @@ import IIdeConnection from 'connections/IDE/IIdeConnection';
 import ComponentInstance from 'entities/mst/ComponentInstance';
 import PageInstance from 'entities/mst/PageInstance';
 import WebSite from 'entities/mst/WebSite';
+import Reactor from 'utils/Reactor';
+
+export const MessageTypes = {
+    ProjectDataReceived: 'project-data-received',
+    ProjectUpdated: 'project-updated',
+};
 
 @injectable()
 export default class IDEAConnection implements IIdeConnection {
     connection: WebsocketConnection;
     type = 'IDEA';
+    reactor: Reactor;
 
     constructor() {
         this.connection = new WebsocketConnection(1804);
         this.connection.addListener(Events.onopen, this.onOpen.bind(this));
         this.connection.addListener(Events.onclosed, this.onClosed.bind(this));
         this.connection.addListener(Events.onmessage, this.onMessage.bind(this));
+        this.reactor = new Reactor();
+        this.reactor.registerEvent(MessageTypes.ProjectDataReceived);
+        this.reactor.registerEvent(MessageTypes.ProjectUpdated);
     }
 
     private static _inst: IDEAConnection | undefined;
@@ -28,11 +38,33 @@ export default class IDEAConnection implements IIdeConnection {
         return IDEAConnection._inst;
     }
 
-    createComponentType(projectName: string, typeName: string, parentType: string, baseType: string | null) {
+    createPageType(projectName: string, name: string, website: string, baseType: string | null, absoluteUrl: string) {
+        const message = {
+            type: 'create-page-type',
+            projectName,
+            name: name,
+            baseType: baseType,
+            website: website,
+            absoluteUrl: absoluteUrl,
+        };
+        this.connection.send(message);
+    }
+
+    createWebsite(projectName: string, name: string, baseUrl: string) {
+        const message = {
+            type: 'create-website',
+            projectName,
+            name: name,
+            baseUrl: baseUrl,
+        };
+        this.connection.send(message);
+    }
+
+    createComponentType(projectName: string, name: string, parentType: string, baseType: string | null) {
         const message = {
             type: 'create-component-type',
             projectName,
-            typeName: typeName,
+            name: name,
             parentType: parentType,
             baseType: baseType,
         };
@@ -104,11 +136,6 @@ export default class IDEAConnection implements IIdeConnection {
         });
     }
 
-    onProjectDataReceived(projectData: any) {
-        // TODO: move to service
-        RootStore.setProjectData(this.type, projectData);
-    }
-
     onProjectsReceived(projectsList) {
         // TODO: move to service
         RootStore.uiStore.setProjectsList(this.type, projectsList);
@@ -127,7 +154,7 @@ export default class IDEAConnection implements IIdeConnection {
                 this.onProjectsReceived(message.data);
                 break;
             case 'get-project-response':
-                this.onProjectDataReceived(message.data);
+                this.reactor.dispatchEvent(MessageTypes.ProjectDataReceived, this.type, message.data);
                 break;
             case 'show-page':
                 console.log('page is opened:', message.className);
@@ -140,11 +167,15 @@ export default class IDEAConnection implements IIdeConnection {
                 RootStore.projectStore.updatePageType(message.pageType);
                 return;
             case 'update-project':
-                RootStore.projectStore.updateProject(message.project);
+                this.reactor.dispatchEvent(MessageTypes.ProjectUpdated, message.project);
                 return;
             default:
                 console.log('unknown message type, ignored: ', message);
                 return;
         }
+    }
+
+    addListener(messageType: string, listener: Function) {
+        this.reactor.addEventListener(messageType, listener);
     }
 }

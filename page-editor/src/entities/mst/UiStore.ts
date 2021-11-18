@@ -6,6 +6,8 @@ import ComponentInstance, { ComponentInstanceModel } from 'entities/mst/Componen
 import { NotificationModel } from './Notification';
 import { SelectableModel } from './Selectable';
 import WebSite, { WebSiteModel } from './WebSite';
+import { DependencyContainer, TYPES } from 'inversify.config';
+import IUrlMatcher from 'services/IUrlMatcher';
 
 export enum ProjectTabType {
     PageInstance = 'PageInstance',
@@ -47,7 +49,7 @@ export const UiStoreModel = types
         editorSelectedLineIndex: types.optional(types.number, 0),
         editorCaretPosition: types.optional(types.number, 0),
         notification: types.maybeNull(NotificationModel),
-        matchingWebsite: types.maybe(types.reference(WebSiteModel)),
+        matchingWebsite: types.maybeNull(types.reference(WebSiteModel)),
         currentUrl: types.maybeNull(types.string),
     })
     .views((self) => ({
@@ -151,7 +153,7 @@ export const UiStoreModel = types
         // removeEditedPageObject(pageObject: ComponentsContainer) {
         //     self.editedPageObjects.remove(pageObject);
         // },
-        setMatchingWebsite(website: WebSite) {
+        setMatchingWebsite(website: WebSite | null) {
             self.matchingWebsite = website;
         },
         setMathchingPages(pageInstances: PageInstance[]) {
