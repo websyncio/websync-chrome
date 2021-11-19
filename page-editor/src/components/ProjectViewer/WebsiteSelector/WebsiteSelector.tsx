@@ -18,10 +18,6 @@ const WebsiteSelector: React.FC<Props> = observer(({}) => {
         TYPES.UrlSynchronizationService,
     );
 
-    const projectSynchronizationService = DependencyContainer.get<IProjectSynchronizationService>(
-        TYPES.SynchronizationService,
-    );
-
     function getCurrentHost() {
         if (uiStore.currentUrl) {
             return new URL(uiStore.currentUrl).origin;

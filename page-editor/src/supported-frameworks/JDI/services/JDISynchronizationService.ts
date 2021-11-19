@@ -16,6 +16,12 @@ export default class JDISynchronizationService implements IProjectSynchronizerSe
     ) {
         ideaConnection.addListener(MessageTypes.ProjectDataReceived, this.onProjectDataReceived.bind(this));
         ideaConnection.addListener(MessageTypes.ProjectUpdated, this.onProjectUpdated.bind(this));
+        ideaConnection.addListener(MessageTypes.WebsiteUpdated, this.onWebsiteUpdated.bind(this));
+    }
+
+    onWebsiteUpdated(website) {
+        RootStore.projectStore.updateWebsite(website);
+        this.matchPage();
     }
 
     onProjectUpdated(projectData) {
@@ -47,7 +53,7 @@ export default class JDISynchronizationService implements IProjectSynchronizerSe
         }
     }
 
-    createPageType(name: string, url: string) {
+    async createPageType(name: string, url: string): Promise<void> {
         if (!RootStore.uiStore.selectedProject) {
             throw new Error('Project not set');
         }
@@ -55,7 +61,7 @@ export default class JDISynchronizationService implements IProjectSynchronizerSe
             throw new Error('No matching website');
         }
 
-        this.ideaConnection.createPageType(
+        return this.ideaConnection.createPageType(
             RootStore.uiStore.selectedProject,
             name,
             RootStore.uiStore.matchingWebsite.id,
@@ -69,7 +75,7 @@ export default class JDISynchronizationService implements IProjectSynchronizerSe
             throw new Error('Project not set');
         }
 
-        this.ideaConnection.createWebsite(RootStore.uiStore.selectedProject, name, host);
+        return this.ideaConnection.createWebsite(RootStore.uiStore.selectedProject, name, host);
     }
 
     createComponentType(typeName: string, parentId: string, baseType: string | null): void {

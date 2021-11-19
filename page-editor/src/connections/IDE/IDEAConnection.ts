@@ -11,13 +11,41 @@ import Reactor from 'utils/Reactor';
 export const MessageTypes = {
     ProjectDataReceived: 'project-data-received',
     ProjectUpdated: 'project-updated',
+    WebsiteUpdated: 'website-updated',
 };
+
+const RESPONSE_SUFFIX = '-response';
+class AsyncRequestInfo {
+    responseType: string;
+    id: string;
+    promise: Promise<void>;
+    resolve;
+    reject;
+
+    constructor(requestType: string, id: string) {
+        this.responseType = requestType + RESPONSE_SUFFIX;
+        this.id = id;
+        this.promise = new Promise((resolve, reject) => {
+            this.resolve = resolve;
+            this.reject = reject;
+        });
+    }
+
+    completeSuccessfully() {
+        this.resolve();
+    }
+
+    completeWithFailure() {
+        this.reject();
+    }
+}
 
 @injectable()
 export default class IDEAConnection implements IIdeConnection {
     connection: WebsocketConnection;
     type = 'IDEA';
     reactor: Reactor;
+    asyncRequests: AsyncRequestInfo[] = [];
 
     constructor() {
         this.connection = new WebsocketConnection(1804);
@@ -27,6 +55,7 @@ export default class IDEAConnection implements IIdeConnection {
         this.reactor = new Reactor();
         this.reactor.registerEvent(MessageTypes.ProjectDataReceived);
         this.reactor.registerEvent(MessageTypes.ProjectUpdated);
+        this.reactor.registerEvent(MessageTypes.WebsiteUpdated);
     }
 
     private static _inst: IDEAConnection | undefined;
@@ -38,9 +67,22 @@ export default class IDEAConnection implements IIdeConnection {
         return IDEAConnection._inst;
     }
 
-    createPageType(projectName: string, name: string, website: string, baseType: string | null, absoluteUrl: string) {
+    saveAsyncRequest(type: string, id: string) {
+        const requestInfo = new AsyncRequestInfo(type, id);
+        this.asyncRequests.push(requestInfo);
+        return requestInfo;
+    }
+
+    async createPageType(
+        projectName: string,
+        name: string,
+        website: string,
+        baseType: string | null,
+        absoluteUrl: string,
+    ): Promise<void> {
+        const type = 'create-page-type';
         const message = {
-            type: 'create-page-type',
+            type: type,
             projectName,
             name: name,
             baseType: baseType,
@@ -48,9 +90,11 @@ export default class IDEAConnection implements IIdeConnection {
             absoluteUrl: absoluteUrl,
         };
         this.connection.send(message);
+        return this.saveAsyncRequest(type, name).promise;
     }
 
     createWebsite(projectName: string, name: string, baseUrl: string) {
+        const type = 'create-page-type';
         const message = {
             type: 'create-website',
             projectName,
@@ -58,6 +102,7 @@ export default class IDEAConnection implements IIdeConnection {
             baseUrl: baseUrl,
         };
         this.connection.send(message);
+        return this.saveAsyncRequest(type, name).promise;
     }
 
     createComponentType(projectName: string, name: string, parentType: string, baseType: string | null) {
@@ -165,6 +210,9 @@ export default class IDEAConnection implements IIdeConnection {
                 return;
             case 'update-page':
                 RootStore.projectStore.updatePageType(message.pageType);
+                return;
+            case 'update-website':
+                this.reactor.dispatchEvent(MessageTypes.WebsiteUpdated, message.website);
                 return;
             case 'update-project':
                 this.reactor.dispatchEvent(MessageTypes.ProjectUpdated, message.project);

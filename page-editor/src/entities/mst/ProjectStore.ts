@@ -35,7 +35,6 @@ export const ProjectStoreModel = types
     }))
     .actions((self) => ({
         updatePageType(pageTypeJson) {
-            // const updated = PageTypeModel.create(pageTypeJson);
             const index = self.pageTypes.findIndex((pt) => pt.id == pageTypeJson.id);
             if (!index) {
                 console.log('Probably name of the page changed. Have to decide what to do in this case.');
@@ -44,14 +43,20 @@ export const ProjectStoreModel = types
             console.log('Apply snapshot, Old', JSON.stringify(self.pageTypes[index]));
             console.log('Apply snapshot, New', JSON.stringify(pageTypeJson));
             applySnapshot(self.pageTypes[index], pageTypeJson);
-            // if (old.selected) {
-            //     updated.select();
-            // }
-            // destroy(self.pageTypes[index]);
-            // self.pageTypes.splice(index, 0, updated);
         },
         updateComponentType(componentTypeJson) {
-            console.log('component is updated:', componentTypeJson);
+            const oldComponentType = self.componentTypes.find((pt) => pt.id == componentTypeJson.id);
+            if (!oldComponentType) {
+                throw new Error('Unable to update component type: ' + componentTypeJson.id);
+            }
+            applySnapshot(oldComponentType, componentTypeJson);
+        },
+        updateWebsite(websiteJson) {
+            const oldWebsite = self.webSites.find((pt) => pt.id == websiteJson.id);
+            if (!oldWebsite) {
+                throw new Error('Unable to update website: ' + websiteJson.id);
+            }
+            applySnapshot(oldWebsite, websiteJson);
         },
         updateProject(projectJson) {
             applySnapshot(self, projectJson);

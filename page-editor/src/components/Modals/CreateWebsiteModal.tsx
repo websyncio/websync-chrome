@@ -3,8 +3,8 @@ import RootStore from 'entities/mst/RootStore';
 import { DependencyContainer, TYPES } from 'inversify.config';
 import { observer } from 'mobx-react';
 import React from 'react';
-import ReactModal from 'react-modal';
 import IProjectSynchronizationService from 'services/ISynchronizationService';
+import CreateModal from './CreateModal/CreateModal';
 
 interface Props {
     isOpen: boolean;
@@ -17,42 +17,19 @@ const CreateWebsiteModal: React.FC<Props> = observer(({ isOpen, onRequestClose }
         TYPES.SynchronizationService,
     );
 
-    let inputEl: any;
-
-    function afterOpenModal() {
-        inputEl.focus();
-    }
-
-    function onSubmit(e) {
-        if (e.key === 'Enter' && inputEl.value) {
-            const host = new URL(uiStore.currentUrl!).origin;
-            projectSynchronizationService.createWebsite(inputEl.value, host);
-            onRequestClose();
-        }
+    function onSubmit(name: string): Promise<void> {
+        const host = new URL(uiStore.currentUrl!).origin;
+        return projectSynchronizationService.createWebsite(name, host);
     }
 
     return (
-        <>
-            <ReactModal
-                isOpen={isOpen}
-                onAfterOpen={afterOpenModal}
-                onRequestClose={onRequestClose}
-                className="create-modal"
-                overlayClassName="modal-overlay flex-center"
-            >
-                <div className="header">New website in {uiStore.selectedProject}</div>
-                <div className="flex-left name-input-container">
-                    <i className="page-icon ws-icon-small" />
-                    <input
-                        type="text"
-                        placeholder="Name"
-                        ref={(_inputEl) => (inputEl = _inputEl)}
-                        spellCheck="false"
-                        onKeyDown={onSubmit}
-                    ></input>
-                </div>
-            </ReactModal>
-        </>
+        <CreateModal
+            isOpen={isOpen}
+            title={`New website in ${uiStore.selectedProject}`}
+            iconClass="website-icon"
+            onRequestClose={onRequestClose}
+            onSubmit={onSubmit}
+        />
     );
 });
 
