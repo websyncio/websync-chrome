@@ -1,0 +1,7 @@
+*[ws-highlight][ws-list-selector], *[ws-highlight][ws-list-selector] *{
+	background: orange !important;
+	color: orange !important;
+	border: none !important;
+	box-shadow: none !important;
+	outline: none !important;
+}

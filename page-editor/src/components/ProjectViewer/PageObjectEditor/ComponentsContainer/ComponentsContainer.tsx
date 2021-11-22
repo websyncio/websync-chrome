@@ -79,6 +79,10 @@ const ComponentsContainer: React.FC<Props> = observer(({ pageObject, basePageObj
         }
     }
 
+    function hihglightElements(e) {
+        console.log('highlight components');
+    }
+
     return (
         <div className="components-container" onFocus={onFocus}>
             <div className={`header ${isExpanded ? 'expanded' : ''}`} onClick={onHeaderClick}>
@@ -92,6 +96,10 @@ const ComponentsContainer: React.FC<Props> = observer(({ pageObject, basePageObj
                         </a>
                     </>
                 )}
+                <span className="highlight-elements-wrap">
+                    <input name="highlight-elements" onChange={hihglightElements} type="checkbox" />
+                    <label htmlFor="highlight-elements">Highlight</label>
+                </span>
             </div>
             {isExpanded && (
                 <>

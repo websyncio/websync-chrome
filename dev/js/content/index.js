@@ -564,10 +564,12 @@ window.hightlightComponentsInIframe = function(iframeNode, iframeElements, compo
 }
 
 window.higlightComponent = function(documentNode, element, componentName){
-	let clientRects = Array.from(element.getClientRects());
-	clientRects.forEach((clientRect)=>{
-		createHighlighterElement(documentNode, clientRect, "rgba(255, 165, 0, 1)", 1, 'websync-component-highlighter');
-	});
+	// let clientRects = Array.from(element.getClientRects());
+	element.setAttribute('ws-highlight', '');
+	element.setAttribute('ws-list-selector', '');
+	// clientRects.forEach((clientRect)=>{
+	// 	createHighlighterElement(documentNode, clientRect, "rgba(255, 165, 0, 1)", 1, 'websync-component-highlighter');
+	// });
 };
 
 window.HL_GREEN = "rgb(106, 166, 219)";
@@ -683,9 +685,21 @@ window.removeHighlighting = function(){
 	});
 };
 
+window.removeComponentHighlightingInIframe = function(iframeNode, highlightedSelector){
+	if(!iframeNode){
+		return;
+	}
+	let highlightedElements = Array.from(iframeNode.querySelectorAll(highlightedSelector));
+	highlightedElements.forEach(function(highlightedElement){
+		highlightedElement.removeAttribute('ws-highlight');
+		highlightedElement.removeAttribute('ws-list-selector');
+	});
+};
+
+
 window.removeComponentsHighlighting = function(){
-	removeHighlightingInIframe(document, '.websync-component-highlighter');
+	removeComponentHighlightingInIframe(document, '*[ws-highlight][ws-list-selector]');
 	getIframes().forEach(function(iframeNode){
-		removeHighlightingInIframe(iframeNode.contentDocument, '.websync-component-highlighter');
+		removeComponentHighlightingInIframe(iframeNode.contentDocument, '*[ws-highlight][ws-list-selector]');
 	});
 }
