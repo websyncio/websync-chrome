@@ -6,6 +6,8 @@ export const MessageTypes = {
 	ValidateSelector: 'validate-selector',
 	HighlightSelector: 'highlight-selector',
 	RemoveHighlighting: 'remove-highlighting',
+	HighlightComponents: 'highlight-components',
+	RemoveComponentsHighlighting: 'remove-components-highlighting',
 	
 	EditSelector: 'edit-selector',
 	SelectorUpdated: 'selector-updated',
@@ -25,6 +27,7 @@ export const MessageTargets = {
 
 export default Service.extend({
 	scssParser: Ember.inject.service(),
+	selectorBuilder: Ember.inject.service(),
 	selectorValidator: Ember.inject.service(),
 	selectorHighlighter: Ember.inject.service(),
 	selectorInspector: Ember.inject.service(),
@@ -63,6 +66,12 @@ export default Service.extend({
 			case MessageTypes.RemoveHighlighting:
 				this.removeHighlighting();
 				break;
+			case MessageTypes.HighlightComponents:
+				this.highlightComponents(message);
+				break;
+			case MessageTypes.RemoveComponentsHighlighting:
+				this.removeComponentsHighlighting(message);
+				break;
 			case MessageTypes.EditSelector:
 				this.editComponentSelector(message);
 				break;
@@ -89,6 +98,14 @@ export default Service.extend({
 	removeHighlighting(){
 		this.get('selectorHighlighter').removeHighlighting();
 	},
+	highlightComponents(message){
+		let selectors = message.data.map(s=>this.getSelector(s));
+		this.get('selectorHighlighter').highlightComponents(selectors);
+	},
+	removeComponentsHighlighting(message){
+		let selectors = message.data.map(s=>this.getSelector(s));
+		this.get('selectorHighlighter').removeComponentsHighlighting(selectors);
+	},
 	updateSelectorList(message){
 		this.get('reactor').dispatchEvent(
 			MessageTypes.SelectorsListUpdated,
@@ -111,9 +128,15 @@ export default Service.extend({
 			this.postMessage(MessageTypes.ValidateSelector, message.source, null, true, message.acknowledgment);
 		}
 	},
-	getSelector(selector) {
-		if (!selector.css && !selector.xpath) {
-			selector = this.get('scssParser').parse(selector.xcss);
+	getSelector(xcssSelector) {
+		let selector;
+		if (!xcssSelector.css && !xcssSelector.xpath){
+			selector = this.get('scssParser').parse(xcssSelector.xcss);
+		}
+		// TODO: create separate package for xcss parser and remove this code
+		if(xcssSelector.root){
+			let rootSelector = this.get('scssParser').parse(xcssSelector.root.xcss);
+			selector = this.get('selectorBuilder').innerSelector(rootSelector, selector);
 		}
 		return selector;
 	},

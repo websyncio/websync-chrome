@@ -10,6 +10,9 @@ export const MessageTypes = {
     HighlightSelector: 'highlight-selector',
     RemoveHighlighting: 'remove-highlighting',
 
+    HighlightComponents: 'highlight-components',
+    RemoveComponentsHighlighting: 'remove-components-highlighting',
+
     GetSelectorsList: 'get-selectors-list',
     UpdateSelectorName: 'update-selector-name',
 

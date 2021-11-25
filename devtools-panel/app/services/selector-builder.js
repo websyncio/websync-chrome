@@ -5,9 +5,9 @@ export default Ember.Service.extend({
 		if(!relativeSelector || !relativeSelector.scss){
 			return null;
 		}
-		if(!relativeSelector.combineWithRoot){
-			return relativeSelector;
-		}
+		// if(!relativeSelector.combineWithRoot){
+		// 	return relativeSelector;
+		// }
 		rootSelector = rootSelector || {};
 		let invalidRootCss = !rootSelector.css && rootSelector.xpath;
 		let invalidRootXpath = rootSelector.css && !rootSelector.xpath;

@@ -557,14 +557,18 @@ window.hightlightElementsInIframe2 = function(iframeNode, iframeElements, highli
 	});
 };
 
-window.hightlightComponentsInIframe = function(iframeNode, iframeElements, componentName){
+window.hightlightComponentsInIframe = function(iframeNode, iframeElements){
 	iframeElements.forEach((iframeElement)=>{
-		higlightComponent(iframeNode, iframeElement, componentName);
+		higlightComponent(iframeNode, iframeElement);
 	});
 }
 
-window.higlightComponent = function(documentNode, element, componentName){
+window.higlightComponent = function(documentNode, element){
 	// let clientRects = Array.from(element.getClientRects());
+	if(element.tagName=='IMG'){
+		element.setAttribute('data-actualsrc',element.getAttribute('src'));
+		element.setAttribute('src', "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8v5ThPwAG9AKluA28GQAAAABJRU5ErkJggg==");
+	}
 	element.setAttribute('ws-highlight', '');
 	element.setAttribute('ws-list-selector', '');
 	// clientRects.forEach((clientRect)=>{
@@ -653,17 +657,20 @@ window.removeRootHighlighting = function(selector, isXpath){
 }
 
 window.highlightComponents = function(json){
-	removeComponentsHighlighting();
-	var components = JSON.parse(json);
-	components.forEach(component=>{
+	if(!json){
+		// remove all highlighting
+		removeComponentsHighlighting();
+	}
+	var selectors = JSON.parse(json);
+	selectors.forEach(selector=>{
 		var iframeDataList=[];
-		if(component.selector.xpath){
-			iframeDataList = evaluateSelector(component.selector.xpath, true);
-		}else if(component.selector.css){
-			iframeDataList = evaluateSelector(component.selector.css, false);
+		if(selector.xpath){
+			iframeDataList = evaluateSelector(selector.xpath, true);
+		}else if(selector.css){
+			iframeDataList = evaluateSelector(selector.css, false);
 		}
 		iframeDataList.forEach((iframeData)=>{
-			hightlightComponentsInIframe(iframeData.documentNode, iframeData.elements.map(e=>e.domElement), component.name);
+			hightlightComponentsInIframe(iframeData.documentNode, iframeData.elements.map(e=>e.domElement));
 		});
 	});
 }
@@ -685,21 +692,45 @@ window.removeHighlighting = function(){
 	});
 };
 
-window.removeComponentHighlightingInIframe = function(iframeNode, highlightedSelector){
+window.removeComponentHighlightingInIframe = function(iframeNode, iframeElements){
 	if(!iframeNode){
 		return;
 	}
-	let highlightedElements = Array.from(iframeNode.querySelectorAll(highlightedSelector));
-	highlightedElements.forEach(function(highlightedElement){
-		highlightedElement.removeAttribute('ws-highlight');
-		highlightedElement.removeAttribute('ws-list-selector');
+	iframeElements.forEach((iframeElement)=>{
+		if(iframeElement.tagName=='IMG'){
+			iframeElement.setAttribute('src', iframeElement.getAttribute('data-actualsrc'));
+			iframeElement.removeAttribute('data-actualsrc');
+		}
+		iframeElement.removeAttribute('ws-highlight');
+		iframeElement.removeAttribute('ws-list-selector');
+		// higlightComponent(iframeNode, iframeElement);
 	});
+
+	// let highlightedElements = Array.from(iframeNode.querySelectorAll(highlightedSelector));
+	// highlightedElements.forEach(function(highlightedElement){
+	// 	highlightedElement.removeAttribute('ws-highlight');
+	// 	highlightedElement.removeAttribute('ws-list-selector');
+	// });
 };
 
-
-window.removeComponentsHighlighting = function(){
-	removeComponentHighlightingInIframe(document, '*[ws-highlight][ws-list-selector]');
-	getIframes().forEach(function(iframeNode){
-		removeComponentHighlightingInIframe(iframeNode.contentDocument, '*[ws-highlight][ws-list-selector]');
+window.removeComponentsHighlighting = function(json){
+	var selectors = json?
+		JSON.parse(json):
+		[{css: '*[ws-highlight][ws-list-selector]'}];
+	selectors.forEach(selector=>{
+		var iframeDataList=[];
+		if(selector.xpath){
+			iframeDataList = evaluateSelector(selector.xpath, true);
+		}else if(selector.css){
+			iframeDataList = evaluateSelector(selector.css, false);
+		}
+		iframeDataList.forEach((iframeData)=>{
+			removeComponentHighlightingInIframe(iframeData.documentNode, iframeData.elements.map(e=>e.domElement));
+		});
 	});
+	// var selectors = JSON.parse(json);
+	// removeComponentHighlightingInIframe(document, '*[ws-highlight][ws-list-selector]');
+	// getIframes().forEach(function(iframeNode){
+	// 	removeComponentHighlightingInIframe(iframeNode.contentDocument, '*[ws-highlight][ws-list-selector]');
+	// });
 }

@@ -2,11 +2,15 @@
     position: absolute
     bottom: 0
     width: 100%
-    padding: 1px
-    background-color: rgb(243, 243, 243)
+    padding: 1px 10px
+    background-color: gainsboro
     border-top: 1px solid rgb(204, 204, 204)
     font-size: 12px
-    color: #777
+    cursor: default
+
+    .current-url
+        max-width: 50%
+        margin-right: 5px
 
     .page-name
         cursor: pointer
@@ -14,3 +18,9 @@
     .create-page-btn
         padding: 1px 10px;
         margin-left: 10px;
+
+    .match-icon, .nomatch-icon
+        width: 12px
+        height: 12px
+        display: inline-block
+        margin-right: 3px

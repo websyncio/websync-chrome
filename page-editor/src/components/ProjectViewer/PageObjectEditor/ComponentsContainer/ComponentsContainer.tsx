@@ -1,7 +1,5 @@
-import IIdeProxy from 'connections/IDE/IIdeConnection';
 import React from 'react';
 import IComponentsContainer from 'entities/mst/ComponentsContainer';
-import IComponentInstance from 'entities/mst/ComponentInstance';
 import { observer } from 'mobx-react';
 import ComponentInstancesList from './ComponentInstancesList';
 import ComponentInstance from 'components/ProjectViewer/PageObjectEditor/ComponentInstances/ComponentInstance';
@@ -10,10 +8,13 @@ import RootStore from 'entities/mst/RootStore';
 import { useRootStore } from 'context';
 import './ComponentsContainer.sass';
 import { DependencyContainer, TYPES } from 'inversify.config';
-import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
 import { useState } from 'react';
-import { useEffect } from 'react';
 import TreeOutline from 'components-common/TreeOutline/TreeOutline';
+import SelectorHighlighter from 'services/SelectorHighlighterService';
+import XcssSelector from 'entities/XcssSelector';
+import ComponentsContainer from 'entities/mst/ComponentsContainer';
+import IAttributeToXcssMapper from 'services/IAttributeToXcssMapper';
+import XcssBuilder from 'services/XcssBuilder';
 
 interface Props {
     pageObject: IComponentsContainer;
@@ -28,9 +29,15 @@ enum ListType {
     BlankComponents,
 }
 
-const ComponentsContainer: React.FC<Props> = observer(({ pageObject, basePageObject, isExpanded, onExpand }) => {
+export default observer(({ pageObject, basePageObject, isExpanded, onExpand }) => {
     const { uiStore, projectStore }: RootStore = useRootStore();
     const [activeList, setActiveList] = useState(ListType.PageObjectComponents);
+    const selectorHighlighter: SelectorHighlighter = DependencyContainer.get<SelectorHighlighter>(
+        TYPES.SelectorHighlighter,
+    );
+    const attributeToXcssMapper: IAttributeToXcssMapper = DependencyContainer.get<IAttributeToXcssMapper>(
+        TYPES.AttributeToXcssMapper,
+    );
 
     // function selectComponent(components: IComponentInstance[], index: number) {
     //     components.forEach((c, i) => {
@@ -79,8 +86,37 @@ const ComponentsContainer: React.FC<Props> = observer(({ pageObject, basePageObj
         }
     }
 
-    function hihglightElements(e) {
-        console.log('highlight components');
+    function getComponentSelectors(container: IComponentsContainer, rootSelector: XcssSelector | null): XcssSelector[] {
+        if (!container) {
+            return [];
+        }
+        let selectors: XcssSelector[] = [];
+        container.componentsInstances.forEach((c) => {
+            const componentSelector: XcssSelector = attributeToXcssMapper.GetXcss(c.initializationAttribute);
+            componentSelector.root = rootSelector;
+            // componentSelector = XcssBuilder.concatSelectors(rootSelector, componentSelector);
+            const innerComponentSelectors: XcssSelector[] = getComponentSelectors(c.componentType, componentSelector);
+            if (innerComponentSelectors.length) {
+                selectors = selectors.concat(innerComponentSelectors);
+            } else {
+                selectors.push(componentSelector);
+            }
+        });
+        return selectors;
+    }
+
+    function stopPropagation(e) {
+        e.stopPropagation();
+    }
+
+    function onHighlightCheckboxChange(container: ComponentsContainer, highlighted: boolean) {
+        console.log('onHighlightCheckboxChange', highlighted);
+        const componentSelectors: XcssSelector[] = getComponentSelectors(container, null);
+        if (highlighted) {
+            selectorHighlighter.highlightComponents(componentSelectors);
+        } else {
+            selectorHighlighter.removeComponentHighlighting(componentSelectors);
+        }
     }
 
     return (
@@ -96,9 +132,17 @@ const ComponentsContainer: React.FC<Props> = observer(({ pageObject, basePageObj
                         </a>
                     </>
                 )}
-                <span className="highlight-elements-wrap">
-                    <input name="highlight-elements" onChange={hihglightElements} type="checkbox" />
-                    <label htmlFor="highlight-elements">Highlight</label>
+                <span
+                    className="highlight-elements-wrap flex-center"
+                    title="Highlight all inner components"
+                    onClick={stopPropagation}
+                >
+                    <input
+                        id={`highlight-${pageObject.name}`}
+                        onChange={(e) => onHighlightCheckboxChange(pageObject, e.target.checked)}
+                        type="checkbox"
+                    />
+                    <label htmlFor={`highlight-${pageObject.name}`}>Highlight components</label>
                 </span>
             </div>
             {isExpanded && (
@@ -133,5 +177,3 @@ const ComponentsContainer: React.FC<Props> = observer(({ pageObject, basePageObj
         </div>
     );
 });
-
-export default ComponentsContainer;

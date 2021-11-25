@@ -30,7 +30,7 @@ const ProjectSelector: React.FC<Props> = observer(({ ideProxies }) => {
 
     function ideProjects(ideConnection: IdeConnection) {
         return ideConnection.projectsList.map((p) => (
-            <div key={p} className="ide-project" onClick={() => onProjectSelected(ideConnection, p)}>
+            <div key={p} className="ide-project ws-hide-text" onClick={() => onProjectSelected(ideConnection, p)}>
                 <i className="jdi-icon" />
                 {p}
                 {uiStore.selectedProject == p && <span className="loader" />}

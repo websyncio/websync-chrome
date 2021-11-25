@@ -25,7 +25,10 @@ const MatchingPage: React.FC<Props> = observer(() => {
             case 0:
                 return (
                     <>
-                        No matching page in {uiStore.matchingWebsite.name}
+                        <i className="nomatch-icon" />
+                        No matching page in
+                        <i className="ws-icon-small website-icon" style={{ marginLeft: '4px' }}></i>{' '}
+                        {uiStore.matchingWebsite.name} for this URL
                         <span className="create-page-btn ws-btn ws-btn__primary" onClick={createPage}>
                             Create Page
                         </span>
@@ -34,7 +37,9 @@ const MatchingPage: React.FC<Props> = observer(() => {
             case 1:
                 return (
                     <>
+                        <i className="ws-icon-small website-icon"></i>
                         {uiStore.matchingWebsite.name}&nbsp;/&nbsp;
+                        <i className="ws-icon-small page-icon"></i>
                         <a
                             className="page-name"
                             onClick={() => editPageObject(uiStore.matchingPages[0])}
@@ -55,7 +60,13 @@ const MatchingPage: React.FC<Props> = observer(() => {
 
     return (
         <>
-            <div className="flex-center matching-page">{matchingPage()}</div>
+            <div className="flex-left matching-page">
+                <span className="current-url ws-hide-text" title={uiStore.currentUrl!}>
+                    {uiStore.currentUrl}
+                    {' :'}
+                </span>
+                {matchingPage()}
+            </div>
             <CreatePageModal isOpen={createPageModalIsOpen} onRequestClose={closeCreatePageModal} />
         </>
     );

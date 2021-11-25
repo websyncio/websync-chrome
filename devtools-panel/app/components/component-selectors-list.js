@@ -11,7 +11,8 @@ export default Component.extend({
 	clipboard: Ember.inject.service(),
 	onComponentsListChange: Ember.observer('selectors.[]', function(){
 		if(this.get("componentsAreHighlighted")){
-			this.get("selectorHighlighter").highlightComponents(this.get('selectors'));
+			const componentSelectors = this.get('selectors').map(s=>s.selector);
+			this.get("selectorHighlighter").highlightComponents(componentSelectors);
 		}
 	}),
 	selectorsCountStatus: Ember.computed('selectors.[]', function(){
@@ -184,9 +185,9 @@ export default Component.extend({
 		onHighlightComponents(){
 			this.set("componentsAreHighlighted", this.highlightComponentsCheched());
 			if(this.get("componentsAreHighlighted")){
-				this.get("selectorHighlighter").highlightComponents(this.get('selectors'));
+				this.get("selectorHighlighter").highlightComponents(this.get('selectors').map(s=>s.selector));
 			}else{
-				this.get("selectorHighlighter").removeComponentsHighlighting();
+				this.get("selectorHighlighter").removeComponentsHighlighting(this.get('selectors').map(s=>s.selector));
 			}
 		},
 		onNameKeydown(componentSelector){

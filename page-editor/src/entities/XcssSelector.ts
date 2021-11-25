@@ -1,4 +1,5 @@
 export default class XcssSelector {
+    root: XcssSelector | null = null;
     xcss: string;
     css: string | null = null;
     xpath: string | null = null;

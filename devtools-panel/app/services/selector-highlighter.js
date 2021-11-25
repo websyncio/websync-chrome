@@ -1,12 +1,6 @@
 import Ember from 'ember';
 
 export default Ember.Service.extend({
-	highlightComponents(componentSelectors){
-		let json = JSON.stringify(componentSelectors);
-		let x = "highlightComponents(`" + json +"`)";
-		console.log(x);
-		this._callEval(x);
-	},
 	highlight(selector){
 		if(!selector){
 			throw Error('invalid selector');
@@ -93,8 +87,16 @@ export default Ember.Service.extend({
 	removeHighlighting(){
 		this._callEval('removeHighlighting()');
 	},
-	removeComponentsHighlighting(){
-		this._callEval('removeComponentsHighlighting()');
+	highlightComponents(componentSelectors){
+		let json = JSON.stringify(componentSelectors);
+		let x = "highlightComponents(`" + json +"`)";
+		console.log(x);
+		this._callEval(x);
+	},
+	removeComponentsHighlighting(componentSelectors){
+		let json = JSON.stringify(componentSelectors);
+		let x = "removeComponentsHighlighting(`" + json +"`)";
+		this._callEval(x);
 	},
 	sendMessage(name, data, callback){
 		chrome.runtime.sendMessage({

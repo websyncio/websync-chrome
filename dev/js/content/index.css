@@ -1,4 +1,7 @@
-*[ws-highlight][ws-list-selector], *[ws-highlight][ws-list-selector] *{
+*[ws-highlight][ws-list-selector],
+*[ws-highlight][ws-list-selector] *,
+*[ws-highlight][ws-list-selector]::placeholder,
+*[ws-highlight][ws-list-selector] *::placeholder{
 	background: orange !important;
 	color: orange !important;
 	border: none !important;

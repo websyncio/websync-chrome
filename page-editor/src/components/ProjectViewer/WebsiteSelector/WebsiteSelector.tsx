@@ -37,7 +37,7 @@ const WebsiteSelector: React.FC<Props> = observer(({}) => {
 
     function websitesList() {
         return projectStore.webSites.map((ws) => (
-            <div className="flex-left website" key={ws.id} onClick={() => setMatchingWebsite(ws)}>
+            <div className="flex-left website ws-hide-text" key={ws.id} onClick={() => setMatchingWebsite(ws)}>
                 <i className="website-icon" />
                 <span>{ws.name}</span>:&nbsp;
                 <a
@@ -65,7 +65,7 @@ const WebsiteSelector: React.FC<Props> = observer(({}) => {
         <>
             <div className="website-selector full-height flex-center">
                 <div className="flex-center">
-                    <span className="current-url">{uiStore.currentUrl}</span>
+                    <span className="current-url ws-hide-text">{uiStore.currentUrl}</span>
                 </div>
                 <div className="flex-center mx-auto select-website-panel">
                     <div className="flex-center current-host-container">

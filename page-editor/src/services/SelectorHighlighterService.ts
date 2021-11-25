@@ -25,4 +25,20 @@ export default class SelectorHighlighter {
             MessageTargets.SelectorEditorAuxilliary,
         );
     }
+
+    highlightComponents(componentSelectors: XcssSelector[]) {
+        this.selectorEditorConnection.postMessage(
+            MessageTypes.HighlightComponents,
+            componentSelectors,
+            MessageTargets.SelectorEditorAuxilliary,
+        );
+    }
+
+    removeComponentHighlighting(componentSelectors: XcssSelector[]) {
+        this.selectorEditorConnection.postMessage(
+            MessageTypes.RemoveComponentsHighlighting,
+            componentSelectors,
+            MessageTargets.SelectorEditorAuxilliary,
+        );
+    }
 }
