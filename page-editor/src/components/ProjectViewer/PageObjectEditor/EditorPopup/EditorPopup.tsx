@@ -13,23 +13,34 @@ const EditorPopup: React.FC<Props> = observer(({ actions, selectedActionIndex })
         action.execute();
     }
 
+    function actionIcon(item) {
+        if (item.iconBase64) {
+            return (
+                <span className="action-image-icon">
+                    <img className="" src={item.iconBase64} />
+                </span>
+            );
+        }
+        return (
+            <span className="action-letter-icon">
+                <span className="circle" style={{ backgroundColor: item.iconColor }} />
+                <span className="letter" title={item.iconTitle}>
+                    {item.iconLetter}
+                </span>
+            </span>
+        );
+    }
+
     function actionsList() {
         return actions.map((item, index) => {
             return (
                 <li
                     key={item.name}
                     onClick={() => onSelected(item)}
-                    className={`${index === selectedActionIndex ? 'selected' : ''}`}
+                    className={`${index === selectedActionIndex ? 'selected' : ''} ${item.actionClass}`}
                 >
-                    {item.iconLetter && (
-                        <div className="action-icon">
-                            <span className="circle" style={{ backgroundColor: item.iconColor }} />
-                            <span className="letter" title={item.iconTitle}>
-                                {item.iconLetter}
-                            </span>
-                        </div>
-                    )}
-                    <span className="action-name">{item.name}</span>
+                    {actionIcon(item)}
+                    <span className={`action-name`}>{item.name}</span>
                 </li>
             );
         });

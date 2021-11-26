@@ -8,7 +8,6 @@
     // border: 1px solid rgb(148, 166, 202)
     box-shadow: 1px 1px 2px #94a6ca
     background-color: rgb(233, 238, 255)    
-    font-family: Menlo,monospace
     font-size: 13px
     .no-suggestions
         font-weight: bold
@@ -25,10 +24,15 @@
             &.selected
                 background-color: rgb(196,213,255)
 
-    .action-name
-        
+            &.use-proposed-component
+                font-family: Menlo, monospace
 
-    .action-icon
+            &.create-component-type
+                font-size: 12px
+
+    .action-name
+
+    .action-letter-icon
         position: relative
         display: inline
         margin: 0 17px 0 5px
@@ -44,3 +48,13 @@
             top: -2px
             left: 3.5px
             font-size: 11px
+    
+    .action-image-icon        
+        margin-right: 5px
+        margin-left: 3px
+        img
+            vertical-align: top
+            margin-top: 2px
+            width: 15px;
+            height: 14px;
+            display: inline-block;

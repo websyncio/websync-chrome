@@ -12,7 +12,9 @@ export class ProposedComponentTypeAction implements IEditorPopupAction {
     iconLetter: string | undefined = undefined;
     iconColor: string | undefined = undefined;
     iconTitle: string | undefined = undefined;
+    iconBase64: string | undefined;
     name: string;
+    actionClass = 'use-proposed-component';
     componentType: ComponentType;
     applyComponentType: (ct: ComponentType) => void;
     constructor(componentType: ComponentType, applyComponentType: (ct: ComponentType) => void) {
