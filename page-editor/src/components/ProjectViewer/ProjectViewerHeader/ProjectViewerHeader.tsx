@@ -36,6 +36,9 @@ const Header: React.FC<Props> = observer(() => {
                 <>
                     <i className="tab-icon page-icon" />
                     <span className="tab-name">{(t.editedObject as PageInstance).pageType.name}</span>
+                    {uiStore.matchingPages.includes(t.editedObject as PageInstance) && (
+                        <span className="match-circle" />
+                    )}
                 </>
             );
         }

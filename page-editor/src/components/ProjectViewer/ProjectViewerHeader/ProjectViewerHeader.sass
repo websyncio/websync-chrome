@@ -18,20 +18,20 @@
     cursor: pointer
     user-select: none
 
-.header-tab:hover
-    background-color: #EAEAEA
-
-.header-tab.selected
-    border-bottom: 2px solid rgb(26,115,232)
-
-.header-tab .close-icon
-    width: 8px
-    height: 8px
-    background-color: red
-    display: inline-block
-
-.header-tab .close-icon:hover
-    background-color: green
+    &.selected
+        border-bottom: 2px solid rgb(26,115,232)
+    &:hover
+        background-color: #EAEAEA
+    .close-icon
+        width: 8px
+        height: 8px
+        background-color: red
+        display: inline-block
+        &:hover
+            background-color: green
+    .match-circle
+        margin-left: 6px
+        margin-right: -4px
 
 .project-explorer
     font-weight: 500
@@ -40,7 +40,6 @@
     cursor: pointer
     margin-top: 2px
     margin-left: 4px
-
 
 .matched-page
     cursor: pointer
