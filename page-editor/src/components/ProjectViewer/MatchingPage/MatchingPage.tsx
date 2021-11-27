@@ -28,7 +28,7 @@ const MatchingPage: React.FC<Props> = observer(() => {
                         <i className="nomatch-icon" />
                         No matching page in
                         <i className="ws-icon-small website-icon" style={{ marginLeft: '4px' }}></i>{' '}
-                        {uiStore.matchingWebsite.name} for this URL
+                        {uiStore.matchingWebsite.name}
                         <span className="create-page-btn ws-btn ws-btn__primary" onClick={createPage}>
                             Create Page
                         </span>

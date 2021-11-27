@@ -11,13 +11,15 @@ export default class IdeConnection {
     pollingTimeout: number;
     port: string;
     reactor: Reactor;
-    client: W3CWebSocket;
+    client!: WebSocket;
+    socketReconnectAttemtsCount = 3;
+    socketReconnectAttemtIndex = 0;
 
     constructor(port, pollintTimeout = 1000) {
         this.pollingTimeout = pollintTimeout;
         this.port = port;
         this.connect();
-        setTimeout(this.reconnect.bind(this), this.pollingTimeout);
+        setInterval(this.reconnect.bind(this), this.pollingTimeout);
         this.reactor = new Reactor();
         this.reactor.registerEvent(Events.onopen);
         this.reactor.registerEvent(Events.onclosed);
@@ -39,7 +41,7 @@ export default class IdeConnection {
     }
 
     connect() {
-        this.client = new W3CWebSocket(`ws://localhost:${this.port}/`);
+        this.client = new WebSocket(`ws://localhost:${this.port}/`);
         this.client.onerror = this.onError.bind(this);
         this.client.onopen = this.onOpen.bind(this);
         this.client.onclose = this.onClose.bind(this);
@@ -59,11 +61,19 @@ export default class IdeConnection {
     }
 
     onOpen() {
+        this.socketReconnectAttemtIndex = 0;
         this.reactor.dispatchEvent(Events.onopen);
     }
 
-    onClose() {
+    onClose(error) {
+        // if((error.code===1000 || error.code===1006) && this.socketReconnectAttemtIndex < this.socketReconnectAttemtsCount ){
+        //     console.log("reconnect", this.socketReconnectAttemtIndex);
+        //     this.socketReconnectAttemtIndex++;
+        //     this.connect();
+        // }else{
+        console.log('websocket has closed');
         this.reactor.dispatchEvent(Events.onclosed);
+        // }
     }
 
     onMessage(e) {

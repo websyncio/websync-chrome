@@ -49,22 +49,13 @@ export default class IDEAConnection implements IIdeConnection {
 
     constructor() {
         this.connection = new WebsocketConnection(1804);
-        this.connection.addListener(Events.onopen, this.onOpen.bind(this));
-        this.connection.addListener(Events.onclosed, this.onClosed.bind(this));
+        this.connection.addListener(Events.onopen, this.onSocketOpened.bind(this));
+        this.connection.addListener(Events.onclosed, this.onSocketClosed.bind(this));
         this.connection.addListener(Events.onmessage, this.onMessage.bind(this));
         this.reactor = new Reactor();
         this.reactor.registerEvent(MessageTypes.ProjectDataReceived);
         this.reactor.registerEvent(MessageTypes.ProjectUpdated);
         this.reactor.registerEvent(MessageTypes.WebsiteUpdated);
-    }
-
-    private static _inst: IDEAConnection | undefined;
-
-    static instance() {
-        if (IDEAConnection._inst === undefined) {
-            IDEAConnection._inst = new IDEAConnection();
-        }
-        return IDEAConnection._inst;
     }
 
     saveAsyncRequest(type: string, id: string) {
@@ -159,13 +150,13 @@ export default class IDEAConnection implements IIdeConnection {
         this.connection.send(message);
     }
 
-    onOpen() {
+    onSocketOpened() {
         // TODO: move to service
         RootStore.uiStore.addIdeConnection(this.type);
         this.requestProjects();
     }
 
-    onClosed() {
+    onSocketClosed() {
         // TODO: move to service
         RootStore.uiStore.removeIdeConnection(this.type);
     }

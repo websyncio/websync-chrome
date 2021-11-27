@@ -16,12 +16,12 @@ import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
 import { NotificationToast } from 'components/NotificationToast/NotificationToast';
 
 const App: React.FC = observer(() => {
-    const ideProxies: IIdeProxy[] = [IDEAConnection.instance()];
     const { projectStore, uiStore }: RootStore = useRootStore();
-
     const urlSynchronizationService = DependencyContainer.get<IUrlSynchronizationService>(
         TYPES.UrlSynchronizationService,
     );
+    const ideaConnection: IDEAConnection = DependencyContainer.get<IDEAConnection>(TYPES.IDEAConnection);
+    const ideProxies: IIdeProxy[] = [ideaConnection];
 
     useEffect(() => {
         urlSynchronizationService.requestCurrentUrl();
