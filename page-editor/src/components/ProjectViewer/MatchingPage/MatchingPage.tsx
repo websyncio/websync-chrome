@@ -20,11 +20,11 @@ const MatchingPage: React.FC<Props> = observer(() => {
         setCreatePageModalIsOpen(true);
     }
 
-    function matchingPage() {
+    function matchResult() {
         switch (uiStore.matchingPages.length) {
             case 0:
                 return (
-                    <>
+                    <span className="match-result flex-left">
                         <i className="nomatch-icon" />
                         No matching page in
                         <i className="ws-icon-small website-icon" style={{ marginLeft: '4px' }}></i>{' '}
@@ -32,11 +32,11 @@ const MatchingPage: React.FC<Props> = observer(() => {
                         <span className="create-page-btn ws-btn ws-btn__primary" onClick={createPage}>
                             Create Page
                         </span>
-                    </>
+                    </span>
                 );
             case 1:
                 return (
-                    <>
+                    <span className="match-result flex-left">
                         <i className="ws-icon-small website-icon"></i>
                         {uiStore.matchingWebsite.name}&nbsp;/&nbsp;
                         <i className="ws-icon-small page-icon"></i>
@@ -47,7 +47,7 @@ const MatchingPage: React.FC<Props> = observer(() => {
                         >
                             {uiStore.matchingPages[0].pageType.name}
                         </a>
-                    </>
+                    </span>
                 );
             default:
                 return <>Several pages match current URL</>;
@@ -60,12 +60,11 @@ const MatchingPage: React.FC<Props> = observer(() => {
 
     return (
         <>
-            <div className="flex-left matching-page">
+            <div className={`matching-page ${uiStore.matchingPages.length ? '' : 'no-match'}`}>
                 <span className="current-url ws-hide-text" title={uiStore.currentUrl!}>
                     {uiStore.currentUrl}
-                    {' :'}
                 </span>
-                {matchingPage()}
+                {matchResult()}
             </div>
             <CreatePageModal isOpen={createPageModalIsOpen} onRequestClose={closeCreatePageModal} />
         </>

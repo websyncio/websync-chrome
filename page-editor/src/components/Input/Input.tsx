@@ -18,27 +18,28 @@ const Input: React.FC<Props> = (props: Props) => {
 
     const handleInput = (e) => {
         setCurrentValue(e.target.value);
+        onChange(e.target.value);
     };
 
-    const handleKeyboard = (e) => {
-        switch (e.key) {
-            case 'Escape': //escape
-                setCurrentValue(value);
-                break;
-            case 'Enter': //enter
-                onChange(currentValue);
-                break;
-        }
-    };
+    // const handleKeyboard = (e) => {
+    //     switch (e.key) {
+    //         case 'Escape': //escape
+    //             setCurrentValue(value);
+    //             break;
+    //         case 'Enter': //enter
+    //             onChange(currentValue);
+    //             break;
+    //     }
+    // };
 
-    const handleFocusOut = () => {
-        onChange(currentValue);
-    };
+    // const handleFocusOut = () => {
+    //     onChange(currentValue);
+    // };
 
     return (
-        <div onKeyDown={handleKeyboard} onBlur={handleFocusOut} className="input-container">
-            <input className="input-field" value={currentValue} onChange={handleInput} disabled={disabled} />
-        </div>
+        // <div onKeyDown={handleKeyboard} onBlur={handleFocusOut} className="input-container">
+        <input className="input-field" value={currentValue} onChange={handleInput} disabled={disabled} />
+        // </div>
     );
 };
 

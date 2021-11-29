@@ -1,6 +1,6 @@
 .website-name-wrap
-    padding: 10px 15px;
-    background-color: beige;
+    padding: 10px 15px
+    background-color: whitesmoke
 
     .website-icon
         vertical-align: top;
@@ -12,13 +12,17 @@
         margin-left: 5px
 
     .match-circle
-        display: inline-block
+        display: none
         margin-left: 4px
         transition: background-color 300ms
-        &.no-match
-            background-color: lightgrey
-        
-.website-hosturl
+
+.details-wrap.match
+    .website-name-wrap
+        background-color: beige
+    .match-circle
+        display: inline-block
+
+.website-baseurl
     padding: 15px 0;
     margin-left: 20px;
     margin-right: 20px;
@@ -39,10 +43,7 @@
         color: darkslategray
         font-size: 13px
 
-    input
-        width: 100%
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 4px;
-        font-family: monospace;
-        color: brown;
+    .match-status-text
+        color: red;
+        font-size: 11px;
+        margin-left: 4px;
