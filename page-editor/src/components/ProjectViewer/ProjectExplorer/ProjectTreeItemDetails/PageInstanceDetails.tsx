@@ -46,8 +46,8 @@ const PageInstanceDetails: React.FC<Props> = observer(({ pageInstance }) => {
                 <span>{pageInstance.name}</span>
             </div>
             <div className="pageinstance-name">
-                <label>Name:</label>
-                <span>{pageInstance.name}</span>
+                <i className="ws-small-icon page-icon" />
+                <span className="pageinstance-name">{pageInstance.name}</span>
             </div>
             <div className="pageinstance-url">
                 <label>Url:</label>
