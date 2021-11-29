@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import PageInstance from 'entities/mst/PageInstance';
 import Input from 'components/Input/Input';
-import './PageInstanceDetails.sass';
+import './TreeItemDetails.sass';
 import { DependencyContainer, TYPES } from 'inversify.config';
 import ISynchronizationService from 'services/ISynchronizationService';
 import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
 import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
+import IUrlMatcher from 'services/IUrlMatcher';
 
 interface Props {
     pageInstance: PageInstance;
@@ -17,9 +18,24 @@ const PageInstanceDetails: React.FC<Props> = observer(({ pageInstance }) => {
     const { uiStore, projectStore }: RootStore = useRootStore();
     const synchronizationService = DependencyContainer.get<ISynchronizationService>(TYPES.SynchronizationService);
     const urlSynchroService = DependencyContainer.get<IUrlSynchronizationService>(TYPES.UrlSynchronizationService);
+    const urlMatchService = DependencyContainer.get<IUrlMatcher>(TYPES.UrlMatcher);
+    const pageMatch: boolean = uiStore.matchingPages.includes(pageInstance);
+    const [matchStatusText, setMatchStatusText] = useState('');
+    const URL_DOES_NOT_MATCH = 'Absolute URL does not match current URL';
+    const URL_IS_EMPTY = 'Please, specify Absolute URL';
 
     function onChangeUrl(newUrl: string) {
-        synchronizationService.updatePageInstanceUrl(pageInstance, newUrl);
+        if (!newUrl) {
+            setMatchStatusText(URL_IS_EMPTY);
+        } else {
+            const newMatchingPages = urlMatchService.matchPage(uiStore.matchingWebsite, newUrl);
+            if (newMatchingPages.includes(pageInstance)) {
+                synchronizationService.updatePageInstanceUrl(pageInstance, newUrl);
+                setMatchStatusText('');
+            } else {
+                setMatchStatusText(URL_DOES_NOT_MATCH);
+            }
+        }
     }
 
     function getWebsiteUrl(pageInstance) {
@@ -31,27 +47,31 @@ const PageInstanceDetails: React.FC<Props> = observer(({ pageInstance }) => {
         urlSynchroService.redirectToUrl(`${getWebsiteUrl(pageInstance)}${pageInstance.url}`);
     }
 
+    function urlWithoutParams() {
+        const url = new URL(uiStore.currentUrl!);
+        return url.origin + url.pathname;
+    }
+
     return (
-        <div className="details-wrap">
-            <div className="pageinstance-name">
-                {uiStore.matchingPages.map((mp) => mp.id).includes(pageInstance.id) ? (
-                    <div> Page matched </div>
-                ) : (
-                    <div>
-                        {' '}
-                        Page not matched <button onClick={redirectToUrl}> Redirect to page</button>{' '}
-                    </div>
+        <div className={`details-wrap ${pageMatch ? 'match' : ''}`}>
+            <div className="item-name-wrap">
+                <i className="page-icon ws-icon-small" />
+                <span className="item-name">{pageInstance.pageType.name}</span>
+                <span className={`match-circle`} />
+                {!pageMatch && (
+                    <span className="action-button" onClick={redirectToUrl}>
+                        Redirect to this page
+                    </span>
                 )}
-                <label>Page </label>
-                <span>{pageInstance.name}</span>
             </div>
-            <div className="pageinstance-name">
-                <i className="ws-small-icon page-icon" />
-                <span className="pageinstance-name">{pageInstance.name}</span>
-            </div>
-            <div className="pageinstance-url">
-                <label>Url:</label>
-                <Input value={pageInstance.url} onChange={onChangeUrl} />
+            <div className="field-wrap">
+                <label>
+                    Absolute URL
+                    <i className="info-icon" title="Pattern that matches absolute URL of the tested page" />
+                </label>
+                <span className="current-url">({urlWithoutParams()})</span>
+                <Input value={pageInstance.url} onChange={onChangeUrl} disabled={!pageMatch} />
+                <div className="match-status-text">{matchStatusText}</div>
             </div>
         </div>
     );

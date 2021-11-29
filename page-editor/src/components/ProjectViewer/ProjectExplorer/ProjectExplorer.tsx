@@ -58,7 +58,7 @@ const Explorer: React.FC<Props> = observer(() => {
                     ) : projectStore.selectedWebSite ? (
                         <WebSiteDetails website={projectStore.selectedWebSite} />
                     ) : (
-                        <div>Nothing selected</div>
+                        <div className="nothing-selected-panel"></div>
                     )}
                 </div>
             </div>

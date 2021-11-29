@@ -16,7 +16,14 @@ export default class JDIUrlMatcher implements IUrlMatcher {
         if (!website) {
             return [];
         }
-        const pathname = new URL(url.toLowerCase()).pathname;
+        let pathname: string;
+        try {
+            // url parameter has full url
+            pathname = new URL(url.toLowerCase()).pathname;
+        } catch (TypeError) {
+            // url parameter has absolute path
+            pathname = url;
+        }
         const matchingPages: PageInstance[] = [];
         website.pageInstances.forEach((pi: PageInstance) => {
             if (pathname === pi.url) {
