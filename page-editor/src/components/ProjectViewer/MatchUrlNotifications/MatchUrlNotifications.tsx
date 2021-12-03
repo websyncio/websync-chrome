@@ -18,7 +18,7 @@ const MatchUrlNotifications: React.FC<Props> = observer(({ currentPageInstance }
     );
 
     function navigateToPage(pageInstance: PageInstance) {
-        urlSynchronizationService.redirectToUrl(`${pageInstance.website.url}${pageInstance.url}`);
+        urlSynchronizationService.redirectToUrl(`${pageInstance.fullUrl}`);
     }
 
     function createNewPage() {

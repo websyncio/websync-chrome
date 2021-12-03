@@ -35,14 +35,12 @@ export const ProjectStoreModel = types
     }))
     .actions((self) => ({
         updatePageType(pageTypeJson) {
-            const index = self.pageTypes.findIndex((pt) => pt.id == pageTypeJson.id);
-            if (!index) {
+            const oldPageType = self.pageTypes.find((pt) => pt.id == pageTypeJson.id);
+            if (!oldPageType) {
                 console.log('Probably name of the page changed. Have to decide what to do in this case.');
                 throw new Error('Unable to update page type: ' + pageTypeJson.id);
             }
-            console.log('Apply snapshot, Old', JSON.stringify(self.pageTypes[index]));
-            console.log('Apply snapshot, New', JSON.stringify(pageTypeJson));
-            applySnapshot(self.pageTypes[index], pageTypeJson);
+            applySnapshot(oldPageType, pageTypeJson);
         },
         updateComponentType(componentTypeJson) {
             const oldComponentType = self.componentTypes.find((pt) => pt.id == componentTypeJson.id);

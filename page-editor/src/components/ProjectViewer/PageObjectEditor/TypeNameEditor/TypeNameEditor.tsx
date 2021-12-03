@@ -55,7 +55,11 @@ const TypeNameEditor: React.FC<Props> = observer(
         const [isCtrlPressed, setIsCtrlPressed] = useState(false);
         let popper: any;
 
-        const matchingTypes = projectStore.componentTypes.filter((t) => t.name === component.typeName);
+        function getTypesWithName(typeName: string): ComponentType[] {
+            return projectStore.componentTypes.filter((t) => t.name === typeName);
+        }
+
+        const [matchingTypes, setMatchingTypes] = useState(() => getTypesWithName(component.typeName));
 
         useLayoutEffect(() => {
             console.log('TypeNameEditor first render', component.fieldName);
@@ -257,7 +261,7 @@ const TypeNameEditor: React.FC<Props> = observer(
 
         function applySelectedComponent(componentType: ComponentType) {
             // TODO: we have to store id of selected component type
-            onChange(componentType.name, nameRef.current.textContent);
+            onChange(componentType.id, nameRef.current.textContent);
             setShowTypePlaceholder(false);
             setActualCaretPosition(0);
             setIsEditorPopupOpen(false);
@@ -675,7 +679,10 @@ const TypeNameEditor: React.FC<Props> = observer(
                 setActualCaretPosition(caretPosition);
                 console.log('attribute changed, type: ', typeRef.current.textContent);
                 console.log('attribute changed, name: ', nameRef.current.textContent);
-                onChange(typeRef.current.textContent, nameRef.current.textContent);
+                const matchingTypes = getTypesWithName(typeRef.current.textContent);
+                setMatchingTypes(matchingTypes);
+                const componentTypeId = matchingTypes.length === 1 ? matchingTypes[0].id : typeRef.current.textContent;
+                onChange(componentTypeId, nameRef.current.textContent);
 
                 if (isEditorPopupOpen && e.target === typeRef.current) {
                     const searchString = getValueBeforeCaret(caretPosition);

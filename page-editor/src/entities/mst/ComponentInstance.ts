@@ -4,6 +4,7 @@ import { AttributeModel } from './Attribute';
 import ComponentsContainer from './ComponentsContainer';
 import ProjectStore, { ProjectStoreModel } from 'entities/mst/ProjectStore';
 import { ComponentType } from 'react';
+import { WebSiteModel } from './WebSite';
 
 export const ComponentInstanceModel = types
     .model({
@@ -11,12 +12,10 @@ export const ComponentInstanceModel = types
         parentId: types.string,
         fieldIndex: types.number,
         // try to fix - https://mobx-state-tree.js.org/tips/circular-deps
-        componentTypeId: types.string, // types.maybe(types.safeReference(types.late(() => ComponentTypeModel))),
+        componentTypeId: types.maybeNull(types.string), // types.maybe(types.safeReference(types.late(() => ComponentTypeModel))),
         fieldName: types.string,
         name: types.maybeNull(types.string),
-        initializationAttribute: types.optional(AttributeModel, {
-            name: '',
-        }),
+        initializationAttribute: types.maybeNull(AttributeModel),
     })
     // .volatile(()=>({
     //     isBlank: false
@@ -56,13 +55,17 @@ export const ComponentInstanceModel = types
         },
     }))
     .actions((self) => ({
-        setComponentTypeName(newComponentTypeName) {
-            let typeNamespace = '';
-            if (self.componentTypeId) {
-                typeNamespace = getNamespace(self.componentTypeId);
-            }
-            console.log('typeNamespace', typeNamespace);
-            self.componentTypeId = typeNamespace ? typeNamespace + '.' + newComponentTypeName : newComponentTypeName;
+        setComponentTypeId(newComponentTypeId) {
+            // const matchingTypes = getParentOfType(self, ProjectStoreModel)
+            //     .componentTypes.filter((t) => t.name === newComponentTypeName);
+
+            // let typeNamespace = '';
+            // if (self.componentTypeId) {
+            //     typeNamespace = getNamespace(self.componentTypeId);
+            // }
+            // console.log('typeNamespace', typeNamespace);
+
+            self.componentTypeId = newComponentTypeId;
         },
         setFieldName(newFieldName) {
             self.fieldName = newFieldName;

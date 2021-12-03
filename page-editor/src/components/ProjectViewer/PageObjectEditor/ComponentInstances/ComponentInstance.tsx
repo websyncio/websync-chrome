@@ -71,8 +71,8 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
             }
         }
 
-        function onChange(componentType: string, fieldName: string) {
-            component.setComponentTypeName(componentType);
+        function onChange(componentTypeId: string, fieldName: string) {
+            component.setComponentTypeId(componentTypeId);
             component.setFieldName(fieldName);
             console.log(JSON.stringify(component));
             synchronizationService.updateComponentInstance(component);

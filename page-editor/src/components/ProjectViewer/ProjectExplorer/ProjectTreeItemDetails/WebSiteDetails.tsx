@@ -1,12 +1,13 @@
 import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react';
 import WebSite from 'entities/mst/WebSite';
-import Input from 'components/Input/Input';
+import Input from 'components-common/Input/Input';
 import './TreeItemDetails.sass';
 import { DependencyContainer, TYPES } from 'inversify.config';
 import ISynchronizationService from 'services/ISynchronizationService';
 import { useRootStore } from 'context';
 import IUrlMatcher from 'services/IUrlMatcher';
+import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
 
 interface Props {
     website: WebSite;
@@ -16,7 +17,9 @@ const WebSiteDetails: React.FC<Props> = observer(({ website }) => {
     const { projectStore, uiStore } = useRootStore();
     const synchronizationService = DependencyContainer.get<ISynchronizationService>(TYPES.SynchronizationService);
     const urlMatchService = DependencyContainer.get<IUrlMatcher>(TYPES.UrlMatcher);
+    const urlSynchroService = DependencyContainer.get<IUrlSynchronizationService>(TYPES.UrlSynchronizationService);
     const [matchStatusText, setMatchStatusText] = useState('');
+    const websiteMatch: boolean = uiStore.matchingWebsite === website;
     const URL_DOES_NOT_MATCH = 'Base URL does not match current URL';
     const URL_IS_EMPTY = 'Please, specify Base URL';
 
@@ -39,12 +42,21 @@ const WebSiteDetails: React.FC<Props> = observer(({ website }) => {
         }
     }
 
+    function redirectToWebsiteUrl() {
+        urlSynchroService.redirectToUrl(website.url);
+    }
+
     return (
         <div className={`details-wrap ${uiStore.matchingWebsite === website ? 'match' : ''}`}>
             <div className="item-name-wrap">
                 <i className="website-icon ws-icon-small" />
                 <span className="item-name">{website.name}</span>
                 <span className={`match-circle`} />
+                {!websiteMatch && (
+                    <span className="action-button" onClick={redirectToWebsiteUrl}>
+                        Redirect to this website
+                    </span>
+                )}
             </div>
             <div className="field-wrap">
                 <label>

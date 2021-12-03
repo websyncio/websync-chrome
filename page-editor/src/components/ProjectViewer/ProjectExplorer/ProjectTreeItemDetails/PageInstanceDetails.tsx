@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import PageInstance from 'entities/mst/PageInstance';
-import Input from 'components/Input/Input';
+import Input from 'components-common/Input/Input';
 import './TreeItemDetails.sass';
 import { DependencyContainer, TYPES } from 'inversify.config';
 import ISynchronizationService from 'services/ISynchronizationService';
@@ -44,7 +44,7 @@ const PageInstanceDetails: React.FC<Props> = observer(({ pageInstance }) => {
     }
 
     function redirectToUrl() {
-        urlSynchroService.redirectToUrl(`${getWebsiteUrl(pageInstance)}${pageInstance.url}`);
+        urlSynchroService.redirectToUrl(`${pageInstance.fullUrl}`);
     }
 
     function urlWithoutParams() {
@@ -52,13 +52,23 @@ const PageInstanceDetails: React.FC<Props> = observer(({ pageInstance }) => {
         return url.origin + url.pathname;
     }
 
+    function editPageObject() {
+        uiStore.showTabForEditedPage(pageInstance);
+    }
+
     return (
         <div className={`details-wrap ${pageMatch ? 'match' : ''}`}>
             <div className="item-name-wrap">
                 <i className="page-icon ws-icon-small" />
-                <span className="item-name">{pageInstance.pageType.name}</span>
+                <span className="item-name" style={{ cursor: 'pointer' }} onClick={editPageObject}>
+                    {pageInstance.pageType.name}
+                </span>
                 <span className={`match-circle`} />
-                {!pageMatch && (
+                {pageMatch ? (
+                    <span className="action-button" onClick={editPageObject}>
+                        Edit this page
+                    </span>
+                ) : (
                     <span className="action-button" onClick={redirectToUrl}>
                         Redirect to this page
                     </span>

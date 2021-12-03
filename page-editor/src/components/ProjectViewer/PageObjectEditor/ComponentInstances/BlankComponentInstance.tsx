@@ -32,22 +32,22 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
             }
         }, [isDeleted]);
 
-        function onChange(componentTypeName: string, componentFieldName: string) {
-            if (component.typeName !== componentTypeName) {
-                selectorBagService.updateComponentType(component, componentTypeName);
+        function onChange(componentTypeId: string, componentFieldName: string) {
+            if (component.componentTypeId !== componentTypeId) {
+                selectorBagService.updateComponentType(component, componentTypeId);
             }
             if (component.fieldName != componentFieldName) {
                 selectorBagService.updateComponentFieldName(component, componentFieldName);
             }
 
             // Should we implement more complex validation here?
-            if (!componentTypeName) {
-                console.log('componentTypeName not set', componentTypeName);
-            }
+            // if (!componentTypeId) {
+            //     console.log('componentTypeName not set', componentTypeName);
+            // }
             if (!componentFieldName) {
                 console.log('componentFieldName not set', componentFieldName);
             }
-            setIsAllSet(!!componentTypeName.length && !!componentFieldName.length);
+            setIsAllSet(!!componentTypeId.length && !!componentFieldName.length);
         }
 
         function takeComponent() {

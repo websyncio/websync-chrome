@@ -18,32 +18,32 @@ export class SelectorsBagService implements ISelectorsBagService {
             MessageTypes.SelectorsListUpdated,
             this.generateBlankComponents.bind(this),
         );
-        this.generateBlankComponents([
-            {
-                id: '1',
-                type: 'WebInput',
-                name: 'SearchInput',
-                selector: '#search',
-            },
-            {
-                id: '2',
-                type: 'WebInput',
-                name: 'SendButton',
-                selector: "[type='submit']",
-            },
-            {
-                id: '3',
-                type: '',
-                name: 'CancelButton',
-                selector: "button['Cancel']",
-            },
-            {
-                id: '4',
-                type: '',
-                name: '',
-                selector: "button['Cancel']",
-            },
-        ]);
+        // this.generateBlankComponents([
+        //     {
+        //         id: '1',
+        //         type: 'WebInput',
+        //         name: 'SearchInput',
+        //         selector: '#search',
+        //     },
+        //     {
+        //         id: '2',
+        //         type: 'WebInput',
+        //         name: 'SendButton',
+        //         selector: "[type='submit']",
+        //     },
+        //     {
+        //         id: '3',
+        //         type: '',
+        //         name: 'CancelButton',
+        //         selector: "button['Cancel']",
+        //     },
+        //     {
+        //         id: '4',
+        //         type: '',
+        //         name: '',
+        //         selector: "button['Cancel']",
+        //     },
+        // ]);
     }
 
     deleteComponent(component: ComponentInstance) {
@@ -57,8 +57,8 @@ export class SelectorsBagService implements ISelectorsBagService {
         this.updateSelectorsList();
     }
 
-    updateComponentType(component: ComponentInstance, componentType: string) {
-        component.setComponentTypeName(componentType);
+    updateComponentType(component: ComponentInstance, componentTypeId: string) {
+        component.setComponentTypeId(componentTypeId);
         this.updateSelectorsList();
     }
 

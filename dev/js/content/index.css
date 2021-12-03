@@ -2,8 +2,8 @@
 *[ws-highlight][ws-list-selector] *,
 *[ws-highlight][ws-list-selector]::placeholder,
 *[ws-highlight][ws-list-selector] *::placeholder{
-	background: orange !important;
-	color: orange !important;
+	background: lightslategrey !important;
+	color: lightslategrey !important;
 	border: none !important;
 	box-shadow: none !important;
 	outline: none !important;
