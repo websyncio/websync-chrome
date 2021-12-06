@@ -44,10 +44,10 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
         //     selection?.addRange(range);
         // }
 
-        const editSelector = (component: IComponentInstance, parameter: ParameterModel, valueIndex: number) =>
+        const editSelector = (componentInstance: IComponentInstance, parameter: ParameterModel, valueIndex: number) =>
             selectorsBagService.editSelector({
-                componentId: component.id,
-                componentName: component.name,
+                componentId: componentInstance.id,
+                componentName: componentInstance.fieldName,
                 parameterName: parameter.name,
                 parameterValueIndex: valueIndex,
                 parameterValue: parameter.values[valueIndex],
