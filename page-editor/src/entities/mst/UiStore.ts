@@ -19,16 +19,36 @@ export const ProjectTabModel = types
         SelectableModel,
         types.model({
             type: types.enumeration<ProjectTabType>(Object.values(ProjectTabType)),
-            editedObject: types.reference(types.union(ComponentInstanceModel, PageInstanceModel)),
+            editedComponentInstance: types.maybe(types.reference(ComponentInstanceModel)),
+            editedPageInstance: types.maybe(
+                types.reference(PageInstanceModel, {
+                    onInvalidated: (ev) => {
+                        console.log('editedPageInstance invalidated', ev);
+                        if (ev.cause == 'destroy') {
+                            ev.removeRef();
+                        }
+                    },
+                }),
+            ),
         }),
     )
     .views((self) => ({
+        get editedObject() {
+            switch (self.type) {
+                case ProjectTabType.ComponentIntance:
+                    return self.editedComponentInstance;
+                case ProjectTabType.PageInstance:
+                    return self.editedPageInstance;
+                default:
+                    throw new Error('Unknown tab type.');
+            }
+        },
         get componentsContainer() {
             switch (self.type) {
                 case ProjectTabType.ComponentIntance:
-                    return (self.editedObject as ComponentInstance).componentType;
+                    return self.editedComponentInstance?.componentType;
                 case ProjectTabType.PageInstance:
-                    return (self.editedObject as PageInstance).pageType;
+                    return self.editedPageInstance?.pageType;
                 default:
                     throw new Error('Unknown tab type.');
             }
@@ -45,7 +65,14 @@ export const UiStoreModel = types
         selectedProjectIsLoaded: types.optional(types.boolean, false),
         openedTabs: types.array(ProjectTabModel),
         blankComponents: types.array(ComponentInstanceModel),
-        matchingPages: types.array(types.reference(PageInstanceModel)),
+        matchingPages: types.array(
+            types.reference(PageInstanceModel, {
+                onInvalidated: (ev) => {
+                    console.log('matchingPages invalidated', ev);
+                    ev.removeRef();
+                },
+            }),
+        ),
         editorSelectedLineIndex: types.optional(types.number, 0),
         editorCaretPosition: types.optional(types.number, 0),
         notification: types.maybeNull(NotificationModel),
@@ -91,7 +118,9 @@ export const UiStoreModel = types
             self.openedTabs.forEach((po) => po.deselect());
         },
         findTabFor(editedObject) {
-            return self.openedTabs.find((t) => t.editedObject === editedObject);
+            return self.openedTabs.find((t) => {
+                return t.editedObject === editedObject;
+            });
         },
         selectPageObject(pageType: PageType) {
             this.selectTab(this.findTabFor(pageType));
@@ -126,7 +155,7 @@ export const UiStoreModel = types
             if (!tab) {
                 tab = ProjectTabModel.create({
                     type: ProjectTabType.PageInstance,
-                    editedObject: pageInstance.id,
+                    editedPageInstance: pageInstance.id,
                 });
                 self.openedTabs.push(tab);
             }
@@ -141,7 +170,7 @@ export const UiStoreModel = types
             if (!tab) {
                 tab = ProjectTabModel.create({
                     type: ProjectTabType.ComponentIntance,
-                    editedObject: componentInstance.id,
+                    editedComponentInstance: componentInstance.id,
                 });
                 self.openedTabs.push(tab);
             }

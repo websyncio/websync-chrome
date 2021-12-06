@@ -21,16 +21,16 @@ export const ComponentInstanceModel = types
     //     isBlank: false
     // }))
     .views((self) => ({
-        get componentType() {
-            const projectStore = getParentOfType(self, ProjectStoreModel);
-            return projectStore.componentTypes.find((t) => t.id === self.componentTypeId);
-        },
         get typeName() {
             if (self.componentTypeId) {
                 const arr = self.componentTypeId.split('.');
                 return arr[arr.length - 1].trim();
             }
             return '';
+        },
+        get componentType() {
+            const projectStore = getParentOfType(self, ProjectStoreModel);
+            return projectStore.componentTypes.find((t) => t.id === self.componentTypeId);
         },
         // get componentFieldName() {
         //     // if (self.isBlank) {

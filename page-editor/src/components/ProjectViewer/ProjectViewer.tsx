@@ -8,9 +8,6 @@ import PageEditor from './PageObjectEditor/PageEditor/PageEditor';
 import { ProjectTab, ProjectTabType } from 'entities/mst/UiStore';
 import ComponentEditor from 'components/ProjectViewer/PageObjectEditor/ComponentEditor/ComponentEditor';
 import WebsiteSelector from 'components/ProjectViewer/WebsiteSelector/WebsiteSelector';
-import WebSite from 'entities/mst/WebSite';
-import PageInstance from 'entities/mst/PageInstance';
-import ComponentInstance from 'entities/mst/ComponentInstance';
 import MatchingPage from './MatchingPage/MatchingPage';
 // import Explorer from './Explorer/Explorer';
 
@@ -22,9 +19,15 @@ const ProjectViewer: React.FC<Props> = observer(() => {
     function tabContent(tab: ProjectTab) {
         switch (tab.type) {
             case ProjectTabType.PageInstance:
-                return <PageEditor pageInstance={tab.editedObject as PageInstance} />;
+                return <>{tab.editedPageInstance && <PageEditor pageInstance={tab.editedPageInstance} />}</>;
             case ProjectTabType.ComponentIntance:
-                return <ComponentEditor componentInstance={tab.editedObject as ComponentInstance} />;
+                return (
+                    <>
+                        {tab.editedComponentInstance && (
+                            <ComponentEditor componentInstance={tab.editedComponentInstance} />
+                        )}
+                    </>
+                );
             default:
                 throw new Error('Invalid tab type.');
         }

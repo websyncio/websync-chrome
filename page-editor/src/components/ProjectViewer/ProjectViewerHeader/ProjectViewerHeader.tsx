@@ -28,17 +28,15 @@ const Header: React.FC<Props> = observer(() => {
             return (
                 <>
                     <i className="tab-icon component-icon" />
-                    <span className="tab-name">{(t.editedObject as ComponentInstance).componentType.name}</span>
+                    <span className="tab-name">{t.editedComponentInstance.componentType.name}</span>
                 </>
             );
         } else if (t.type === ProjectTabType.PageInstance) {
             return (
                 <>
                     <i className="tab-icon page-icon" />
-                    <span className="tab-name">{(t.editedObject as PageInstance).pageType.name}</span>
-                    {uiStore.matchingPages.includes(t.editedObject as PageInstance) && (
-                        <span className="match-circle" />
-                    )}
+                    <span className="tab-name">{t.editedPageInstance!.pageType.name}</span>
+                    {uiStore.matchingPages.includes(t.editedPageInstance!) && <span className="match-circle" />}
                 </>
             );
         }
@@ -47,16 +45,21 @@ const Header: React.FC<Props> = observer(() => {
 
     function openedTabs() {
         return uiStore.openedTabs.map((t: ProjectTab) => {
-            return (
-                <div
-                    key={t.editedObject.id}
-                    className={`header-tab ${t.selected ? 'selected' : ''}`}
-                    onClick={() => uiStore.selectTab(t)}
-                >
-                    {tabContent(t)}
-                    <CloseButton onClick={() => uiStore.closeTab(t)} />
-                </div>
-            );
+            const tabKey = t.editedObject?.id;
+            if (tabKey) {
+                return (
+                    <>
+                        <div
+                            key={tabKey}
+                            className={`header-tab ${t.selected ? 'selected' : ''}`}
+                            onClick={() => uiStore.selectTab(t)}
+                        >
+                            {tabContent(t)}
+                            <CloseButton onClick={() => uiStore.closeTab(t)} />
+                        </div>
+                    </>
+                );
+            }
         });
     }
 

@@ -9,7 +9,7 @@ import ComponentType from 'entities/mst/ComponentType';
 
 interface Props {
     componentType?: ComponentType;
-    componentInstance?: ComponentInstance;
+    componentInstance: ComponentInstance;
 }
 
 const ComponentEditor: React.FC<Props> = observer(({ componentType, componentInstance }) => {
@@ -18,6 +18,10 @@ const ComponentEditor: React.FC<Props> = observer(({ componentType, componentIns
 
     function onExpand(containerIndex: number) {
         setExpandedContainerIndex(containerIndex);
+    }
+
+    function getComponentType(componentTypeId) {
+        return projectStore.componentTypes.find((t) => t.id === componentTypeId);
     }
 
     function componentContainers(inheritanceLevel: number, pageObject: any) {
@@ -38,7 +42,11 @@ const ComponentEditor: React.FC<Props> = observer(({ componentType, componentIns
         );
     }
 
-    return <div className="component-editor flex-auto">{componentContainers(0, componentInstance?.componentType)}</div>;
+    return (
+        <div className="component-editor flex-auto">
+            {componentContainers(0, getComponentType(componentInstance.componentTypeId))}
+        </div>
+    );
 });
 
 export default ComponentEditor;

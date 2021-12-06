@@ -54,20 +54,18 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
             });
 
         function initializationAttribute(attribute: AttributeModel) {
-            if (attribute) {
-                if (Object.values(GenericAttributes).includes(attribute.shortName as GenericAttributes)) {
-                    return (
-                        <RootSelectorAttribute
-                            attribute={component.initializationAttribute}
-                            onEditSelector={(parameter, valueIndex) => editSelector(component, parameter, valueIndex)}
-                            onValidated={(hasError) => {
-                                setHasError(hasError);
-                            }}
-                        />
-                    );
-                } else {
-                    console.error('Unsupported type of initialization attribute', attribute);
-                }
+            if (Object.values(GenericAttributes).includes(attribute.shortName as GenericAttributes)) {
+                return (
+                    <RootSelectorAttribute
+                        attribute={attribute}
+                        onEditSelector={(parameter, valueIndex) => editSelector(component, parameter, valueIndex)}
+                        onValidated={(hasError) => {
+                            setHasError(hasError);
+                        }}
+                    />
+                );
+            } else {
+                console.error('Unsupported type of initialization attribute', attribute);
             }
         }
 
@@ -109,7 +107,7 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                         onChange={onChange}
                     />
                     &nbsp;
-                    {initializationAttribute(component.initializationAttribute)}
+                    {component.initializationAttribute && initializationAttribute(component.initializationAttribute)}
                     {isSelected && (
                         <span
                             className="action-button"
