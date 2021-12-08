@@ -2,9 +2,10 @@
 *[ws-highlight][ws-list-selector] *,
 *[ws-highlight][ws-list-selector]::placeholder,
 *[ws-highlight][ws-list-selector] *::placeholder{
-	background: lightslategrey !important;
-	color: lightslategrey !important;
-	border-color: lightslategrey !important;
+	visibility: hidden;
+/*	background: white !important;
+	color: white !important;
+	border-color: white !important;
 	box-shadow: none !important;
 	outline: none !important;
-}
+*/}

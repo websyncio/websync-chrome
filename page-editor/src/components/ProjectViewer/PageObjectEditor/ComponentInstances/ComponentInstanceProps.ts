@@ -1,8 +1,11 @@
 // import IIdeProxy from 'connections/IDE/IIdeConnection';
-import IComponentInstance from 'entities/mst/ComponentInstance';
+import ComponentInstance from 'entities/mst/ComponentInstance';
+import IComponentsContainer from 'entities/mst/ComponentsContainer';
 
 export default interface ComponentInstanceProps {
-    component: IComponentInstance;
+    container: IComponentsContainer;
+    componentInstance: ComponentInstance;
+    parentComponentInstance: ComponentInstance | null;
     isSelected: boolean;
     index: number;
     initialCaretPosition: number | null;

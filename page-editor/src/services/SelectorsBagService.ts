@@ -102,7 +102,7 @@ export class SelectorsBagService implements ISelectorsBagService {
 
     onSelectorUpdated(data) {
         console.log('update component selector in projectStore here', data);
-        const componentsContainer = RootStore.uiStore.selectedTab?.componentsContainer;
+        const componentsContainer = RootStore.uiStore.selectedComponentsContainer;
         if (!componentsContainer) {
             throw new Error('No selected page object to update.');
         }

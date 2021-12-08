@@ -8,16 +8,24 @@ import ISelectorsBagService from 'services/ISelectorsBagService';
 import SelectorHighlighter from 'services/SelectorHighlighterService';
 import XcssSelector from 'entities/XcssSelector';
 import ISynchronizationService from 'services/ISynchronizationService';
-import ComponentInstance from 'entities/mst/ComponentInstance';
 import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
-import { ProjectTab, ProjectTabType } from 'entities/mst/UiStore';
-import PageType from 'entities/mst/PageType';
 
 const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
-    ({ component, isSelected, initialCaretPosition, onSelectedStateChange, onSelectNext, onSelectPrevious }) => {
+    ({
+        container,
+        componentInstance,
+        parentComponentInstance,
+        isSelected,
+        initialCaretPosition,
+        onSelectedStateChange,
+        onSelectNext,
+        onSelectPrevious,
+    }) => {
         const [isDeleted, setIsDeleted] = useState(false);
-        const [isAllSet, setIsAllSet] = useState(!!component.typeName.length && !!component.fieldName.length);
+        const [isAllSet, setIsAllSet] = useState(
+            !!componentInstance.typeName.length && !!componentInstance.fieldName.length,
+        );
         const selectorBagService = DependencyContainer.get<ISelectorsBagService>(TYPES.SelectorsBagService);
         const synchronizationService = DependencyContainer.get<ISynchronizationService>(TYPES.SynchronizationService);
         const selectorHighlighter: SelectorHighlighter = DependencyContainer.get<SelectorHighlighter>(
@@ -28,16 +36,16 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
         useLayoutEffect(() => {
             if (isDeleted) {
                 // .delete after animation completed
-                setTimeout(() => selectorBagService.deleteComponent(component), 300);
+                setTimeout(() => selectorBagService.deleteComponent(componentInstance), 300);
             }
         }, [isDeleted]);
 
         function onChange(componentTypeId: string, componentFieldName: string) {
-            if (component.componentTypeId !== componentTypeId) {
-                selectorBagService.updateComponentType(component, componentTypeId);
+            if (componentInstance.componentTypeId !== componentTypeId) {
+                selectorBagService.updateComponentType(componentInstance, componentTypeId);
             }
-            if (component.fieldName != componentFieldName) {
-                selectorBagService.updateComponentFieldName(component, componentFieldName);
+            if (componentInstance.fieldName != componentFieldName) {
+                selectorBagService.updateComponentFieldName(componentInstance, componentFieldName);
             }
 
             // Should we implement more complex validation here?
@@ -51,13 +59,10 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
         }
 
         function takeComponent() {
-            console.log('Take component', component);
-            if (!uiStore.selectedTab?.componentsContainer) {
-                throw new Error('Unable to define components container for the component instance.');
-            }
-            component.setParent(uiStore.selectedTab.componentsContainer);
-            synchronizationService.addComponentInstance(component);
-            selectorBagService.deleteComponent(component);
+            console.log('Take component', componentInstance);
+            componentInstance.setParent(container);
+            synchronizationService.addComponentInstance(componentInstance);
+            selectorBagService.deleteComponent(componentInstance);
         }
 
         function onTakeComponentClick(e) {
@@ -66,7 +71,7 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
         }
 
         function highlightSelector() {
-            const selector = new XcssSelector(component.rootXcss, null, null);
+            const selector = new XcssSelector(componentInstance.rootXcss, null, null);
             selectorHighlighter.highlight(selector);
         }
 
@@ -92,7 +97,9 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
             >
                 <span className="body-wrap">
                     <TypeNameEditor
-                        component={component}
+                        container={container}
+                        componentInstance={componentInstance}
+                        parentComponentInstance={parentComponentInstance}
                         isSelected={isSelected}
                         onSelectedStateChange={onSelectedStateChange}
                         showPlaceholders={true}
@@ -108,7 +115,7 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
                         onMouseEnter={() => highlightSelector()}
                         onMouseLeave={() => removeHighlighting()}
                     >
-                        &quot;{component.rootXcss}&quot;
+                        &quot;{componentInstance.rootXcss}&quot;
                     </span>
                     {/* {initializationAttribute(component.initializationAttribute)} */}
                     <span

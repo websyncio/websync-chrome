@@ -1,12 +1,6 @@
-import { DependencyContainer, TYPES } from 'inversify.config';
 import { types, Instance } from 'mobx-state-tree';
-import IUrlMatcher from 'services/IUrlMatcher';
-import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
-import ComponentInstance from './ComponentInstance';
-import PageInstance from './PageInstance';
 import { ProjectStoreModel } from './ProjectStore';
-import { UiStoreModel } from './UiStore';
-import WebSite from './WebSite';
+import { BreadcrumbType, UiStoreModel } from './UiStore';
 
 export const RootStoreModel = types
     .model({
@@ -21,6 +15,7 @@ export const RootStoreModel = types
             ) {
                 self.uiStore.selectedProjectIsLoaded = true;
                 self.projectStore = ProjectStoreModel.create(projectData);
+                self.uiStore.selectBreadcrumb(BreadcrumbType.ProjectExplorer);
             }
         },
         clearProject() {

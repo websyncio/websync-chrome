@@ -1,13 +1,20 @@
 import { types, Instance, applySnapshot } from 'mobx-state-tree';
 import IdeConnection, { IdeConnectionModel } from './IdeConnection';
 import PageInstance, { PageInstanceModel } from 'entities/mst/PageInstance';
-import PageType from 'entities/mst/PageType';
+import PageType, { PageTypeModel } from 'entities/mst/PageType';
 import ComponentInstance, { ComponentInstanceModel } from 'entities/mst/ComponentInstance';
 import { NotificationModel } from './Notification';
-import { SelectableModel } from './Selectable';
+import ISelectable, { SelectableModel } from './Selectable';
 import WebSite, { WebSiteModel } from './WebSite';
-import { DependencyContainer, TYPES } from 'inversify.config';
-import IUrlMatcher from 'services/IUrlMatcher';
+import ComponentsContainer from './ComponentsContainer';
+import { ComponentTypeModel } from './ComponentType';
+import { Component } from 'react';
+
+export enum BreadcrumbType {
+    ProjectExplorer = 'ProjectExplorer',
+    MatchingPage = 'MatchingPage',
+    EditedComponentInstance = 'EditedComponentInstance',
+}
 
 export enum ProjectTabType {
     PageInstance = 'PageInstance',
@@ -63,8 +70,8 @@ export const UiStoreModel = types
         selectedIdeConnectionType: types.maybeNull(types.string),
         selectedProject: types.maybeNull(types.string),
         selectedProjectIsLoaded: types.optional(types.boolean, false),
-        openedTabs: types.array(ProjectTabModel),
         blankComponents: types.array(ComponentInstanceModel),
+        matchingWebsite: types.maybeNull(types.reference(WebSiteModel)),
         matchingPages: types.array(
             types.reference(PageInstanceModel, {
                 onInvalidated: (ev) => {
@@ -73,21 +80,47 @@ export const UiStoreModel = types
                 },
             }),
         ),
+        selectedBreadcrumb: types.optional(
+            types.enumeration<BreadcrumbType>(Object.values(BreadcrumbType)),
+            BreadcrumbType.ProjectExplorer,
+        ),
+        editedPage: types.maybe(types.reference(PageInstanceModel)),
+        editedComponentsChain: types.array(types.reference(ComponentInstanceModel)),
         editorSelectedLineIndex: types.optional(types.number, 0),
         editorCaretPosition: types.optional(types.number, 0),
         notification: types.maybeNull(NotificationModel),
-        matchingWebsite: types.maybeNull(types.reference(WebSiteModel)),
         currentUrl: types.maybeNull(types.string),
     })
     .views((self) => ({
         // get selectedPageObject() {
         //     return self.editedPageObjects.find((po) => po.selected);
         // },
-        get selectedTab(): ProjectTab | undefined {
-            return self.openedTabs.find((t) => t.selected);
+        get matchingPage(): PageInstance {
+            if (self.matchingPages.length == 1) {
+                return self.matchingPages[0];
+            }
+            throw new Error('Unable to define matching page.');
+        },
+        get selectedComponentsContainer(): ComponentsContainer | null {
+            switch (self.selectedBreadcrumb) {
+                case BreadcrumbType.MatchingPage:
+                    return self.matchingPages[0];
+                case BreadcrumbType.EditedComponentInstance:
+                    return self.editedComponentsChain.find((ci) => ci.selected);
+                default:
+                    return null;
+            }
         },
     }))
     .actions((self) => ({
+        selectEditedComponentInstance(editedComponentInstance: ComponentInstance) {
+            self.editedComponentsChain.forEach((c) => c.deselect());
+            editedComponentInstance.select();
+            this.selectBreadcrumb(BreadcrumbType.EditedComponentInstance);
+        },
+        selectBreadcrumb(breadcrumbType: BreadcrumbType) {
+            self.selectedBreadcrumb = breadcrumbType;
+        },
         showNotification(title: string | null, message: string, isError: boolean) {
             self.notification = NotificationModel.create({
                 message,
@@ -107,24 +140,24 @@ export const UiStoreModel = types
         // setSelectedPageType(pageType: PageType | undefined) {
         //     self.selectedPageType = pageType;
         // },
-        selectTab(tab: ProjectTab | undefined) {
-            if (!tab) {
-                return;
-            }
-            self.openedTabs.forEach((po) => po.deselect());
-            tab.select();
-        },
-        showExplorer() {
-            self.openedTabs.forEach((po) => po.deselect());
-        },
-        findTabFor(editedObject) {
-            return self.openedTabs.find((t) => {
-                return t.editedObject === editedObject;
-            });
-        },
-        selectPageObject(pageType: PageType) {
-            this.selectTab(this.findTabFor(pageType));
-        },
+        // selectTab(tab: ProjectTab | undefined) {
+        //     if (!tab) {
+        //         return;
+        //     }
+        //     self.openedTabs.forEach((po) => po.deselect());
+        //     tab.select();
+        // },
+        // showExplorer() {
+        //     self.openedTabs.forEach((po) => po.deselect());
+        // },
+        // findTabFor(editedObject) {
+        //     return self.openedTabs.find((t) => {
+        //         return t.editedObject === editedObject;
+        //     });
+        // },
+        // selectPageObject(pageType: PageType) {
+        //     this.selectTab(this.findTabFor(pageType));
+        // },
         addIdeConnection(type: string) {
             this.removeIdeConnection(type);
             self.ideConnections.push(
@@ -151,34 +184,45 @@ export const UiStoreModel = types
             self.selectedProject = projectName;
         },
         showTabForEditedPage(pageInstance: PageInstance) {
-            let tab = this.findTabFor(pageInstance);
-            if (!tab) {
-                tab = ProjectTabModel.create({
-                    type: ProjectTabType.PageInstance,
-                    editedPageInstance: pageInstance.id,
-                });
-                self.openedTabs.push(tab);
-            }
+            self.selectedBreadcrumb = BreadcrumbType.MatchingPage;
+            // let tab = this.findTabFor(pageInstance);
+            // if (!tab) {
+            //     tab = ProjectTabModel.create({
+            //         type: ProjectTabType.PageInstance,
+            //         editedPageInstance: pageInstance.id,
+            //     });
+            //     self.openedTabs.push(tab);
+            // }
             // if (!self.editedPageObjects.find((po) => po == pageObject)) {
             //     self.editedPageObjects.push(pageObject);
             // }
-            this.selectTab(tab);
+            // this.selectTab(tab);
             // this.selectPageObject(pageObject);
         },
-        addTabForEditedComponent(componentInstance: ComponentInstance) {
-            let tab = this.findTabFor(componentInstance);
-            if (!tab) {
-                tab = ProjectTabModel.create({
-                    type: ProjectTabType.ComponentIntance,
-                    editedComponentInstance: componentInstance.id,
-                });
-                self.openedTabs.push(tab);
-            }
-            this.selectTab(tab);
+        editComponent(componentInstance: ComponentInstance, parentComponentInstance: ComponentInstance | null) {
+            // .define a chain of edited components
+            const parentIndex = self.editedComponentsChain.indexOf(parentComponentInstance);
+            const newEditedComponentsChain: ComponentInstance[] =
+                parentIndex === -1
+                    ? [] // .starting a new chain
+                    : self.editedComponentsChain.slice(0, parentIndex + 1); // .use a part(or whole) of existing chain
+            newEditedComponentsChain.push(componentInstance);
+            self.editedComponentsChain.replace(newEditedComponentsChain);
+            self.editedPage = self.matchingPage;
+            this.selectEditedComponentInstance(componentInstance);
+            // let tab = this.findTabFor(componentInstance);
+            // if (!tab) {
+            //     tab = ProjectTabModel.create({
+            //         type: ProjectTabType.ComponentIntance,
+            //         editedComponentInstance: componentInstance.id,
+            //     });
+            //     self.openedTabs.push(tab);
+            // }
+            // this.selectTab(tab);
         },
-        closeTab(tab: ProjectTab) {
-            self.openedTabs.remove(tab);
-        },
+        // closeTab(tab: ProjectTab) {
+        //     self.openedTabs.remove(tab);
+        // },
         // removeEditedPageObject(pageObject: ComponentsContainer) {
         //     self.editedPageObjects.remove(pageObject);
         // },

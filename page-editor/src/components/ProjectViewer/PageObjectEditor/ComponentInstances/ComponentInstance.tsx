@@ -13,7 +13,17 @@ import './ComponentInstance.sass';
 import ISynchronizationService from 'services/ISynchronizationService';
 
 const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
-    ({ component, isSelected, index, initialCaretPosition, onSelectedStateChange, onSelectNext, onSelectPrevious }) => {
+    ({
+        container,
+        componentInstance,
+        parentComponentInstance,
+        isSelected,
+        index,
+        initialCaretPosition,
+        onSelectedStateChange,
+        onSelectNext,
+        onSelectPrevious,
+    }) => {
         const [hasError, setHasError] = useState(false);
         // const [isDeleted, setIsDeleted] = useState(false);
 
@@ -58,7 +68,9 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                 return (
                     <RootSelectorAttribute
                         attribute={attribute}
-                        onEditSelector={(parameter, valueIndex) => editSelector(component, parameter, valueIndex)}
+                        onEditSelector={(parameter, valueIndex) =>
+                            editSelector(componentInstance, parameter, valueIndex)
+                        }
                         onValidated={(hasError) => {
                             setHasError(hasError);
                         }}
@@ -70,14 +82,14 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
         }
 
         function onChange(componentTypeId: string, fieldName: string) {
-            component.setComponentTypeId(componentTypeId);
-            component.setFieldName(fieldName);
-            console.log(JSON.stringify(component));
-            synchronizationService.updateComponentInstance(component);
+            componentInstance.setComponentTypeId(componentTypeId);
+            componentInstance.setFieldName(fieldName);
+            console.log(JSON.stringify(componentInstance));
+            synchronizationService.updateComponentInstance(componentInstance);
         }
 
         function deleteComponentInstance() {
-            synchronizationService.deleteComponentInstance(component);
+            synchronizationService.deleteComponentInstance(componentInstance);
         }
 
         return (
@@ -96,7 +108,9 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                 </span>
                 <span className="body-wrap">
                     <TypeNameEditor
-                        component={component}
+                        container={container}
+                        componentInstance={componentInstance}
+                        parentComponentInstance={parentComponentInstance}
                         isSelected={isSelected}
                         showPlaceholders={false}
                         initialCaretPosition={initialCaretPosition}
@@ -107,7 +121,8 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                         onChange={onChange}
                     />
                     &nbsp;
-                    {component.initializationAttribute && initializationAttribute(component.initializationAttribute)}
+                    {componentInstance.initializationAttribute &&
+                        initializationAttribute(componentInstance.initializationAttribute)}
                     {isSelected && (
                         <span
                             className="action-button"

@@ -1,5 +1,4 @@
 import { types, Instance, destroy } from 'mobx-state-tree';
-import ComponentInstance from './ComponentInstance';
 import { ComponentsContainerModel } from './ComponentsContainer';
 
 export const PageTypeModel = types
@@ -10,6 +9,17 @@ export const PageTypeModel = types
             baseType: types.maybeNull(types.reference(types.late(() => PageTypeModel))),
         }),
     )
+    .views((self) => ({
+        get baseTypes() {
+            const result: any[] = [];
+            let current = self;
+            while (current.baseType) {
+                result.push(current.baseType);
+                current = current.baseType;
+            }
+            return result;
+        },
+    }))
     .actions((self) => ({
         updateComponentInstance(old, updated) {
             const index = self.componentsInstances.indexOf(old);

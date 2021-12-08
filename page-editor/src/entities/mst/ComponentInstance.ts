@@ -1,22 +1,24 @@
 import { types, Instance, getParentOfType, destroy } from 'mobx-state-tree';
-import { getNamespace } from 'utils/TypeNameUtils';
 import { AttributeModel } from './Attribute';
-import ComponentsContainer from './ComponentsContainer';
 import ProjectStore, { ProjectStoreModel } from 'entities/mst/ProjectStore';
-import { ComponentType } from 'react';
-import { WebSiteModel } from './WebSite';
+import { SelectableModel } from './Selectable';
+import ComponentsContainer from 'components/ProjectViewer/PageObjectEditor/ComponentsContainer/ComponentsContainer';
+import { ComponentsContainerModel } from './ComponentsContainer';
 
 export const ComponentInstanceModel = types
-    .model({
-        id: types.identifier,
-        parentId: types.string,
-        fieldIndex: types.number,
-        // try to fix - https://mobx-state-tree.js.org/tips/circular-deps
-        componentTypeId: types.maybeNull(types.string), // types.maybe(types.safeReference(types.late(() => ComponentTypeModel))),
-        fieldName: types.string,
-        name: types.maybeNull(types.string),
-        initializationAttribute: types.maybeNull(AttributeModel),
-    })
+    .compose(
+        SelectableModel,
+        types.model({
+            id: types.identifier,
+            parentId: types.string,
+            fieldIndex: types.number,
+            // try to fix - https://mobx-state-tree.js.org/tips/circular-deps
+            componentTypeId: types.maybeNull(types.string), // types.maybe(types.safeReference(types.late(() => ComponentTypeModel))),
+            fieldName: types.string,
+            name: types.maybeNull(types.string),
+            initializationAttribute: types.maybeNull(AttributeModel),
+        }),
+    )
     // .volatile(()=>({
     //     isBlank: false
     // }))
@@ -31,6 +33,9 @@ export const ComponentInstanceModel = types
         get componentType() {
             const projectStore = getParentOfType(self, ProjectStoreModel);
             return projectStore.componentTypes.find((t) => t.id === self.componentTypeId);
+        },
+        get container() {
+            return getParentOfType(self, ComponentsContainerModel);
         },
         // get componentFieldName() {
         //     // if (self.isBlank) {

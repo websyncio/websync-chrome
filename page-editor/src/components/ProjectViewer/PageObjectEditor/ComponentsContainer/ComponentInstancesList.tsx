@@ -3,13 +3,14 @@ import ComponentInstanceProps from 'components/ProjectViewer/PageObjectEditor/Co
 import { observer } from 'mobx-react';
 import './ComponentInstancesList.sass';
 import IComponentInstance from 'entities/mst/ComponentInstance';
-import { useState } from 'react';
+import IComponentsContainer from 'entities/mst/ComponentsContainer';
 import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
-import IComponentsContainer from 'entities/mst/ComponentsContainer';
 
 interface Props {
     isActive: boolean;
+    container: IComponentsContainer;
+    parentComponentInstance: IComponentInstance | null;
     componentInstances: IComponentInstance[];
     componentView: React.ComponentType<ComponentInstanceProps>;
     onActiveStateChange?: (isActive: boolean) => void;
@@ -20,6 +21,8 @@ interface Props {
 const ComponentInstancesList: React.FC<Props> = observer(
     ({
         isActive,
+        container,
+        parentComponentInstance,
         componentInstances,
         componentView: ComponentView,
         onActiveStateChange,
@@ -136,19 +139,21 @@ const ComponentInstancesList: React.FC<Props> = observer(
         return (
             <div className="components-list">
                 <ul>
-                    {componentInstances.map((component, lineIndex) => [
-                        <li key={component.id}>
+                    {componentInstances.map((componentInstance, lineIndex) => [
+                        <li key={componentInstance.id}>
                             <ComponentView
-                                component={component}
+                                container={container}
+                                componentInstance={componentInstance}
+                                parentComponentInstance={parentComponentInstance}
                                 isSelected={isActive && uiStore.editorSelectedLineIndex === lineIndex}
                                 index={lineIndex + 1}
                                 initialCaretPosition={uiStore.editorCaretPosition}
-                                onSelectedStateChange={(isSelected) => onSelectComponent(isSelected, component)}
+                                onSelectedStateChange={(isSelected) => onSelectComponent(isSelected, componentInstance)}
                                 onSelectNext={(caretPosition) => {
-                                    return selectComponent(component, 1, caretPosition);
+                                    return selectComponent(componentInstance, 1, caretPosition);
                                 }}
                                 onSelectPrevious={(caretPosition) => {
-                                    return selectComponent(component, -1, caretPosition);
+                                    return selectComponent(componentInstance, -1, caretPosition);
                                 }}
                             />
                         </li>,

@@ -20,14 +20,15 @@ const PageEditor: React.FC<Props> = observer(({ pageInstance }) => {
         setExpandedContainerIndex(containerIndex);
     }
 
-    function componentContainers(inheritanceLevel: number, pageObject: any) {
-        const baseType: IComponentsContainer = pageObject.baseType;
+    function componentContainers(inheritanceLevel: number, container: any) {
+        const baseType: IComponentsContainer = container.baseType;
         return (
             <>
-                {baseType && componentContainers(inheritanceLevel + 1, pageObject.baseType)}
+                {baseType && componentContainers(inheritanceLevel + 1, baseType)}
                 <ComponentsContainer
-                    pageObject={pageObject}
-                    basePageObject={baseType}
+                    container={container}
+                    baseContainer={baseType}
+                    parentComponentInstance={null}
                     isExpanded={inheritanceLevel === expandedContainerIndex}
                     onExpand={(expandParent) => {
                         onExpand(expandParent ? inheritanceLevel + 1 : inheritanceLevel);

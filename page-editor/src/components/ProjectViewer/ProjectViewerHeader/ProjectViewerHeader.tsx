@@ -3,97 +3,184 @@ import { observer } from 'mobx-react';
 import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
 import './ProjectViewerHeader.sass';
-import CloseButton from 'components-common/CloseButton/CloseButton';
-import PageInstance from 'entities/mst/PageInstance';
-import { ProjectTab, ProjectTabType } from 'entities/mst/UiStore';
+import { BreadcrumbType, ProjectTab, ProjectTabType } from 'entities/mst/UiStore';
+import CreatePageModal from 'components/Modals/CreatePageModal';
 import ComponentInstance from 'entities/mst/ComponentInstance';
-import MatchingPage from '../MatchingPage/MatchingPage';
 
 interface Props {}
 
 const Header: React.FC<Props> = observer(() => {
     const rootStore: RootStore = useRootStore();
     const { uiStore } = rootStore;
+    const [createPageModalIsOpen, setCreatePageModalIsOpen] = React.useState(false);
 
     function goBackToProjectSelector() {
         rootStore.clearProject();
     }
 
-    function onMatchedPageClick(pi: PageInstance) {
-        uiStore.showTabForEditedPage(pi);
+    // function onMatchedPageClick(pi: PageInstance) {
+    //     uiStore.showTabForEditedPage(pi);
+    // }
+
+    // function tabContent(t: ProjectTab) {
+    //     if (t.type === ProjectTabType.ComponentIntance) {
+    //         return (
+    //             <>
+    //                 <i className="tab-icon component-icon" />
+    //                 <span className="tab-name">{t.editedComponentInstance.componentType.name}</span>
+    //             </>
+    //         );
+    //     } else if (t.type === ProjectTabType.PageInstance) {
+    //         return (
+    //             <>
+    //                 <i className="tab-icon page-icon" />
+    //                 <span className="tab-name">{t.editedPageInstance!.pageType.name}</span>
+    //                 {uiStore.matchingPages.includes(t.editedPageInstance!) && <span className="match-circle" />}
+    //             </>
+    //         );
+    //     }
+    //     throw new Error('Unknown tab type');
+    // }
+
+    // function openedTabs() {
+    //     return uiStore.openedTabs.map((t: ProjectTab) => {
+    //         const tabKey = t.editedObject?.id;
+    //         if (tabKey) {
+    //             return (
+    //                 <>
+    //                     <div
+    //                         key={tabKey}
+    //                         className={`header-tab ${t.selected ? 'selected' : ''}`}
+    //                         onClick={() => uiStore.selectTab(t)}
+    //                     >
+    //                         {tabContent(t)}
+    //                         <CloseButton onClick={() => uiStore.closeTab(t)} />
+    //                     </div>
+    //                 </>
+    //             );
+    //         }
+    //     });
+    // }
+
+    // function matchedPages() {
+    //     return uiStore.matchingPages.map((pi: PageInstance) => (
+    //         <div key={pi.id} onClick={() => onMatchedPageClick(pi)} className="matched-page">
+    //             <span> {pi.name} </span>
+    //         </div>
+    //     ));
+    // }
+
+    function breadcrumbsSeparator() {
+        return (
+            <svg
+                className="breadcrumbs-separator"
+                focusable="false"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                data-testid="NavigateNextIcon"
+            >
+                <path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path>
+            </svg>
+        );
     }
 
-    function tabContent(t: ProjectTab) {
-        if (t.type === ProjectTabType.ComponentIntance) {
-            return (
-                <>
-                    <i className="tab-icon component-icon" />
-                    <span className="tab-name">{t.editedComponentInstance.componentType.name}</span>
-                </>
-            );
-        } else if (t.type === ProjectTabType.PageInstance) {
-            return (
-                <>
-                    <i className="tab-icon page-icon" />
-                    <span className="tab-name">{t.editedPageInstance!.pageType.name}</span>
-                    {uiStore.matchingPages.includes(t.editedPageInstance!) && <span className="match-circle" />}
-                </>
-            );
-        }
-        throw new Error('Unknown tab type');
+    function isBreadcrumbSelected(breadcrumbType: BreadcrumbType) {
+        return uiStore.selectedBreadcrumb === breadcrumbType;
     }
 
-    function openedTabs() {
-        return uiStore.openedTabs.map((t: ProjectTab) => {
-            const tabKey = t.editedObject?.id;
-            if (tabKey) {
+    function createPage() {
+        setCreatePageModalIsOpen(true);
+    }
+
+    function closeCreatePageModal() {
+        setCreatePageModalIsOpen(false);
+    }
+
+    function matchingPage() {
+        switch (uiStore.matchingPages.length) {
+            case 0:
+                return (
+                    <span className="match-result flex-left">
+                        <i className="nomatch-icon" />
+                        No matching page
+                        <span className="create-page-btn ws-btn ws-btn__primary" onClick={createPage}>
+                            Create Page
+                        </span>
+                    </span>
+                );
+            case 1:
                 return (
                     <>
+                        {breadcrumbsSeparator()}
                         <div
-                            key={tabKey}
-                            className={`header-tab ${t.selected ? 'selected' : ''}`}
-                            onClick={() => uiStore.selectTab(t)}
+                            className={`header-tab ${
+                                isBreadcrumbSelected(BreadcrumbType.MatchingPage) ? 'selected' : ''
+                            }`}
+                            onClick={() => uiStore.selectBreadcrumb(BreadcrumbType.MatchingPage)}
                         >
-                            {tabContent(t)}
-                            <CloseButton onClick={() => uiStore.closeTab(t)} />
+                            <i className="tab-icon page-icon" />
+                            <span className="tab-name">{uiStore.matchingPages[0].pageType.name}</span>
+                            <span className="match-circle" />
                         </div>
                     </>
                 );
-            }
-        });
+            default:
+                return <>Several pages match current URL</>;
+        }
     }
 
-    function matchedPages() {
-        return uiStore.matchingPages.map((pi: PageInstance) => (
-            <div key={pi.id} onClick={() => onMatchedPageClick(pi)} className="matched-page">
-                <span> {pi.name} </span>
-            </div>
-        ));
+    function editedComponents() {
+        if (
+            uiStore.editedComponentsChain &&
+            uiStore.matchingPages.length === 1 &&
+            uiStore.matchingPage === uiStore.editedPage
+        ) {
+            const breadcrumbTypeSelected = isBreadcrumbSelected(BreadcrumbType.EditedComponentInstance);
+            return uiStore.editedComponentsChain.map((c) => (
+                <div key={c.id} className="flex-left">
+                    {breadcrumbsSeparator()}
+                    <div
+                        className={`header-tab ${breadcrumbTypeSelected && c.selected ? 'selected' : ''}`}
+                        onClick={() => uiStore.selectEditedComponentInstance(c)}
+                    >
+                        <i className="tab-icon component-icon" />
+                        <span className="tab-name">{c.componentType.name}</span>
+                    </div>
+                </div>
+            ));
+        }
     }
 
     return (
-        <div id="header">
-            <svg
-                onClick={goBackToProjectSelector}
-                className="go-back-icon"
-                width="24"
-                height="24"
-                viewBox="0 0 18 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-            >
-                <title>Go back to project selection</title>
-                <path fill="#5a5a5a" d="M6,6V3L0,8l6,5v-3c4-1,7-0.5,10,2C14,7,10.5,6,6,6z" />
-            </svg>
-            <div
-                className={`header-tab project-explorer ${uiStore.selectedTab ? '' : 'selected'}`}
-                onClick={() => uiStore.showExplorer()}
-            >
-                Project Explorer ({uiStore.selectedProject})
+        <>
+            <div id="header">
+                <svg
+                    onClick={goBackToProjectSelector}
+                    className="go-back-icon"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 18 18"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <title>Go back to project selection</title>
+                    <path fill="#5a5a5a" d="M6,6V3L0,8l6,5v-3c4-1,7-0.5,10,2C14,7,10.5,6,6,6z" />
+                </svg>
+                <div
+                    className={`header-tab project-explorer ${
+                        isBreadcrumbSelected(BreadcrumbType.ProjectExplorer) ? 'selected' : ''
+                    }`}
+                    onClick={() => uiStore.selectBreadcrumb(BreadcrumbType.ProjectExplorer)}
+                >
+                    {uiStore.selectedProject}
+                </div>
+                {matchingPage()}
+                {editedComponents()}
+                {/* {openedTabs()} */}
+                <span className="header-actions"></span>
             </div>
-            {openedTabs()}
-            <span className="header-actions"></span>
-        </div>
+            <CreatePageModal isOpen={createPageModalIsOpen} onRequestClose={closeCreatePageModal} />
+        </>
     );
 });
 

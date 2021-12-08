@@ -14,9 +14,12 @@ import IEditorPopupAction from '../EditorPopup/IEditorPopupAction';
 import { ProposedComponentTypeAction } from './ProposedComponentTypeAction';
 import ComponentType from 'entities/mst/ComponentType';
 import CreateComponentTypeAction from './CreateComponentTypeAction';
+import IComponentsContainer from 'entities/mst/ComponentsContainer';
 
 interface Props {
-    component: ComponentInstanceModel;
+    container: IComponentsContainer;
+    componentInstance: ComponentInstanceModel;
+    parentComponentInstance: ComponentInstanceModel | null;
     showPlaceholders: boolean;
     isSelected: boolean;
     initialCaretPosition: number | null;
@@ -29,7 +32,9 @@ interface Props {
 
 const TypeNameEditor: React.FC<Props> = observer(
     ({
-        component,
+        container,
+        componentInstance,
+        parentComponentInstance,
         showPlaceholders,
         isSelected,
         initialCaretPosition,
@@ -47,8 +52,12 @@ const TypeNameEditor: React.FC<Props> = observer(
         const nameRef: any = useRef(null);
         const [showSpace, setShowSpace] = useState(true);
         const [isEditorPopupOpen, setIsEditorPopupOpen] = useState(false);
-        const [showTypePlaceholder, setShowTypePlaceholder] = useState(showPlaceholders && !component.typeName.length);
-        const [showNamePlaceholder, setShowNamePlaceholder] = useState(showPlaceholders && !component.fieldName.length);
+        const [showTypePlaceholder, setShowTypePlaceholder] = useState(
+            showPlaceholders && !componentInstance.typeName.length,
+        );
+        const [showNamePlaceholder, setShowNamePlaceholder] = useState(
+            showPlaceholders && !componentInstance.fieldName.length,
+        );
         const [actualCaretPosition, setActualCaretPosition] = useState(0);
         const [editorPopupSelectedActionIndex, setEditorPopupSelectedActionIndex] = useState(0);
         const [editorPopupActions, setEditorPopupActions] = useState<IEditorPopupAction[]>([]);
@@ -59,10 +68,12 @@ const TypeNameEditor: React.FC<Props> = observer(
             return projectStore.componentTypes.filter((t) => t.name === typeName);
         }
 
-        const [matchingTypes, setMatchingTypes] = useState(() => getTypesWithName(component.typeName));
+        const matchingTypes: ComponentType[] = getTypesWithName(componentInstance.typeName);
+
+        //const [matchingTypes, setMatchingTypes] = useState(() => getTypesWithName(component.typeName));
 
         useLayoutEffect(() => {
-            console.log('TypeNameEditor first render', component.fieldName);
+            console.log('TypeNameEditor first render', componentInstance.fieldName);
             popper = createPopper(typeRef.current, popupRef.current, {
                 placement: 'bottom-start',
                 strategy: 'fixed',
@@ -313,11 +324,7 @@ const TypeNameEditor: React.FC<Props> = observer(
         }
 
         function showCreateNewTypePopup(typeName: string) {
-            const createNewTypeAction = new CreateComponentTypeAction(
-                typeName,
-                uiStore.selectedTab?.componentsContainer.id,
-                onComponentCreated,
-            );
+            const createNewTypeAction = new CreateComponentTypeAction(typeName, container.id, onComponentCreated);
             setEditorPopupSelectedActionIndex(0);
             setEditorPopupActions([createNewTypeAction]);
             setIsEditorPopupOpen(true);
@@ -679,8 +686,8 @@ const TypeNameEditor: React.FC<Props> = observer(
                 setActualCaretPosition(caretPosition);
                 console.log('attribute changed, type: ', typeRef.current.textContent);
                 console.log('attribute changed, name: ', nameRef.current.textContent);
-                const matchingTypes = getTypesWithName(typeRef.current.textContent);
-                setMatchingTypes(matchingTypes);
+                // const matchingTypes = getTypesWithName(typeRef.current.textContent);
+                // setMatchingTypes(matchingTypes);
                 const componentTypeId = matchingTypes.length === 1 ? matchingTypes[0].id : typeRef.current.textContent;
                 onChange(componentTypeId, nameRef.current.textContent);
 
@@ -716,7 +723,7 @@ const TypeNameEditor: React.FC<Props> = observer(
         function onTypeNameClick(e) {
             makeNonEditable(e.target);
             if (isCtrlPressed && matchingTypes.length === 1) {
-                uiStore.addTabForEditedComponent(component);
+                uiStore.editComponent(componentInstance, parentComponentInstance);
             }
         }
 
@@ -735,7 +742,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                     onClick={(e) => onEditableClick(e.target)}
                     onBlur={onBlur}
                 >
-                    {component.typeName}
+                    {componentInstance.typeName}
                 </span>
                 {showTypePlaceholder && (
                     <span className="component-attr-placeholder" onClick={() => onEditableClick(typeRef.current)}>
@@ -775,7 +782,7 @@ const TypeNameEditor: React.FC<Props> = observer(
                         onMouseDown={(e) => makeNonEditable(e.target)}
                         onClick={(e) => onEditableClick(e.target)}
                     >
-                        {component.fieldName}
+                        {componentInstance.fieldName}
                     </span>
                     {showNamePlaceholder && (
                         <span className="component-attr-placeholder" onClick={() => onEditableClick(nameRef.current)}>
