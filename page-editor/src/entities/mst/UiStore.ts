@@ -104,9 +104,9 @@ export const UiStoreModel = types
         get selectedComponentsContainer(): ComponentsContainer | null {
             switch (self.selectedBreadcrumb) {
                 case BreadcrumbType.MatchingPage:
-                    return self.matchingPages[0];
+                    return self.matchingPages[0].pageType;
                 case BreadcrumbType.EditedComponentInstance:
-                    return self.editedComponentsChain.find((ci) => ci.selected);
+                    return self.editedComponentsChain.find((ci) => ci.selected).componentType;
                 default:
                     return null;
             }

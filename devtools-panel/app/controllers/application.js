@@ -9,6 +9,7 @@ export default Ember.Controller.extend({
 	selectorPartFactory: Ember.inject.service(),
 	scssParser: Ember.inject.service(),
 	scssBuilder: Ember.inject.service(),
+	selectorBuilder: Ember.inject.service(),
 	elementLocator: Ember.inject.service(),
 	selectorHighlighter: Ember.inject.service(),
 	clipboard: Ember.inject.service(),
@@ -42,6 +43,8 @@ export default Ember.Controller.extend({
 	configurePageEditor(){
 		let pageEditor = this.get('pageEditorProxy'); 
 
+		pageEditor.addListener(MessageTypes.SetRootComponent, this.onSetRootComponent.bind(this));
+		pageEditor.addListener(MessageTypes.RemoveRootComponent, this.onRemoveRootComponent.bind(this));
 		pageEditor.addListener(MessageTypes.EditSelector, this.onEditComponentSelector.bind(this));
 		pageEditor.addListener(MessageTypes.RequestSelectorEditorState, this.sendSelectorEditorState.bind(this));
 		pageEditor.addListener(MessageTypes.SelectorEditorStateUpdated, this.onSelectorEditorStateUpdated.bind(this));
@@ -432,6 +435,39 @@ export default Ember.Controller.extend({
 		this.collapseSelectorsList();
 		this.set('componentSelectorToUpdate', editedComponent);
 	},
+	combineRoots(xcssSelector){
+		let selector = this.get('scssParser').parse(xcssSelector.xcss);
+		let rootSelector;
+		if(xcssSelector.root){
+			rootSelector = this.combineRoots(xcssSelector.root);
+		}
+		return this.get('selectorBuilder').innerSelector(rootSelector, selector);
+	},
+	onSetRootComponent(rootComponent){
+		let scssString = this.combineRoots(rootComponent.rootSelector).scss;
+		let scss;
+		try {
+			scss = this.get('scssParser').parse(scssString);
+		} catch (e) {
+			console.log('Unable to convert scss selector "' + scssString + '"');
+		}
+		scss = scss || {
+				parts: [],
+				css: null,
+				xpath: null,
+				isCssStyle: true
+			};
+
+		let parts = this.get('selectorPartFactory').generateParts(scss.parts);
+		if(parts.length){
+			this.set('rootParts', parts);
+			this.get('selectorHighlighter').highlightRootSelector(this.get('rootParts.lastObject').getSelector());
+			this.sendSelectorEditorState();
+		}
+	},
+	onRemoveRootComponent(){
+		this.removeRoot(false, true);
+	},
 	// stateObserver: Ember.observer('inputValue', 'rootParts.[]', 'componentSelectorToUpdate', 'selectorToUpdate', function(){
 	// 	console.log('selector editor state changed. isAuxilliary: ' + this.get('withPageEditor'));
 	// 	Ember.run.next(this, () => this.sendSelectorEditorState());
@@ -510,12 +546,14 @@ export default Ember.Controller.extend({
 		this.get('selectorHighlighter').highlightRootSelector(this.get('rootParts.lastObject').getSelector());
 		this.sendSelectorEditorState();
 	},
-	removeRoot(noStateChange){
+	removeRoot(noStateChange, doNotRestoreInput){
 		if(this.get('rootParts.length')){
 			this.get('selectorHighlighter').removeRootHighlighting(this.get('rootParts.lastObject').getSelector());
-			this.get('parts').unshiftObjects(this.get('rootParts'));
+			if(!doNotRestoreInput){
+				this.get('parts').unshiftObjects(this.get('rootParts'));
+				this.setInputValue(this.get('lastPart.fullScss'), true);
+			}
 			this.get('rootParts').clear();
-			this.setInputValue(this.get('lastPart.fullScss'), true);
 			if(!noStateChange){
 				this.sendSelectorEditorState();
 			}

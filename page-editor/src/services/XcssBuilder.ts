@@ -1,9 +1,15 @@
 import XcssSelector from 'entities/XcssSelector';
 
 export default class XcssBuilder {
-    public static concatSelectors(rootSelector: XcssSelector | null, relativeSelector: XcssSelector): XcssSelector {
+    public static concatSelectors(
+        rootSelector: XcssSelector | null,
+        relativeSelector: XcssSelector | null,
+    ): XcssSelector | null {
         if (!rootSelector) {
             return relativeSelector;
+        }
+        if (!relativeSelector) {
+            return rootSelector;
         }
         const invalidRootCss = !rootSelector.css && rootSelector.xpath;
         const invalidRootXpath = rootSelector.css && !rootSelector.xpath;

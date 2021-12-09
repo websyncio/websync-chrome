@@ -6,6 +6,8 @@ import Reactor from '../utils/Reactor';
 export const MessageTypes = {
     InitConnection: 'init',
     EditSelector: 'edit-selector',
+    SetRootComponent: 'set-root-component',
+    RemoveRootComponent: 'remove-root-component',
     ValidateSelector: 'validate-selector',
     HighlightSelector: 'highlight-selector',
     RemoveHighlighting: 'remove-highlighting',

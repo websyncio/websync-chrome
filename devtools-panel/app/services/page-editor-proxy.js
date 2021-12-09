@@ -10,6 +10,8 @@ export const MessageTypes = {
 	RemoveComponentsHighlighting: 'remove-components-highlighting',
 	
 	EditSelector: 'edit-selector',
+	SetRootComponent: 'set-root-component',
+	RemoveRootComponent: 'remove-root-component',
 	SelectorUpdated: 'selector-updated',
 	RequestSelectorEditorState: 'request-selector-editor-state',
 
@@ -35,6 +37,8 @@ export default Service.extend({
 
 	init(){
 		this.get('reactor').registerEvent(MessageTypes.EditSelector);
+		this.get('reactor').registerEvent(MessageTypes.SetRootComponent);
+		this.get('reactor').registerEvent(MessageTypes.RemoveRootComponent);
 		this.get('reactor').registerEvent(MessageTypes.GetSelectorsList);
 		this.get('reactor').registerEvent(MessageTypes.SelectorsListUpdated);
 		this.get('reactor').registerEvent(MessageTypes.RequestSelectorEditorState);
@@ -74,6 +78,12 @@ export default Service.extend({
 				break;
 			case MessageTypes.EditSelector:
 				this.editComponentSelector(message);
+				break;
+			case MessageTypes.SetRootComponent:
+				this.setRootComponent(message);
+				break;
+			case MessageTypes.RemoveRootComponent:
+				this.removeRootComponent(message);
 				break;
 			case MessageTypes.RequestSelectorEditorState:
 				this.onRequestSelectorEditorState();
@@ -170,6 +180,17 @@ export default Service.extend({
 		this.get('reactor').dispatchEvent(
 			MessageTypes.EditSelector,
 			message.data
+		);
+	},
+	setRootComponent(message){
+		this.get('reactor').dispatchEvent(
+			MessageTypes.SetRootComponent,
+			message.data
+		);
+	},
+	removeRootComponent(message){
+		this.get('reactor').dispatchEvent(
+			MessageTypes.RemoveRootComponent
 		);
 	},
 	requestSelectorEditorState(){

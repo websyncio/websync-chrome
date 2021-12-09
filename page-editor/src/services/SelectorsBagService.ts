@@ -82,6 +82,17 @@ export class SelectorsBagService implements ISelectorsBagService {
         this.selectorEditorConnection.postMessage(MessageTypes.EditSelector, selector);
     }
 
+    //{ componentId: string; componentName: string; rootSelector: string; }
+    setRootComponent(component) {
+        console.log('setRootComponent', component);
+        this.selectorEditorConnection.postMessage(MessageTypes.SetRootComponent, component);
+    }
+
+    removeRootComponent() {
+        console.log('removeRootComponent');
+        this.selectorEditorConnection.postMessage(MessageTypes.RemoveRootComponent);
+    }
+
     requestSelectorsList() {
         this.selectorEditorConnection.postMessage(
             MessageTypes.GetSelectorsList,

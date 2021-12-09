@@ -11,8 +11,8 @@ export default Ember.Service.extend({
 		rootSelector = rootSelector || {};
 		let invalidRootCss = !rootSelector.css && rootSelector.xpath;
 		let invalidRootXpath = rootSelector.css && !rootSelector.xpath;
-		var css = invalidRootCss ? null : this.innerCss(rootSelector.css, relativeSelector.css);
-		var xpath = invalidRootXpath ? null : this.innerXpath(rootSelector.xpath, relativeSelector.xpath);
+		var css = (invalidRootCss || !relativeSelector.css) ? null : this.innerCss(rootSelector.css, relativeSelector.css);
+		var xpath = (invalidRootXpath || !relativeSelector.xpath) ? null : this.innerXpath(rootSelector.xpath, relativeSelector.xpath);
 		xpath = this.normalizeXpath(xpath);
 		return {
 			scss: css || xpath,
