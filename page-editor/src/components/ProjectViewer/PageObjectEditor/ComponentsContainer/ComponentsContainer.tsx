@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import IComponentsContainer from 'entities/mst/ComponentsContainer';
 import IComponentInstance from 'entities/mst/ComponentInstance';
 import { observer } from 'mobx-react';
@@ -39,6 +39,37 @@ const ComponentsContainer: React.FC<Props> = observer(
         const attributeToXcssMapper: IAttributeToXcssMapper = DependencyContainer.get<IAttributeToXcssMapper>(
             TYPES.AttributeToXcssMapper,
         );
+
+        function getComponentSelectors(
+            container: IComponentsContainer,
+            rootSelector: XcssSelector | null,
+        ): XcssSelector[] {
+            if (!container) {
+                return [];
+            }
+            let selectors: XcssSelector[] = [];
+            container.componentsInstances.forEach((c) => {
+                const componentSelector: XcssSelector = attributeToXcssMapper.GetXcss(c.initializationAttribute);
+                componentSelector.root = rootSelector;
+                // componentSelector = XcssBuilder.concatSelectors(rootSelector, componentSelector);
+                const innerComponentSelectors: XcssSelector[] = getComponentSelectors(
+                    c.componentType,
+                    componentSelector,
+                );
+                if (innerComponentSelectors.length) {
+                    selectors = selectors.concat(innerComponentSelectors);
+                } else {
+                    selectors.push(componentSelector);
+                }
+            });
+            return selectors;
+        }
+
+        const componentSelectors: XcssSelector[] = useMemo(() => getComponentSelectors(container, null), [container]);
+
+        useEffect(() => {
+            return () => selectorHighlighter.removeComponentHighlighting(componentSelectors);
+        });
 
         // function selectComponent(components: IComponentInstance[], index: number) {
         //     components.forEach((c, i) => {
@@ -87,38 +118,13 @@ const ComponentsContainer: React.FC<Props> = observer(
             }
         }
 
-        function getComponentSelectors(
-            container: IComponentsContainer,
-            rootSelector: XcssSelector | null,
-        ): XcssSelector[] {
-            if (!container) {
-                return [];
-            }
-            let selectors: XcssSelector[] = [];
-            container.componentsInstances.forEach((c) => {
-                const componentSelector: XcssSelector = attributeToXcssMapper.GetXcss(c.initializationAttribute);
-                componentSelector.root = rootSelector;
-                // componentSelector = XcssBuilder.concatSelectors(rootSelector, componentSelector);
-                const innerComponentSelectors: XcssSelector[] = getComponentSelectors(
-                    c.componentType,
-                    componentSelector,
-                );
-                if (innerComponentSelectors.length) {
-                    selectors = selectors.concat(innerComponentSelectors);
-                } else {
-                    selectors.push(componentSelector);
-                }
-            });
-            return selectors;
-        }
-
         function stopPropagation(e) {
             e.stopPropagation();
         }
 
         function onHighlightCheckboxChange(container: IComponentsContainer, highlighted: boolean) {
             console.log('onHighlightCheckboxChange', highlighted);
-            const componentSelectors: XcssSelector[] = getComponentSelectors(container, null);
+            // const componentSelectors: XcssSelector[] = getComponentSelectors(container, null);
             if (highlighted) {
                 selectorHighlighter.highlightComponents(componentSelectors);
             } else {
