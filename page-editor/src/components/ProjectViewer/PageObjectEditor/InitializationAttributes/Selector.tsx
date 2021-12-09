@@ -7,7 +7,7 @@ import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
 import XcssSelector from 'entities/XcssSelector';
 
 interface Props {
-    selector: XcssSelector;
+    selector: XcssSelector | null;
     parameterName?: string | null;
     onEdit?: () => void;
     onValidated?: (hasError) => void;
@@ -33,7 +33,9 @@ const Selector: React.FC<Props> = observer(({ parameterName, selector, onEdit, o
     }
 
     function validate() {
-        selectorValidator.validate(selector, validateCallback);
+        if (selector) {
+            selectorValidator.validate(selector, validateCallback);
+        }
     }
 
     console.log('addUrlChangedListener', selector);
@@ -43,30 +45,30 @@ const Selector: React.FC<Props> = observer(({ parameterName, selector, onEdit, o
         validate();
     }, [selector]);
 
-    function submitRename(event, newName) {
-        console.log('submit rename', event, newName);
-        // event.target.contentEditable = false;
-        // if (newName === null) {
-        //     event.target.innerText = this.props.component.name;
-        //     return;
-        // } else if (this.props.component.name === newName) {
-        //     return;
-        // }
-        // const param =
-        //     this.props.component.initializationAttribute &&
-        //     this.props.component.initializationAttribute.parameters.find((p) => p.name === this.props.parameterName);
-        // console.log('param.name: ' + param?.name);
-        // if (param !== null && param !== undefined) {
-        //     param.values[this.props.index].value = newName;
-        // }
-        // console.log('param.index: ' + this.props.index);
-        // const data = {};
-        // data['type'] = 'update-component-instance';
-        // data['data'] = this.props.component;
-        // const json = JSON.stringify(data);
-        // console.log('sent ' + json);
-        // this.props.onSend(json);
-    }
+    // function submitRename(event, newName) {
+    //     console.log('submit rename', event, newName);
+    //     // event.target.contentEditable = false;
+    //     // if (newName === null) {
+    //     //     event.target.innerText = this.props.component.name;
+    //     //     return;
+    //     // } else if (this.props.component.name === newName) {
+    //     //     return;
+    //     // }
+    //     // const param =
+    //     //     this.props.component.initializationAttribute &&
+    //     //     this.props.component.initializationAttribute.parameters.find((p) => p.name === this.props.parameterName);
+    //     // console.log('param.name: ' + param?.name);
+    //     // if (param !== null && param !== undefined) {
+    //     //     param.values[this.props.index].value = newName;
+    //     // }
+    //     // console.log('param.index: ' + this.props.index);
+    //     // const data = {};
+    //     // data['type'] = 'update-component-instance';
+    //     // data['data'] = this.props.component;
+    //     // const json = JSON.stringify(data);
+    //     // console.log('sent ' + json);
+    //     // this.props.onSend(json);
+    // }
 
     // function onRename(event) {
     //     console.log('onRename');
@@ -102,7 +104,9 @@ const Selector: React.FC<Props> = observer(({ parameterName, selector, onEdit, o
     // }
 
     function highlightSelector() {
-        selectorHighlighter.highlight(selector);
+        if (selector) {
+            selectorHighlighter.highlight(selector);
+        }
     }
 
     function removeHighlighting() {
@@ -131,7 +135,7 @@ const Selector: React.FC<Props> = observer(({ parameterName, selector, onEdit, o
                         e.preventDefault();
                     }}
                 >
-                    {`${selector.xcss}`}
+                    {`${selector ? selector.xcss : ''}`}
                 </span>
                 &quot;
             </span>

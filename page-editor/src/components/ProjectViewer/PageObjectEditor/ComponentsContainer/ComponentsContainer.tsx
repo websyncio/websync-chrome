@@ -49,17 +49,19 @@ const ComponentsContainer: React.FC<Props> = observer(
             }
             let selectors: XcssSelector[] = [];
             container.componentsInstances.forEach((c) => {
-                const componentSelector: XcssSelector = attributeToXcssMapper.GetXcss(c.initializationAttribute);
-                componentSelector.root = rootSelector;
-                // componentSelector = XcssBuilder.concatSelectors(rootSelector, componentSelector);
-                const innerComponentSelectors: XcssSelector[] = getComponentSelectors(
-                    c.componentType,
-                    componentSelector,
-                );
-                if (innerComponentSelectors.length) {
-                    selectors = selectors.concat(innerComponentSelectors);
-                } else {
-                    selectors.push(componentSelector);
+                const componentSelector: XcssSelector | null = attributeToXcssMapper.GetXcss(c.initializationAttribute);
+                if (componentSelector) {
+                    componentSelector.root = rootSelector;
+                    // componentSelector = XcssBuilder.concatSelectors(rootSelector, componentSelector);
+                    const innerComponentSelectors: XcssSelector[] = getComponentSelectors(
+                        c.componentType,
+                        componentSelector,
+                    );
+                    if (innerComponentSelectors.length) {
+                        selectors = selectors.concat(innerComponentSelectors);
+                    } else {
+                        selectors.push(componentSelector);
+                    }
                 }
             });
             return selectors;
@@ -122,7 +124,7 @@ const ComponentsContainer: React.FC<Props> = observer(
             e.stopPropagation();
         }
 
-        function onHighlightCheckboxChange(container: IComponentsContainer, highlighted: boolean) {
+        function onHighlightCheckboxChange(highlighted: boolean) {
             console.log('onHighlightCheckboxChange', highlighted);
             // const componentSelectors: XcssSelector[] = getComponentSelectors(container, null);
             if (highlighted) {
@@ -152,7 +154,7 @@ const ComponentsContainer: React.FC<Props> = observer(
                     >
                         <input
                             id={`highlight-${container.name}`}
-                            onChange={(e) => onHighlightCheckboxChange(container, e.target.checked)}
+                            onChange={(e) => onHighlightCheckboxChange(e.target.checked)}
                             type="checkbox"
                         />
                         <label htmlFor={`highlight-${container.name}`}>Hide existing</label>

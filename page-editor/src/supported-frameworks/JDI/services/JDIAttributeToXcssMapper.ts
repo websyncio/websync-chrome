@@ -6,11 +6,14 @@ import { injectable } from 'inversify';
 
 @injectable()
 export default class JDIAttributeToXcssMapper implements IAttributeToXcssMapper {
-    GetXcss(attribute: Attribute | null): XcssSelector {
+    GetXcss(attribute: Attribute | null): XcssSelector | null {
         if (attribute == null) {
             return new XcssSelector('', null, null);
         }
-        const xcss: string = this.ConvertToXcss(attribute.shortName, attribute.parameters[0].values[0]);
+        const xcss: string | null = this.ConvertToXcss(attribute.shortName, attribute.parameters[0].values[0]);
+        if (!xcss) {
+            return null;
+        }
         return new XcssSelector(xcss, null, null);
     }
 
@@ -37,9 +40,10 @@ export default class JDIAttributeToXcssMapper implements IAttributeToXcssMapper 
             case GenericAttributes.WithText:
                 return `[~'${attributeValue}']`;
             default:
-                throw new Error(
+                console.error(
                     `Unable to convert attribute from JDI to Xcss. attribute name: ${attributeName}, attribute value ${attributeValue}`,
                 );
+                return null;
         }
     }
 }
