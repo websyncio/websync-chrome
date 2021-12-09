@@ -5,6 +5,9 @@ import RootStore from 'entities/mst/RootStore';
 import './ProjectViewerHeader.sass';
 import { BreadcrumbType, ProjectTab, ProjectTabType } from 'entities/mst/UiStore';
 import CreatePageModal from 'components/Modals/CreatePageModal';
+import IAttributeToXcssMapper from 'services/IAttributeToXcssMapper';
+import { DependencyContainer, TYPES } from 'inversify.config';
+import Selector from 'components/ProjectViewer/PageObjectEditor/InitializationAttributes/Selector';
 import ComponentInstance from 'entities/mst/ComponentInstance';
 
 interface Props {}
@@ -13,6 +16,9 @@ const Header: React.FC<Props> = observer(() => {
     const rootStore: RootStore = useRootStore();
     const { uiStore } = rootStore;
     const [createPageModalIsOpen, setCreatePageModalIsOpen] = React.useState(false);
+    const attributeToXcssMapper: IAttributeToXcssMapper = DependencyContainer.get<IAttributeToXcssMapper>(
+        TYPES.AttributeToXcssMapper,
+    );
 
     function goBackToProjectSelector() {
         rootStore.clearProject();
@@ -136,7 +142,14 @@ const Header: React.FC<Props> = observer(() => {
             uiStore.matchingPage === uiStore.editedPage
         ) {
             const breadcrumbTypeSelected = isBreadcrumbSelected(BreadcrumbType.EditedComponentInstance);
-            return uiStore.editedComponentsChain.map((c) => (
+            const validComponents: ComponentInstance[] = [];
+            for (let i = 0; i < uiStore.editedComponentsChain.length; i++) {
+                if (!uiStore.editedComponentsChain[i] || !uiStore.editedComponentsChain[i].componentType) {
+                    break;
+                }
+                validComponents.push(uiStore.editedComponentsChain[i]);
+            }
+            return validComponents.map((c) => (
                 <div key={c.id} className="flex-left">
                     {breadcrumbsSeparator()}
                     <div
@@ -145,6 +158,11 @@ const Header: React.FC<Props> = observer(() => {
                     >
                         <i className="tab-icon component-icon" />
                         <span className="tab-name">{c.componentType.name}</span>
+                        {c.initializationAttribute && (
+                            <span className="root-selector-wrap">
+                                (<Selector selector={attributeToXcssMapper.GetXcss(c.initializationAttribute)} />)
+                            </span>
+                        )}
                     </div>
                 </div>
             ));

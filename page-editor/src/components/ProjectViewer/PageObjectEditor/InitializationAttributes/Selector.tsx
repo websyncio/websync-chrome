@@ -7,10 +7,10 @@ import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
 import XcssSelector from 'entities/XcssSelector';
 
 interface Props {
-    parameterName: string | null;
     selector: XcssSelector;
-    onEdit: () => void;
-    onValidated: (hasError) => void;
+    parameterName?: string | null;
+    onEdit?: () => void;
+    onValidated?: (hasError) => void;
 }
 
 const Selector: React.FC<Props> = observer(({ parameterName, selector, onEdit, onValidated }) => {
@@ -29,7 +29,7 @@ const Selector: React.FC<Props> = observer(({ parameterName, selector, onEdit, o
     function validateCallback(validationResult: any) {
         // console.log(selector.xcss + ': ' + validationResult.count);
         setStatus(validationResult.count);
-        onValidated(validationResult.count === 0);
+        onValidated && onValidated(validationResult.count === 0);
     }
 
     function validate() {
@@ -68,38 +68,38 @@ const Selector: React.FC<Props> = observer(({ parameterName, selector, onEdit, o
         // this.props.onSend(json);
     }
 
-    function onRename(event) {
-        console.log('onRename');
-        if (event.target.contentEditable === true) {
-            event.target.contentEditable = false;
-        } else {
-            event.target.contentEditable = true;
-        }
-    }
+    // function onRename(event) {
+    //     console.log('onRename');
+    //     if (event.target.contentEditable === true) {
+    //         event.target.contentEditable = false;
+    //     } else {
+    //         event.target.contentEditable = true;
+    //     }
+    // }
 
-    function onNameKeyDown(event) {
-        const newName = event.target.innerText.trim();
-        // if (!event.key.match(/[A-Za-z0-9_$]+/g)) {
-        //     event.preventDefault();
-        //     return;
-        // }
-        console.log('onNameKeyDown');
-        console.log(event.key);
-        if (event.key === 'Enter') {
-            submitRename(event, newName);
-            event.preventDefault();
-        } else if (event.key === 'Escape') {
-            submitRename(event, null);
-        } else if (newName.length === 100) {
-            event.preventDefault();
-        }
-    }
+    // function onNameKeyDown(event) {
+    //     const newName = event.target.innerText.trim();
+    //     // if (!event.key.match(/[A-Za-z0-9_$]+/g)) {
+    //     //     event.preventDefault();
+    //     //     return;
+    //     // }
+    //     console.log('onNameKeyDown');
+    //     console.log(event.key);
+    //     if (event.key === 'Enter') {
+    //         submitRename(event, newName);
+    //         event.preventDefault();
+    //     } else if (event.key === 'Escape') {
+    //         submitRename(event, null);
+    //     } else if (newName.length === 100) {
+    //         event.preventDefault();
+    //     }
+    // }
 
-    function onNameBlur(event) {
-        const newName = event.target.innerText.trim();
-        console.log('onNameBlur');
-        submitRename(event, newName);
-    }
+    // function onNameBlur(event) {
+    //     const newName = event.target.innerText.trim();
+    //     console.log('onNameBlur');
+    //     submitRename(event, newName);
+    // }
 
     function highlightSelector() {
         selectorHighlighter.highlight(selector);
@@ -123,11 +123,11 @@ const Selector: React.FC<Props> = observer(({ parameterName, selector, onEdit, o
                 <span
                     onMouseEnter={() => highlightSelector()}
                     onMouseLeave={() => removeHighlighting()}
-                    onDoubleClick={(event) => onRename(event)}
-                    onKeyDown={(event) => onNameKeyDown(event)}
-                    onBlur={(event) => onNameBlur(event)}
+                    // onDoubleClick={(event) => onRename(event)}
+                    // onKeyDown={(event) => onNameKeyDown(event)}
+                    // onBlur={(event) => onNameBlur(event)}
                     onMouseDown={(e) => {
-                        onEdit();
+                        onEdit && onEdit();
                         e.preventDefault();
                     }}
                 >

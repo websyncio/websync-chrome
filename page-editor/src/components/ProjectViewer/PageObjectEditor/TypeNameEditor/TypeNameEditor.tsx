@@ -686,9 +686,9 @@ const TypeNameEditor: React.FC<Props> = observer(
                 setActualCaretPosition(caretPosition);
                 console.log('attribute changed, type: ', typeRef.current.textContent);
                 console.log('attribute changed, name: ', nameRef.current.textContent);
-                // const matchingTypes = getTypesWithName(typeRef.current.textContent);
-                // setMatchingTypes(matchingTypes);
-                const componentTypeId = matchingTypes.length === 1 ? matchingTypes[0].id : typeRef.current.textContent;
+                const newMatchingTypes = getTypesWithName(typeRef.current.textContent);
+                const componentTypeId =
+                    newMatchingTypes.length === 1 ? newMatchingTypes[0].id : typeRef.current.textContent;
                 onChange(componentTypeId, nameRef.current.textContent);
 
                 if (isEditorPopupOpen && e.target === typeRef.current) {
