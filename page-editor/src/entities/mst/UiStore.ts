@@ -228,9 +228,15 @@ export const UiStoreModel = types
         // },
         setMatchingWebsite(website: WebSite | null) {
             self.matchingWebsite = website;
+            if (self.matchingWebsite) {
+                self.matchingWebsite.expand();
+            }
         },
         setMathchingPages(pageInstances: PageInstance[]) {
             self.matchingPages.replace(pageInstances);
+            if (pageInstances.length !== 1) {
+                this.selectBreadcrumb(BreadcrumbType.ProjectExplorer);
+            }
         },
         generateBlankComponents(selectors) {
             applySnapshot(
