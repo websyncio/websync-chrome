@@ -119,6 +119,7 @@ export const UiStoreModel = types
             this.selectBreadcrumb(BreadcrumbType.EditedComponentInstance);
         },
         selectBreadcrumb(breadcrumbType: BreadcrumbType) {
+            console.log('selectBreadcrumb', breadcrumbType);
             self.selectedBreadcrumb = breadcrumbType;
         },
         showNotification(title: string | null, message: string, isError: boolean) {
@@ -184,6 +185,7 @@ export const UiStoreModel = types
             self.selectedProject = projectName;
         },
         showTabForEditedPage(pageInstance: PageInstance) {
+            console.log('showTabForEditedPage');
             self.selectedBreadcrumb = BreadcrumbType.MatchingPage;
             // let tab = this.findTabFor(pageInstance);
             // if (!tab) {

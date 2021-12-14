@@ -38,7 +38,6 @@ const Selector: React.FC<Props> = observer(({ parameterName, selector, onEdit, o
         }
     }
 
-    console.log('addUrlChangedListener', selector);
     urlSynchronizationService.addUrlChangedListener(validate);
 
     useEffect(() => {

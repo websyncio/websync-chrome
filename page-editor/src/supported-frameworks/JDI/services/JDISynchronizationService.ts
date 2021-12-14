@@ -25,15 +25,15 @@ export default class JDISynchronizationService implements IProjectSynchronizerSe
     }
 
     onProjectUpdated(projectData) {
-        RootStore.uiStore.setMatchingWebsite(null);
-        RootStore.uiStore.setMathchingPages([]);
+        // RootStore.uiStore.setMatchingWebsite(null);
+        // RootStore.uiStore.setMathchingPages([]);
         RootStore.projectStore.updateProject(projectData);
         this.matchPage();
     }
 
     onProjectDataReceived(connectionType, projectData) {
-        RootStore.uiStore.setMatchingWebsite(null);
-        RootStore.uiStore.setMathchingPages([]);
+        // RootStore.uiStore.setMatchingWebsite(null);
+        // RootStore.uiStore.setMathchingPages([]);
         RootStore.setProjectData(connectionType, projectData);
         this.matchPage();
     }
