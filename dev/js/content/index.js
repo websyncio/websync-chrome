@@ -697,10 +697,10 @@ window.removeComponentHighlightingInIframe = function(iframeNode, iframeElements
 		return;
 	}
 	iframeElements.forEach((iframeElement)=>{
-		if(iframeElement.tagName=='IMG'){
-			iframeElement.setAttribute('src', iframeElement.getAttribute('data-actualsrc'));
-			iframeElement.removeAttribute('data-actualsrc');
-		}
+		// if(iframeElement.tagName=='IMG'){
+		// 	iframeElement.setAttribute('src', iframeElement.getAttribute('data-actualsrc'));
+		// 	iframeElement.removeAttribute('data-actualsrc');
+		// }
 		iframeElement.removeAttribute('ws-highlight');
 		iframeElement.removeAttribute('ws-list-selector');
 		// higlightComponent(iframeNode, iframeElement);

@@ -206,10 +206,11 @@ export default Service.extend({
 			message.data
 		);
 	},
-	sendSelectorEditorState(rootSelector, inputValue, editedSelector, editedComponent){
+	sendSelectorEditorState(rootScss, rootComponent, inputValue, editedSelector, editedComponent){
 		let target = this.get('secondSelectorEditor')
 		let data = {
-				rootSelector: rootSelector,
+				rootScss: rootScss,
+				rootComponent: rootComponent,
 				inputValue: inputValue,
 				editedSelector: editedSelector,
 				editedComponent: editedComponent

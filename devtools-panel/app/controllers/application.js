@@ -16,6 +16,7 @@ export default Ember.Controller.extend({
 	pluralizer: Ember.inject.service(),
 	pageEditorProxy: Ember.inject.service(),
 	inputValue: '',
+	rootComponent: '',
 	rootParts: A([]),
 	parts: A([]),
 	selectors: A([]),
@@ -221,24 +222,25 @@ export default Ember.Controller.extend({
 	getInputElement(){
 		return document.getElementById('source');
 	},
-	onSourceSelectorChanged: Ember.observer('inputValue', function(){
-		var selector = this.get('inputValue').trim();
-		var scssParser = this.get('scssParser');
-
+	parseSelector(selector){
 		let scss;
 		try {
+			var scssParser = this.get('scssParser');
 			scss = scssParser.parse(selector);            
 		} catch (e) {
 			console.log('Unable to convert scss selector "' + selector + '"');
 		}
-		scss = scss || {
+		return scss || {
 				parts: [],
 				css: null,
 				xpath: null,
 				isCssStyle: true
 			};
+	},
+	onSourceSelectorChanged: Ember.observer('inputValue', function(){
+		var inputValue = this.get('inputValue').trim();
+		const scss = this.parseSelector(inputValue);
 		this.set('scss', scss);
-
 
 		let newParts = this.get('selectorPartFactory').generateParts(scss.parts);
 
@@ -261,7 +263,7 @@ export default Ember.Controller.extend({
 
 		this.updateParts(newParts);
 
-		if(!selector){
+		if(!inputValue){
 			this.focusInput();
 		}
 	}),
@@ -379,11 +381,15 @@ export default Ember.Controller.extend({
 		return lastPart?this.get('lastPart').getSelector():{scss:'',css:''};
 	},
 	addToList(){
-		if(this.get('inputValue')){
+		const inputValue = this.get('inputValue').trim();
+		if(inputValue){
+			const selector = this.get('rootComponent')
+				? this.parseSelector(inputValue)
+				: this.getSelector();
 			let componentSelector = ComponentSelector.create({
 				id: Math.random()+'',
 				name: this.generateSelectorName(),
-				selector: this.getSelector(),
+				selector: selector,
 				elementsCount: this.get('status'),
 				stateText: this.get('pluralizer').pluralize(this.get('status'), "element"),
 				isSelected: !this.get('selectors.length')
@@ -433,6 +439,7 @@ export default Ember.Controller.extend({
 		this.removeRoot(true);
 		this.setInputValue(editedComponent?editedComponent.parameterValue:'', true);
 		this.collapseSelectorsList();
+		this.set('selectorToUpdate', null);
 		this.set('componentSelectorToUpdate', editedComponent);
 	},
 	combineRoots(xcssSelector){
@@ -444,6 +451,7 @@ export default Ember.Controller.extend({
 		return this.get('selectorBuilder').innerSelector(rootSelector, selector);
 	},
 	onSetRootComponent(rootComponent){
+		this.set('disableSelectorsListObserver', true);
 		let scssString = this.combineRoots(rootComponent.rootSelector).scss;
 		let scss;
 		try {
@@ -457,16 +465,19 @@ export default Ember.Controller.extend({
 				xpath: null,
 				isCssStyle: true
 			};
-
+		
+		this.set('rootComponent', rootComponent);
 		let parts = this.get('selectorPartFactory').generateParts(scss.parts);
 		if(parts.length){
 			this.set('rootParts', parts);
 			this.get('selectorHighlighter').highlightRootSelector(this.get('rootParts.lastObject').getSelector());
 			this.sendSelectorEditorState();
 		}
+		this.set('disableSelectorsListObserver', false);
 	},
 	onRemoveRootComponent(){
-		this.removeRoot(false, true);
+		this.set('rootComponent', null);
+		this.removeRoot(true, true);
 	},
 	// stateObserver: Ember.observer('inputValue', 'rootParts.[]', 'componentSelectorToUpdate', 'selectorToUpdate', function(){
 	// 	console.log('selector editor state changed. isAuxilliary: ' + this.get('withPageEditor'));
@@ -474,23 +485,38 @@ export default Ember.Controller.extend({
 	// }),
 	sendSelectorEditorState(){
 		let inputValue = this.get('inputValue');
-		let rootParts = this.get('rootParts');
+		let rootScss = this.get('rootScss');
+		let rootComponent = this.get('rootComponent');
 		let editedSelector = this.get('selectorToUpdate');
 		let editedComponent = this.get('componentSelectorToUpdate');
-		this.get('pageEditorProxy').sendSelectorEditorState(rootParts, inputValue, editedSelector, editedComponent);
+		this.get('pageEditorProxy').sendSelectorEditorState(rootScss, rootComponent, inputValue, editedSelector, editedComponent);
 	},
 	onSelectorEditorStateUpdated(state){
 		let inputValue = this.get('inputValue');
-		let rootParts = this.get('rootParts');
-		let editedSelector = this.get('selectorToUpdate');
-		let editedComponent = this.get('componentSelectorToUpdate');
+		let rootComponent = this.get('rootComponent');
+		let editedListSelector = this.get('selectorToUpdate');
+		let editedComponentSelector = this.get('componentSelectorToUpdate');
 
 		console.log('selector editor state changed. isAuxilliary: ' + this.get('withPageEditor'), state);
-		if(this.isEditedComponentUpdated(editedComponent, state.editedComponent)){
+		if(this.isRootComponentUpdated(rootComponent, state.rootComponent)){
+			this.onSetRootComponent(state.rootComponent);
+		}else if(this.isEditedListSelectorUpdated(editedListSelector, state.editedListSelector)){
+			this.onEditSelector(state.editedListSelector);
+		}else if(this.isEditedComponentUpdated(editedComponentSelector, state.editedComponent)){
 			this.onEditComponentSelector(state.editedComponent);
 		}else if(inputValue!=state.inputValue){
 			this.setInputValue(state.inputValue);
 		}
+	},
+	isRootComponentUpdated(rc1,rc2){
+		const componentId1 = rc1?rc1.componentId:null;
+		const componentId2 = rc2?rc2.componentId:null; 
+		return componentId1!==componentId2;
+	},
+	isEditedListSelectorUpdated(s1,s2){
+		const listSelectorId1 = s1?s1.id:null;
+		const listSelectorId2 = s2?s2.id:null;
+		return listSelectorId1!==listSelectorId2;
 	},
 	isEditedComponentUpdated(ec1, ec2){
 		let componentId1 = ec1?ec1.componentId:null;
@@ -558,6 +584,7 @@ export default Ember.Controller.extend({
 				this.sendSelectorEditorState();
 			}
 		}
+		this.set('rootComponent', null);
 	},
 	showNotification(message){
 		if(this.get("notification")){
@@ -682,6 +709,7 @@ export default Ember.Controller.extend({
 		onEditSelector(componentSelector){
 			this.removeRoot();
 			this.set('selectorToUpdate', componentSelector);
+			this.set('componentSelectorToUpdate', null);
 			this.setInputValue(componentSelector.selector.scss, true);			
 			this.selectPartInInput(this.get('parts.lastObject'));
 			this.collapseSelectorsList();
