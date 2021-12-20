@@ -7,6 +7,7 @@ import ComponentInstance from 'entities/mst/ComponentInstance';
 import PageInstance from 'entities/mst/PageInstance';
 import WebSite from 'entities/mst/WebSite';
 import Reactor from 'utils/Reactor';
+import { generateId } from 'utils/StringUtils';
 
 export const MessageTypes = {
     ProjectDataReceived: 'project-data-received',
@@ -71,9 +72,9 @@ export default class IDEAConnection implements IIdeConnection {
         baseType: string | null,
         absoluteUrl: string,
     ): Promise<void> {
-        const type = 'create-page-type';
         const message = {
-            type: type,
+            type: 'create-page-type',
+            asyncId: generateId(),
             projectName,
             name: name,
             baseType: baseType,
@@ -81,19 +82,19 @@ export default class IDEAConnection implements IIdeConnection {
             absoluteUrl: absoluteUrl,
         };
         this.connection.send(message);
-        return this.saveAsyncRequest(type, name).promise;
+        return this.saveAsyncRequest(message.type, message.asyncId).promise;
     }
 
     createWebsite(projectName: string, name: string, baseUrl: string) {
-        const type = 'create-page-type';
         const message = {
             type: 'create-website',
+            asyncId: generateId(),
             projectName,
             name: name,
             baseUrl: baseUrl,
         };
         this.connection.send(message);
-        return this.saveAsyncRequest(type, name).promise;
+        return this.saveAsyncRequest(message.type, message.asyncId).promise;
     }
 
     createComponentType(projectName: string, name: string, parentType: string, baseType: string | null) {
@@ -177,14 +178,38 @@ export default class IDEAConnection implements IIdeConnection {
         RootStore.uiStore.setProjectsList(this.type, projectsList);
     }
 
-    onMessage(message) {
-        if (message.type.endsWith('-response') && !message.isSuccessful) {
+    handleErrors(message) {
+        if (!message.isSuccessful) {
             RootStore.uiStore.showNotification(null, message.error, true);
             setTimeout(function () {
                 RootStore.uiStore.hideNotification();
             }, 5000);
+        }
+    }
+
+    handleResponses(message) {
+        if (!message.asyncId) {
             return;
         }
+        const request = this.asyncRequests.find((r) => r.id === message.asyncId);
+        if (request) {
+            if (message.isSuccessful) {
+                request.resolve();
+            } else {
+                request.reject();
+            }
+        } else {
+            console.error(`Request with asyncId ${message.asyncId} was not found.`);
+        }
+        return true;
+    }
+
+    onMessage(message) {
+        if (message.type.endsWith('-response')) {
+            this.handleErrors(message);
+            this.handleResponses(message);
+        }
+
         switch (message.type) {
             case 'get-projects-list-response':
                 this.onProjectsReceived(message.data);

@@ -235,8 +235,14 @@ export const UiStoreModel = types
             }
         },
         setMathchingPages(pageInstances: PageInstance[]) {
+            const oldMatchingPage = self.matchingPages.length == 1 ? self.matchingPages[0] : null;
+
             self.matchingPages.replace(pageInstances);
-            if (pageInstances.length !== 1) {
+            if (pageInstances.length === 1) {
+                if (pageInstances[0] !== oldMatchingPage) {
+                    this.selectBreadcrumb(BreadcrumbType.MatchingPage);
+                }
+            } else {
                 this.selectBreadcrumb(BreadcrumbType.ProjectExplorer);
             }
         },

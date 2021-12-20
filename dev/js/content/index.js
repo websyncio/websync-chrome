@@ -565,10 +565,10 @@ window.hightlightComponentsInIframe = function(iframeNode, iframeElements){
 
 window.higlightComponent = function(documentNode, element){
 	// let clientRects = Array.from(element.getClientRects());
-	if(element.tagName=='IMG'){
-		element.setAttribute('data-actualsrc',element.getAttribute('src'));
-		element.setAttribute('src', "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8v5ThPwAG9AKluA28GQAAAABJRU5ErkJggg==");
-	}
+	// if(element.tagName=='IMG'){
+	// 	element.setAttribute('data-actualsrc',element.getAttribute('src'));
+	// 	element.setAttribute('src', "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8v5ThPwAG9AKluA28GQAAAABJRU5ErkJggg==");
+	// }
 	element.setAttribute('ws-highlight', '');
 	element.setAttribute('ws-list-selector', '');
 	// clientRects.forEach((clientRect)=>{

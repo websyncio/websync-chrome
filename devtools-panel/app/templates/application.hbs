@@ -15,17 +15,17 @@
 					onclick={{action "onCancelSelectorUpdate"}}
 					title="Cancel Selector Update"/>
 			{{/unless}}
-			{{#if selectorToUpdate}}
-				<span id="inputPrefix">{{selectorToUpdate.name}}</span>
-			{{/if}}
-			{{#if componentSelectorToUpdate}}
-				<span id="inputPrefix">{{componentSelectorToUpdate.componentName}}</span>
-			{{/if}}
 			{{#if rootScss}}
 				<span id="inputPrefix" title="{{rootScss}}" {{action "onRootMouseEnter" on="mouseEnter"}} {{action "onRootMouseLeave" on="mouseLeave"}}>
 					{{!-- <i class="remove-root" onclick={{action "onRemoveRoot"}}></i> --}}
 					<span class="root-label">root:</span>
 				</span>
+			{{/if}}
+			{{#if selectorToUpdate}}
+				<span id="inputPrefix">{{selectorToUpdate.name}}</span>
+			{{/if}}
+			{{#if componentSelectorToUpdate}}
+				<span id="inputPrefix">{{componentSelectorToUpdate.componentName}}</span>
 			{{/if}}
 			<div class="input-wrap">
 				<div id="partHighlighter"></div>

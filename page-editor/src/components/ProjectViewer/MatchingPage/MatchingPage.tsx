@@ -66,7 +66,7 @@ const MatchingPage: React.FC<Props> = observer(() => {
                 </span>
                 {matchResult()}
             </div>
-            <CreatePageModal isOpen={createPageModalIsOpen} onRequestClose={closeCreatePageModal} />
+            {createPageModalIsOpen && <CreatePageModal onRequestClose={closeCreatePageModal} />}
         </>
     );
 });

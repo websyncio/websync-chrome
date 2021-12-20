@@ -7,11 +7,10 @@ import IProjectSynchronizationService from 'services/ISynchronizationService';
 import CreateModal from './CreateModal/CreateModal';
 
 interface Props {
-    isOpen: boolean;
     onRequestClose: () => void;
 }
 
-const CreateWebsiteModal: React.FC<Props> = observer(({ isOpen, onRequestClose }) => {
+const CreateWebsiteModal: React.FC<Props> = observer(({ onRequestClose }) => {
     const { projectStore, uiStore }: RootStore = useRootStore();
     const projectSynchronizationService = DependencyContainer.get<IProjectSynchronizationService>(
         TYPES.SynchronizationService,
@@ -24,7 +23,6 @@ const CreateWebsiteModal: React.FC<Props> = observer(({ isOpen, onRequestClose }
 
     return (
         <CreateModal
-            isOpen={isOpen}
             title={`New website in ${uiStore.selectedProject}`}
             iconClass="website-icon"
             onRequestClose={onRequestClose}

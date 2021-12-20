@@ -98,7 +98,7 @@ const WebsiteSelector: React.FC<Props> = observer(({}) => {
                     </div>
                 </div>
             </div>
-            <CreateWebsiteModal isOpen={createWebsiteModalIsOpen} onRequestClose={closeCreateWebsiteModal} />
+            {createWebsiteModalIsOpen && <CreateWebsiteModal onRequestClose={closeCreateWebsiteModal} />}
         </>
     );
 });

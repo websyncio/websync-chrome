@@ -5,7 +5,6 @@ import ReactModal from 'react-modal';
 import './CreateModal.sass';
 
 interface Props {
-    isOpen: boolean;
     onRequestClose: () => void;
     onSubmit: (name: string) => Promise<void>;
     title: string;
@@ -14,7 +13,7 @@ interface Props {
 
 ReactModal.setAppElement('#root');
 
-const CreateModal: React.FC<Props> = observer(({ isOpen, onRequestClose, onSubmit, title, iconClass }) => {
+const CreateModal: React.FC<Props> = observer(({ onRequestClose, onSubmit, title, iconClass }) => {
     const [requestPromise, setRequestPromise] = useState<Promise<void> | null>(null);
     let inputEl: any;
 
@@ -35,7 +34,7 @@ const CreateModal: React.FC<Props> = observer(({ isOpen, onRequestClose, onSubmi
                 <WaitOverlay promise={requestPromise} onRequestClose={onRequestClose} />
             ) : (
                 <ReactModal
-                    isOpen={isOpen}
+                    isOpen={true}
                     onAfterOpen={afterOpenModal}
                     onRequestClose={onRequestClose}
                     className="create-modal"

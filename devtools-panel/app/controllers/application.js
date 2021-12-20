@@ -436,7 +436,7 @@ export default Ember.Controller.extend({
 		// }
 
 		console.log("set editedComponent");
-		this.removeRoot(true);
+		// this.removeRoot(true);
 		this.setInputValue(editedComponent?editedComponent.parameterValue:'', true);
 		this.collapseSelectorsList();
 		this.set('selectorToUpdate', null);

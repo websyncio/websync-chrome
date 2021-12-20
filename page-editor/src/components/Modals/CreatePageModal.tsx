@@ -7,11 +7,10 @@ import IProjectSynchronizationService from 'services/ISynchronizationService';
 import CreateModal from './CreateModal/CreateModal';
 
 interface Props {
-    isOpen: boolean;
     onRequestClose: () => void;
 }
 
-const CreatePageModal: React.FC<Props> = observer(({ isOpen, onRequestClose }) => {
+const CreatePageModal: React.FC<Props> = observer(({ onRequestClose }) => {
     const { projectStore, uiStore }: RootStore = useRootStore();
     const projectSynchronizationService = DependencyContainer.get<IProjectSynchronizationService>(
         TYPES.SynchronizationService,
@@ -24,7 +23,6 @@ const CreatePageModal: React.FC<Props> = observer(({ isOpen, onRequestClose }) =
 
     return (
         <CreateModal
-            isOpen={isOpen}
             title={`New Page in ${uiStore.matchingWebsite.name}`}
             iconClass="page-icon"
             onRequestClose={onRequestClose}

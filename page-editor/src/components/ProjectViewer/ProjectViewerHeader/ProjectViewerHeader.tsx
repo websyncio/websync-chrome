@@ -197,7 +197,7 @@ const Header: React.FC<Props> = observer(() => {
                 {/* {openedTabs()} */}
                 <span className="header-actions"></span>
             </div>
-            <CreatePageModal isOpen={createPageModalIsOpen} onRequestClose={closeCreatePageModal} />
+            {createPageModalIsOpen && <CreatePageModal onRequestClose={closeCreatePageModal} />}
         </>
     );
 });

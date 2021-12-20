@@ -11,3 +11,7 @@ export function trimEnd(text: string, trimValue: string) {
     }
     return text;
 }
+
+export function generateId(): string {
+    return (Math.random() + '').substring(2);
+}
