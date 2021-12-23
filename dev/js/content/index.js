@@ -1,52 +1,52 @@
 console.log('WebSync content script injected');
 
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
-    console.log("Message received from background page", message);
-    let result;
-    switch(message.name){
-    	case "removeComponentsHighlighting":
-    		removeComponentsHighlighting();
-    		break;
-    	case "removeHighlighting":
-    		removeHighlighting();
-    		break;
-    	case "highlightComponents":
-    		highlightComponents(message.data);
-    		break;
-    	case "highlightSelector":
-    		highlightSelector(message.data);
-    		break;
-    	case "highlightInspectedElement":
-    		highlightInspectedElement(message.data);
-    		break;
-    	case "inspectCssSelector":
-    		inspectCssSelector(message.data);
-    		break;
-    	case "inspectXpathSelector":
-    		inspectXpathSelector(message.data);
-    		break;
-    	case "inspectInspectedChild":
-    		inspectInspectedChild(message.data);
-    		break;
-    	case "evaluateCss":
-    		result = evaluateCss(message.data);
-    		break;
-    	case "evaluateXpath":
-    		result = evaluateXpath(message.data);
-    		break;
-    	case "loadChildrenForInspectedElement":
-    		result = loadChildrenForInspectedElement(message.data);
-    		break;
-    	case "loadChildren":
-    		result = loadChildren(message.data);
-    		break;
-    	default:
-    		console.error("Unknown message type");
-    }
-    if(sendResponse){
-		sendResponse(result);
-    }
-});
+// chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
+//     console.log("Message received from background page", message);
+//     let result;
+//     switch(message.name){
+//     	case "removeComponentsHighlighting":
+//     		removeComponentsHighlighting();
+//     		break;
+//     	case "removeHighlighting":
+//     		removeHighlighting();
+//     		break;
+//     	case "highlightComponents":
+//     		highlightComponents(message.data);
+//     		break;
+//     	case "highlightSelector":
+//     		highlightSelector(message.data);
+//     		break;
+//     	case "highlightInspectedElement":
+//     		highlightInspectedElement(message.data);
+//     		break;
+//     	case "inspectCssSelector":
+//     		inspectCssSelector(message.data);
+//     		break;
+//     	case "inspectXpathSelector":
+//     		inspectXpathSelector(message.data);
+//     		break;
+//     	case "inspectInspectedChild":
+//     		inspectInspectedChild(message.data);
+//     		break;
+//     	case "evaluateCss":
+//     		result = evaluateCss(message.data);
+//     		break;
+//     	case "evaluateXpath":
+//     		result = evaluateXpath(message.data);
+//     		break;
+//     	case "loadChildrenForInspectedElement":
+//     		result = loadChildrenForInspectedElement(message.data);
+//     		break;
+//     	case "loadChildren":
+//     		result = loadChildren(message.data);
+//     		break;
+//     	default:
+//     		console.error("Unknown message type");
+//     }
+//     if(sendResponse){
+// 		sendResponse(result);
+//     }
+// });
 
 //============================================================================================
 //   Connection to background page
@@ -90,7 +90,9 @@ function connectToBackgroundPage(){
 		backgroundPort = chrome.runtime.connect({ name: "content" });
 	}catch(e){
 		console.log("WebSync is unable to connect to background.", e);
-		setTimeout(connectToBackgroundPage, 1000);
+		if(e.message!='Extension context invalidated.'){
+			setTimeout(connectToBackgroundPage, 1000);
+		}
 		return;
 	}
 	console.log("WebSync has created a connection to background.");
@@ -146,11 +148,20 @@ let urlPollingIntervalId;
 let previoustUrl = window.location.href;
 
 function startUrlPolling() {
-	urlPollingIntervalId = window.setInterval(urlPollingCallback, 1000);
+	try{
+		urlPollingIntervalId = window.setInterval(urlPollingCallback, 1000);
+	}
+	catch(e){
+		console.error("startUrlPolling", e);
+	}
 }
 
 function stopUrlPolling() {
-	window.clearInterval(urlPollingIntervalId);
+	try{
+		window.clearInterval(urlPollingIntervalId);
+	}catch(e){
+		console.error("stopUrlPolling", e);
+	}
 }
 
 function getCurrentUrl(){
@@ -167,9 +178,11 @@ function urlPollingCallback(){
 
 window.addEventListener("visibilitychange", function(){
 	if (document.visibilityState === 'visible'){
+		console.log("visibilitychange: visible");
 		stopUrlPolling();
 		startUrlPolling();
 	}else{
+		console.log("visibilitychange: not visible");
 		stopUrlPolling();
 	}
 });
