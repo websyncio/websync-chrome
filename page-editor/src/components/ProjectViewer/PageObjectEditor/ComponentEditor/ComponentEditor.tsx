@@ -25,7 +25,6 @@ const ComponentEditor: React.FC<Props> = observer(({ componentInstance }) => {
 
     function calculateRootSelector() {
         const index = uiStore.editedComponentsChain.indexOf(componentInstance);
-        console.log('calculateRootSelector. index', index);
         const rootComponents: ComponentInstance[] = uiStore.editedComponentsChain.slice(0, index + 1);
         let rootSelector: XcssSelector | null = null;
         rootComponents.forEach((c: ComponentInstance) => {
@@ -69,6 +68,7 @@ const ComponentEditor: React.FC<Props> = observer(({ componentInstance }) => {
                     container={container}
                     baseContainer={baseType}
                     parentComponentInstance={componentInstance}
+                    rootSelector={rootSelector}
                     isExpanded={inheritanceLevel === expandedContainerIndex}
                     onExpand={(expandParent) => {
                         onExpand(expandParent ? inheritanceLevel + 1 : inheritanceLevel);

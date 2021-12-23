@@ -19,6 +19,7 @@ interface Props {
     container: IComponentsContainer;
     baseContainer: IComponentsContainer;
     parentComponentInstance: IComponentInstance | null;
+    rootSelector: XcssSelector | null;
     isExpanded: boolean;
     onExpand: (expandParent: boolean) => void;
 }
@@ -30,7 +31,7 @@ enum ListType {
 }
 
 const ComponentsContainer: React.FC<Props> = observer(
-    ({ container, baseContainer, parentComponentInstance, isExpanded, onExpand }) => {
+    ({ container, baseContainer, parentComponentInstance, rootSelector, isExpanded, onExpand }) => {
         const { uiStore, projectStore }: RootStore = useRootStore();
         const [activeList, setActiveList] = useState(ListType.PageObjectComponents);
         const selectorHighlighter: SelectorHighlighter = DependencyContainer.get<SelectorHighlighter>(
@@ -41,14 +42,14 @@ const ComponentsContainer: React.FC<Props> = observer(
         );
 
         function getComponentSelectors(
-            container: IComponentsContainer,
+            container1: IComponentsContainer,
             rootSelector: XcssSelector | null,
         ): XcssSelector[] {
-            if (!container) {
+            if (!container1) {
                 return [];
             }
             let selectors: XcssSelector[] = [];
-            container.componentsInstances.forEach((c) => {
+            container1.componentsInstances.forEach((c) => {
                 const componentSelector: XcssSelector | null = attributeToXcssMapper.GetXcss(c.initializationAttribute);
                 if (componentSelector) {
                     componentSelector.root = rootSelector;
@@ -67,7 +68,7 @@ const ComponentsContainer: React.FC<Props> = observer(
             return selectors;
         }
 
-        const componentSelectors: XcssSelector[] = useMemo(() => getComponentSelectors(container, null), [container]);
+        const componentSelectors: XcssSelector[] = getComponentSelectors(container, rootSelector);
 
         useEffect(() => {
             return () => selectorHighlighter.removeComponentHighlighting(componentSelectors);

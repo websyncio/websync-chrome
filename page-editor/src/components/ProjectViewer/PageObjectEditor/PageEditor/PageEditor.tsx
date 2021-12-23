@@ -29,6 +29,7 @@ const PageEditor: React.FC<Props> = observer(({ pageInstance }) => {
                     container={container}
                     baseContainer={baseType}
                     parentComponentInstance={null}
+                    rootSelector={null}
                     isExpanded={inheritanceLevel === expandedContainerIndex}
                     onExpand={(expandParent) => {
                         onExpand(expandParent ? inheritanceLevel + 1 : inheritanceLevel);
