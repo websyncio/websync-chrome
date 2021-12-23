@@ -52,7 +52,7 @@ const WebSitesTree: React.FC<Props> = observer(({ websites, onSelected }) => {
                     className={`tree-item website selectable 
                         ${website.expanded ? 'expanded' : ''} 
                         ${website.selected ? 'selected' : ''} 
-                        ${uiStore.matchingWebsite === website ? 'match' : ''}`}
+                        `}
                     onClick={() => onSelected(website, null)}
                 >
                     <TreeOutline onClick={() => expand(website)} expanded={website.expanded} />

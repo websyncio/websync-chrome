@@ -15,7 +15,6 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
     ({
         container,
         componentInstance,
-        parentComponentInstance,
         isSelected,
         initialCaretPosition,
         onSelectedStateChange,
@@ -99,7 +98,6 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
                     <TypeNameEditor
                         container={container}
                         componentInstance={componentInstance}
-                        parentComponentInstance={parentComponentInstance}
                         isSelected={isSelected}
                         onSelectedStateChange={onSelectedStateChange}
                         showPlaceholders={true}

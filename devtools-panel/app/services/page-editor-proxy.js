@@ -138,16 +138,16 @@ export default Service.extend({
 			this.postMessage(MessageTypes.ValidateSelector, message.source, null, true, message.acknowledgment);
 		}
 	},
-	getSelector(xcssSelector) {
-		let selector;
-		if (!xcssSelector.css && !xcssSelector.xpath){
-			selector = this.get('scssParser').parse(xcssSelector.xcss);
-		}
+	getSelector(xcssSelector){
+		let selector = this.get('selectorBuilder').combineRoots(xcssSelector);
+		// if (!xcssSelector.css && !xcssSelector.xpath){
+		// 	selector = this.get('scssParser').parse(xcssSelector.xcss);
+		// }
 		// TODO: create separate package for xcss parser and remove this code
-		if(xcssSelector.root){
-			let rootSelector = this.get('scssParser').parse(xcssSelector.root.xcss);
-			selector = this.get('selectorBuilder').innerSelector(rootSelector, selector);
-		}
+		// if(xcssSelector.root){
+		// 	let rootSelector = this.get('scssParser').parse(xcssSelector.root.xcss);
+		// 	selector = this.get('selectorBuilder').innerSelector(rootSelector, selector);
+		// }
 		return selector;
 	},
 	postMessage(type, target, data, isException, acknowledgment){

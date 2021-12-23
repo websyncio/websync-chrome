@@ -167,6 +167,7 @@ const ComponentsContainer: React.FC<Props> = observer(
                             isActive={activeList === ListType.PageObjectComponents}
                             container={container}
                             componentInstances={container.componentsInstances}
+                            rootSelector={rootSelector}
                             parentComponentInstance={parentComponentInstance}
                             componentView={ComponentInstance}
                             onActiveStateChange={(isActive) =>
@@ -185,6 +186,7 @@ const ComponentsContainer: React.FC<Props> = observer(
                                 container={container}
                                 componentInstances={uiStore.blankComponents}
                                 parentComponentInstance={parentComponentInstance}
+                                rootSelector={rootSelector}
                                 componentView={BlankComponentInstance}
                                 onActiveStateChange={(isActive) =>
                                     setActiveList(isActive ? ListType.BlankComponents : ListType.Undefined)

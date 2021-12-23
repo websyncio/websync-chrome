@@ -6,14 +6,16 @@ import Selector from 'components/ProjectViewer/PageObjectEditor/InitializationAt
 import './RootSelectorAttribute.sass';
 import IAttributeToXcssMapper from 'services/IAttributeToXcssMapper';
 import { DependencyContainer, TYPES } from 'inversify.config';
+import XcssSelector from 'entities/XcssSelector';
 
 interface Props {
     attribute: AttributeModel;
+    rootSelector: XcssSelector | null;
     onEditSelector: any;
     onValidated: (hasError: boolean) => void;
 }
 
-const RootSelectorAttribute: React.FC<Props> = ({ attribute, onEditSelector, onValidated }: Props) => {
+const RootSelectorAttribute: React.FC<Props> = ({ attribute, rootSelector, onEditSelector, onValidated }: Props) => {
     const attributeToXcssMapper: IAttributeToXcssMapper = DependencyContainer.get<IAttributeToXcssMapper>(
         TYPES.AttributeToXcssMapper,
     );
@@ -23,11 +25,15 @@ const RootSelectorAttribute: React.FC<Props> = ({ attribute, onEditSelector, onV
             <span className="parameter-values">
                 {parameter.values.length > 1 && '{'}
                 {parameter.values.map((v, index) => {
+                    const selector = attributeToXcssMapper.GetXcss(attribute);
+                    if (selector) {
+                        selector.root = rootSelector;
+                    }
                     return (
                         <>
                             <Selector
                                 parameterName={parameter.name}
-                                selector={attributeToXcssMapper.GetXcss(attribute)}
+                                selector={selector}
                                 onEdit={() => onEditSelector(parameter, index)}
                                 onValidated={onValidated}
                             />

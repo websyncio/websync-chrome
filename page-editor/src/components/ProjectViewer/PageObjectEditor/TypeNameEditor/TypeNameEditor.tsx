@@ -8,18 +8,17 @@ import EditorPopup from '../EditorPopup/EditorPopup';
 import './TypeNameEditor.sass';
 import RootStore from 'entities/mst/RootStore';
 import { useRootStore } from 'context';
-import { PopupContent } from 'semantic-ui-react';
 import { getNextIndex } from 'utils/IndexUtils';
 import IEditorPopupAction from '../EditorPopup/IEditorPopupAction';
 import { ProposedComponentTypeAction } from './ProposedComponentTypeAction';
 import ComponentType from 'entities/mst/ComponentType';
 import CreateComponentTypeAction from './CreateComponentTypeAction';
 import IComponentsContainer from 'entities/mst/ComponentsContainer';
+import XcssSelector from 'entities/XcssSelector';
 
 interface Props {
     container: IComponentsContainer;
     componentInstance: ComponentInstanceModel;
-    parentComponentInstance: ComponentInstanceModel | null;
     showPlaceholders: boolean;
     isSelected: boolean;
     initialCaretPosition: number | null;
@@ -28,13 +27,13 @@ interface Props {
     onSelectNext: (caretPosition: number) => boolean;
     onSelectPrevious: (caretPosition: number) => boolean;
     onChange: (componentType: string, componentName: string) => void;
+    onEditComponentType?: () => void;
 }
 
 const TypeNameEditor: React.FC<Props> = observer(
     ({
         container,
         componentInstance,
-        parentComponentInstance,
         showPlaceholders,
         isSelected,
         initialCaretPosition,
@@ -43,6 +42,7 @@ const TypeNameEditor: React.FC<Props> = observer(
         onSelectNext,
         onSelectPrevious,
         onChange,
+        onEditComponentType,
     }) => {
         const { uiStore, projectStore }: RootStore = useRootStore();
         const typePlaceholder = '<set type>';
@@ -723,7 +723,9 @@ const TypeNameEditor: React.FC<Props> = observer(
         function onTypeNameClick(e) {
             makeNonEditable(e.target);
             if (isCtrlPressed && matchingTypes.length === 1) {
-                uiStore.editComponent(componentInstance, parentComponentInstance);
+                if (onEditComponentType) {
+                    onEditComponentType();
+                }
             }
         }
 

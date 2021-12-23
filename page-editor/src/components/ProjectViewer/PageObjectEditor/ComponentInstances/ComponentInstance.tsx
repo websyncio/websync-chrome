@@ -11,12 +11,15 @@ import { DependencyContainer, TYPES } from 'inversify.config';
 import { SelectorsBagService } from 'services/SelectorsBagService';
 import './ComponentInstance.sass';
 import ISynchronizationService from 'services/ISynchronizationService';
+import RootStore from 'entities/mst/RootStore';
+import { useRootStore } from 'context';
 
 const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
     ({
         container,
         componentInstance,
         parentComponentInstance,
+        rootSelector,
         isSelected,
         index,
         initialCaretPosition,
@@ -24,6 +27,7 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
         onSelectNext,
         onSelectPrevious,
     }) => {
+        const { uiStore, projectStore }: RootStore = useRootStore();
         const [hasError, setHasError] = useState(false);
         // const [isDeleted, setIsDeleted] = useState(false);
 
@@ -68,6 +72,7 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                 return (
                     <RootSelectorAttribute
                         attribute={attribute}
+                        rootSelector={rootSelector}
                         onEditSelector={(parameter, valueIndex) =>
                             editSelector(componentInstance, parameter, valueIndex)
                         }
@@ -92,6 +97,10 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
             synchronizationService.deleteComponentInstance(componentInstance);
         }
 
+        function onEditComponentType() {
+            uiStore.editComponent(componentInstance, parentComponentInstance);
+        }
+
         return (
             <div
                 className={`component-instance 
@@ -110,7 +119,6 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                     <TypeNameEditor
                         container={container}
                         componentInstance={componentInstance}
-                        parentComponentInstance={parentComponentInstance}
                         isSelected={isSelected}
                         showPlaceholders={false}
                         initialCaretPosition={initialCaretPosition}
@@ -119,6 +127,7 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                         onSelectNext={onSelectNext}
                         onSelectPrevious={onSelectPrevious}
                         onChange={onChange}
+                        onEditComponentType={onEditComponentType}
                     />
                     &nbsp;
                     {componentInstance.initializationAttribute &&

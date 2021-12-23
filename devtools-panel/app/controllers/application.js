@@ -442,17 +442,9 @@ export default Ember.Controller.extend({
 		this.set('selectorToUpdate', null);
 		this.set('componentSelectorToUpdate', editedComponent);
 	},
-	combineRoots(xcssSelector){
-		let selector = this.get('scssParser').parse(xcssSelector.xcss);
-		let rootSelector;
-		if(xcssSelector.root){
-			rootSelector = this.combineRoots(xcssSelector.root);
-		}
-		return this.get('selectorBuilder').innerSelector(rootSelector, selector);
-	},
 	onSetRootComponent(rootComponent){
 		this.set('disableSelectorsListObserver', true);
-		let scssString = this.combineRoots(rootComponent.rootSelector).scss;
+		let scssString = this.get('selectorBuilder').combineRoots(rootComponent.rootSelector).scss;
 		let scss;
 		try {
 			scss = this.get('scssParser').parse(scssString);

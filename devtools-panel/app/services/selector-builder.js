@@ -1,6 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Service.extend({
+	scssParser: Ember.inject.service(),
 	innerSelector(rootSelector, relativeSelector){
 		if(!relativeSelector || !relativeSelector.scss){
 			return null;
@@ -71,5 +72,13 @@ export default Ember.Service.extend({
 		 	"preceding-sibling::",
 		 	"self::"];
 		return axises.some(axis=> xpath.startsWith(axis));
+	},
+	combineRoots(xcssSelector){
+		let selector = this.get('scssParser').parse(xcssSelector.xcss);
+		let rootSelector;
+		if(xcssSelector.root){
+			rootSelector = this.combineRoots(xcssSelector.root);
+		}
+		return this.innerSelector(rootSelector, selector);
 	}
 });

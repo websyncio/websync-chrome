@@ -6,12 +6,14 @@ import IComponentInstance from 'entities/mst/ComponentInstance';
 import IComponentsContainer from 'entities/mst/ComponentsContainer';
 import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
+import XcssSelector from 'entities/XcssSelector';
 
 interface Props {
     isActive: boolean;
     container: IComponentsContainer;
     parentComponentInstance: IComponentInstance | null;
     componentInstances: IComponentInstance[];
+    rootSelector: XcssSelector | null;
     componentView: React.ComponentType<ComponentInstanceProps>;
     onActiveStateChange?: (isActive: boolean) => void;
     onSelectNext?: () => boolean;
@@ -24,6 +26,7 @@ const ComponentInstancesList: React.FC<Props> = observer(
         container,
         parentComponentInstance,
         componentInstances,
+        rootSelector,
         componentView: ComponentView,
         onActiveStateChange,
         onSelectPrevious,
@@ -145,6 +148,7 @@ const ComponentInstancesList: React.FC<Props> = observer(
                                 container={container}
                                 componentInstance={componentInstance}
                                 parentComponentInstance={parentComponentInstance}
+                                rootSelector={rootSelector}
                                 isSelected={isActive && uiStore.editorSelectedLineIndex === lineIndex}
                                 index={lineIndex + 1}
                                 initialCaretPosition={uiStore.editorCaretPosition}
