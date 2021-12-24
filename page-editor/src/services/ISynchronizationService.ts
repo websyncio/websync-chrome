@@ -12,6 +12,7 @@ export default interface IProjectSynchronizationService {
     // createSite();
     // createPageType();
     createComponentType(typeName: string, parentId: string, baseType: string | null): void;
+    openFileForClass(classFullName: string);
     // updateSite();
     // updatePageType();
     // updateComponentType();

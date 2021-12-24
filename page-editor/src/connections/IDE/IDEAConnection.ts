@@ -85,6 +85,15 @@ export default class IDEAConnection implements IIdeConnection {
         return this.saveAsyncRequest(message.type, message.asyncId).promise;
     }
 
+    openFileForClass(projectName: string, fullClassName: string) {
+        const message = {
+            type: 'open-file',
+            projectName,
+            fullClassName,
+        };
+        this.connection.send(message);
+    }
+
     createWebsite(projectName: string, name: string, baseUrl: string) {
         const message = {
             type: 'create-website',

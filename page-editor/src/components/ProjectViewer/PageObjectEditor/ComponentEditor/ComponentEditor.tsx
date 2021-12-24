@@ -8,8 +8,8 @@ import ComponentInstance from 'entities/mst/ComponentInstance';
 import XcssSelector from 'entities/XcssSelector';
 import IAttributeToXcssMapper from 'services/IAttributeToXcssMapper';
 import { DependencyContainer, TYPES } from 'inversify.config';
-import XcssBuilder from 'services/XcssBuilder';
 import { SelectorsBagService } from 'services/SelectorsBagService';
+import ISynchronizationService from 'services/ISynchronizationService';
 
 interface Props {
     componentInstance: ComponentInstance;
@@ -22,6 +22,7 @@ const ComponentEditor: React.FC<Props> = observer(({ componentInstance }) => {
         TYPES.AttributeToXcssMapper,
     );
     const selectorsBagService = DependencyContainer.get<SelectorsBagService>(TYPES.SelectorsBagService);
+    const synchronizationService = DependencyContainer.get<ISynchronizationService>(TYPES.SynchronizationService);
 
     function calculateRootSelector() {
         const index = uiStore.editedComponentsChain.indexOf(componentInstance);
@@ -40,6 +41,15 @@ const ComponentEditor: React.FC<Props> = observer(({ componentInstance }) => {
     const rootSelector: XcssSelector | null = useMemo(() => calculateRootSelector(), [componentInstance]);
 
     useEffect(() => {
+        synchronizationService.openFileForClass(componentInstance.componentType.id);
+        return () => {
+            // do we need to do something here?
+            //console.log("PageEditor is dismounted for:", pageInstance.name);
+        };
+    }, []);
+
+    useEffect(() => {
+        console.log('set root selector for component');
         if (rootSelector) {
             selectorsBagService.setRootComponent({
                 rootSelector: rootSelector,

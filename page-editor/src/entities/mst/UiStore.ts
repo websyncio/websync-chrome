@@ -186,7 +186,7 @@ export const UiStoreModel = types
         },
         showTabForEditedPage(pageInstance: PageInstance) {
             console.log('showTabForEditedPage');
-            self.selectedBreadcrumb = BreadcrumbType.MatchingPage;
+            this.selectBreadcrumb(BreadcrumbType.MatchingPage);
             // let tab = this.findTabFor(pageInstance);
             // if (!tab) {
             //     tab = ProjectTabModel.create({

@@ -18,6 +18,13 @@ export default class JDISynchronizationService implements IProjectSynchronizerSe
         ideaConnection.addListener(MessageTypes.ProjectUpdated, this.onProjectUpdated.bind(this));
         ideaConnection.addListener(MessageTypes.WebsiteUpdated, this.onWebsiteUpdated.bind(this));
     }
+    openFileForClass(classFullName: string) {
+        if (!RootStore.uiStore.selectedProject) {
+            throw new Error('Project not set');
+        }
+
+        this.ideaConnection.openFileForClass(RootStore.uiStore.selectedProject, classFullName);
+    }
 
     onWebsiteUpdated(website) {
         RootStore.projectStore.updateWebsite(website);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import IComponentsContainer from 'entities/mst/ComponentsContainer';
 import ComponentsContainer from '../ComponentsContainer/ComponentsContainer';
@@ -7,6 +7,8 @@ import RootStore from 'entities/mst/RootStore';
 import './PageEditor.sass';
 import MatchUrlNotifications from 'components/ProjectViewer/MatchUrlNotifications/MatchUrlNotifications';
 import PageInstance from 'entities/mst/PageInstance';
+import { DependencyContainer, TYPES } from 'inversify.config';
+import ISynchronizationService from 'services/ISynchronizationService';
 
 interface Props {
     pageInstance: PageInstance;
@@ -15,6 +17,15 @@ interface Props {
 const PageEditor: React.FC<Props> = observer(({ pageInstance }) => {
     const { projectStore, uiStore }: RootStore = useRootStore();
     const [expandedContainerIndex, setExpandedContainerIndex] = useState(0);
+    const synchronizationService = DependencyContainer.get<ISynchronizationService>(TYPES.SynchronizationService);
+
+    useEffect(() => {
+        synchronizationService.openFileForClass(pageInstance.pageType.id);
+        return () => {
+            // do we need to do something here?
+            //console.log("PageEditor is dismounted for:", pageInstance.name);
+        };
+    }, []);
 
     function onExpand(containerIndex: number) {
         setExpandedContainerIndex(containerIndex);
