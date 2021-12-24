@@ -42,14 +42,6 @@ const ComponentEditor: React.FC<Props> = observer(({ componentInstance }) => {
 
     useEffect(() => {
         synchronizationService.openFileForClass(componentInstance.componentType.id);
-        return () => {
-            // do we need to do something here?
-            //console.log("PageEditor is dismounted for:", pageInstance.name);
-        };
-    }, []);
-
-    useEffect(() => {
-        console.log('set root selector for component');
         if (rootSelector) {
             selectorsBagService.setRootComponent({
                 rootSelector: rootSelector,
@@ -58,7 +50,7 @@ const ComponentEditor: React.FC<Props> = observer(({ componentInstance }) => {
                 selectorsBagService.removeRootComponent();
             };
         }
-    });
+    }, []);
 
     function onExpand(containerIndex: number) {
         setExpandedContainerIndex(containerIndex);
