@@ -18,10 +18,6 @@ export const RootStoreModel = types
                 self.uiStore.selectBreadcrumb(BreadcrumbType.ProjectExplorer);
             }
         },
-        clearProject() {
-            self.uiStore.selectedProjectIsLoaded = false;
-            self.uiStore.selectedProject = null;
-        },
     }));
 
 export default interface RootStore extends Instance<typeof RootStoreModel> {}

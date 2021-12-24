@@ -12,6 +12,8 @@ import { generateId } from 'utils/StringUtils';
 export const MessageTypes = {
     ProjectDataReceived: 'project-data-received',
     ProjectUpdated: 'project-updated',
+    ProjectOpened: 'project-opened',
+    ProjectClosed: 'project-closed',
     WebsiteUpdated: 'website-updated',
 };
 
@@ -56,6 +58,8 @@ export default class IDEAConnection implements IIdeConnection {
         this.reactor = new Reactor();
         this.reactor.registerEvent(MessageTypes.ProjectDataReceived);
         this.reactor.registerEvent(MessageTypes.ProjectUpdated);
+        this.reactor.registerEvent(MessageTypes.ProjectOpened);
+        this.reactor.registerEvent(MessageTypes.ProjectClosed);
         this.reactor.registerEvent(MessageTypes.WebsiteUpdated);
     }
 
@@ -241,6 +245,12 @@ export default class IDEAConnection implements IIdeConnection {
                 return;
             case 'update-project':
                 this.reactor.dispatchEvent(MessageTypes.ProjectUpdated, message.project);
+                return;
+            case 'project-opened':
+                RootStore.uiStore.addProject(this.type, message.projectName);
+                return;
+            case 'project-closed':
+                RootStore.uiStore.removeProject(this.type, message.projectName);
                 return;
             default:
                 console.log('unknown message type, ignored: ', message);

@@ -184,6 +184,23 @@ export const UiStoreModel = types
             self.selectedIdeConnectionType = ideConnectionType;
             self.selectedProject = projectName;
         },
+        addProject(ideType: string, projectName: string) {
+            const ide = self.ideConnections.find((ide) => ide.type == ideType);
+            if (!ide) {
+                throw new Error('There is no connection to IDE: ' + ideType);
+            }
+            (ide as IdeConnection).addProject(projectName);
+        },
+        removeProject(ideType: string, projectName: string) {
+            const ide = self.ideConnections.find((ide) => ide.type == ideType);
+            if (!ide) {
+                throw new Error('There is no connection to IDE: ' + ideType);
+            }
+            (ide as IdeConnection).removeProject(projectName);
+            if (ideType === self.selectedIdeConnectionType && projectName === self.selectedProject) {
+                this.clearProject();
+            }
+        },
         showTabForEditedPage(pageInstance: PageInstance) {
             console.log('showTabForEditedPage');
             this.selectBreadcrumb(BreadcrumbType.MatchingPage);
@@ -266,6 +283,10 @@ export const UiStoreModel = types
         },
         setCurrentUrl(url) {
             self.currentUrl = url;
+        },
+        clearProject() {
+            self.selectedProjectIsLoaded = false;
+            self.selectedProject = null;
         },
     }));
 

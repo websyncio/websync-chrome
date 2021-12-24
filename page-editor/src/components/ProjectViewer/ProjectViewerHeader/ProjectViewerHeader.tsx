@@ -21,7 +21,7 @@ const Header: React.FC<Props> = observer(() => {
     );
 
     function goBackToProjectSelector() {
-        rootStore.clearProject();
+        uiStore.clearProject();
     }
 
     // function onMatchedPageClick(pi: PageInstance) {
