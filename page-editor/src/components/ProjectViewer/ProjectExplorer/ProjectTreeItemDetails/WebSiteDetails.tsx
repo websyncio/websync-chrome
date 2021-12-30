@@ -7,6 +7,7 @@ import { DependencyContainer, TYPES } from 'inversify.config';
 import ISynchronizationService from 'services/ISynchronizationService';
 import { useRootStore } from 'context';
 import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
+import { debounce } from 'utils/TimerUtils';
 
 interface Props {
     website: WebSite;
@@ -33,8 +34,10 @@ const WebSiteDetails: React.FC<Props> = observer(({ website }) => {
         return url.origin + url.pathname;
     }
 
+    const updateUrlDebounced = debounce((ws, newUrl) => synchronizationService.updateWebSiteUrl(ws, newUrl), 300);
+
     function onChangeUrl(newUrl: string) {
-        synchronizationService.updateWebSiteUrl(website, newUrl);
+        updateUrlDebounced(website, newUrl);
     }
 
     function redirectToWebsiteUrl() {

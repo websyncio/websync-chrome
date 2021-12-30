@@ -8,6 +8,7 @@ import ISynchronizationService from 'services/ISynchronizationService';
 import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
 import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
+import { debounce } from 'utils/TimerUtils';
 
 interface Props {
     pageInstance: PageInstance;
@@ -30,8 +31,9 @@ const PageInstanceDetails: React.FC<Props> = observer(({ pageInstance }) => {
         matchStatusText = URL_DOES_NOT_MATCH;
     }
 
+    const updateUrlDebounced = debounce((pi, newUrl) => synchronizationService.updatePageInstanceUrl(pi, newUrl), 300);
     function onChangeUrl(newUrl: string) {
-        synchronizationService.updatePageInstanceUrl(pageInstance, newUrl);
+        updateUrlDebounced(pageInstance, newUrl);
     }
 
     function redirectToUrl() {
