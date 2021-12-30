@@ -11,8 +11,8 @@ import SelectorHighlighter from 'services/SelectorHighlighterService';
 import IDEAConnection from 'connections/IDE/IDEAConnection';
 import ISelectorsBagService from 'services/ISelectorsBagService';
 import IAttributeToXcssMapper from 'services/IAttributeToXcssMapper';
-import IUrlMatcher from 'services/IUrlMatcher';
-import JDIUrlMatcher from 'supported-frameworks/JDI/services/JDIUrlMatcher';
+import IMatchUrlService from 'services/IMatchUrlService';
+import JDIMatchUrlService from 'supported-frameworks/JDI/services/JDIMatchUrlService';
 
 export const TYPES = {
     SynchronizationService: Symbol.for('ProjectSynchronizationService'),
@@ -31,7 +31,7 @@ export const DependencyContainer = new Container();
 DependencyContainer.bind<UrlSynchronizationService>(TYPES.UrlSynchronizationService)
     .toDynamicValue(() => {
         const connection = DependencyContainer.get<SelectorEditorConnection>(TYPES.SelectorEditorConnection);
-        const urlMatcher = DependencyContainer.get<IUrlMatcher>(TYPES.UrlMatcher);
+        const urlMatcher = DependencyContainer.get<IMatchUrlService>(TYPES.UrlMatcher);
         return new UrlSynchronizationService(connection, urlMatcher);
     })
     .inSingletonScope();
@@ -67,7 +67,7 @@ DependencyContainer.bind<IDEAConnection>(TYPES.IDEAConnection).to(IDEAConnection
 DependencyContainer.bind<ISynchronizationService>(TYPES.SynchronizationService)
     .toDynamicValue(() => {
         const connection = DependencyContainer.get<IDEAConnection>(TYPES.IDEAConnection);
-        const urlMatcher = DependencyContainer.get<IUrlMatcher>(TYPES.UrlMatcher);
+        const urlMatcher = DependencyContainer.get<IMatchUrlService>(TYPES.UrlMatcher);
         return new JDISynchronizationService(connection, urlMatcher);
     })
     .inSingletonScope();
@@ -76,4 +76,9 @@ DependencyContainer.bind<IAttributeToXcssMapper>(TYPES.AttributeToXcssMapper)
     .to(JDIAttributeToXcssMapper)
     .inSingletonScope();
 
-DependencyContainer.bind<IUrlMatcher>(TYPES.UrlMatcher).to(JDIUrlMatcher).inSingletonScope();
+DependencyContainer.bind<IMatchUrlService>(TYPES.UrlMatcher)
+    .toDynamicValue(() => {
+        const connection = DependencyContainer.get<IDEAConnection>(TYPES.IDEAConnection);
+        return new JDIMatchUrlService(connection);
+    })
+    .inSingletonScope();

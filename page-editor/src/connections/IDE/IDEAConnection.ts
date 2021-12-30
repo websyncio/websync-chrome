@@ -8,6 +8,7 @@ import PageInstance from 'entities/mst/PageInstance';
 import WebSite from 'entities/mst/WebSite';
 import Reactor from 'utils/Reactor';
 import { generateId } from 'utils/StringUtils';
+import { UrlMatchResult } from 'services/IMatchUrlService';
 
 export const MessageTypes = {
     ProjectDataReceived: 'project-data-received',
@@ -21,7 +22,7 @@ const RESPONSE_SUFFIX = '-response';
 class AsyncRequestInfo {
     responseType: string;
     id: string;
-    promise: Promise<void>;
+    promise: Promise<object>;
     resolve;
     reject;
 
@@ -32,14 +33,6 @@ class AsyncRequestInfo {
             this.resolve = resolve;
             this.reject = reject;
         });
-    }
-
-    completeSuccessfully() {
-        this.resolve();
-    }
-
-    completeWithFailure() {
-        this.reject();
     }
 }
 
@@ -75,7 +68,7 @@ export default class IDEAConnection implements IIdeConnection {
         website: string,
         baseType: string | null,
         absoluteUrl: string,
-    ): Promise<void> {
+    ): Promise<object> {
         const message = {
             type: 'create-page-type',
             asyncId: generateId(),
@@ -207,7 +200,7 @@ export default class IDEAConnection implements IIdeConnection {
         const request = this.asyncRequests.find((r) => r.id === message.asyncId);
         if (request) {
             if (message.isSuccessful) {
-                request.resolve();
+                request.resolve(message.data);
             } else {
                 request.reject();
             }
@@ -215,6 +208,17 @@ export default class IDEAConnection implements IIdeConnection {
             console.error(`Request with asyncId ${message.asyncId} was not found.`);
         }
         return true;
+    }
+
+    async matchUrl(projectName: string, url: string): Promise<object> {
+        const message = {
+            type: 'match-url',
+            asyncId: generateId(),
+            projectName,
+            url,
+        };
+        this.connection.send(message);
+        return this.saveAsyncRequest(message.type, message.asyncId).promise;
     }
 
     onMessage(message) {

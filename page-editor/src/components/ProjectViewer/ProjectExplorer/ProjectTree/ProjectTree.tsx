@@ -37,7 +37,7 @@ const WebSitesTree: React.FC<Props> = observer(({ websites, onSelected }) => {
                     >
                         <i className="tree-icon page-icon" />
                         <span className="tree-name">{pi.pageType.name}</span>
-                        {uiStore.matchingPages.includes(pi) && <span className="match-circle" />}
+                        {uiStore.matchingPages.includes(pi) && <span className={`match-circle`} />}
                     </li>
                 ))}
             </ul>
@@ -58,7 +58,9 @@ const WebSitesTree: React.FC<Props> = observer(({ websites, onSelected }) => {
                     <TreeOutline onClick={() => expand(website)} expanded={website.expanded} />
                     <i className="tree-icon website-icon" />
                     <span className="tree-name">{website.name}</span>
-                    {uiStore.matchingWebsite === website && <span className="match-circle" />}
+                    {uiStore.matchingWebsite === website && (
+                        <span className={`match-circle ${uiStore.websiteIsMatchedManually ? 'manual' : ''}`} />
+                    )}
                 </li>
                 {website.expanded && pageList(website)}
             </>

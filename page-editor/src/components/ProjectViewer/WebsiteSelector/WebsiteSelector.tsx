@@ -32,7 +32,7 @@ const WebsiteSelector: React.FC<Props> = observer(({}) => {
     }
 
     function setMatchingWebsite(ws: WebSite) {
-        uiStore.setMatchingWebsite(ws);
+        uiStore.setMatchingWebsite(ws, true);
     }
 
     function websitesList() {

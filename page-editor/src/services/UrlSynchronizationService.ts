@@ -7,7 +7,7 @@ import { RootStore } from '../context';
 import PageInstance from 'entities/mst/PageInstance';
 import Reactor from '../utils/Reactor';
 import WebSite from 'entities/mst/WebSite';
-import IUrlMatcher from './IUrlMatcher';
+import IMatchUrlService from './IMatchUrlService';
 
 @injectable()
 export class UrlSynchronizationService implements IUrlSynchronizationService {
@@ -15,7 +15,7 @@ export class UrlSynchronizationService implements IUrlSynchronizationService {
 
     constructor(
         @inject(TYPES.SelectorEditorConnection) private selectorEditorConnection: SelectorEditorConnection,
-        @inject(TYPES.UrlMatcher) private urlMatcher: IUrlMatcher,
+        @inject(TYPES.UrlMatcher) private urlMatcher: IMatchUrlService,
     ) {
         this.reactor = new Reactor();
         this.reactor.registerEvent(MessageTypes.UrlChanged);
@@ -31,10 +31,9 @@ export class UrlSynchronizationService implements IUrlSynchronizationService {
         this.reactor.dispatchEvent(MessageTypes.UrlChanged, data);
         RootStore.uiStore.setCurrentUrl(url);
 
-        const matchingWebsite: WebSite = this.urlMatcher.matchWebsite(RootStore.projectStore, url);
-        const matchingPages: PageInstance[] = this.urlMatcher.matchPage(matchingWebsite, url);
-        RootStore.uiStore.setMatchingWebsite(matchingWebsite);
-        RootStore.uiStore.setMathchingPages(matchingPages);
+        this.urlMatcher.matchUrl(url).then((matchResult) => {
+            RootStore.uiStore.setUrlMatchResult(matchResult);
+        });
     }
 
     requestCurrentUrl() {

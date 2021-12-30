@@ -38,7 +38,13 @@ const Input: React.FC<Props> = (props: Props) => {
 
     return (
         // <div onKeyDown={handleKeyboard} onBlur={handleFocusOut} className="input-container">
-        <input className="input-field" value={currentValue} onChange={handleInput} disabled={disabled} />
+        <input
+            className="input-field"
+            value={currentValue}
+            onChange={handleInput}
+            disabled={disabled}
+            spellCheck={false}
+        />
         // </div>
     );
 };

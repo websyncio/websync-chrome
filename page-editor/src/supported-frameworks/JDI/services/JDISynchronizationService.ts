@@ -6,13 +6,13 @@ import WebSite from 'entities/mst/WebSite';
 import { injectable, inject } from 'inversify';
 import { TYPES } from 'inversify.config';
 import IProjectSynchronizerService from 'services/ISynchronizationService';
-import IUrlMatcher from 'services/IUrlMatcher';
+import IMatchUrlService, { UrlMatchResult } from 'services/IMatchUrlService';
 
 @injectable()
 export default class JDISynchronizationService implements IProjectSynchronizerService {
     constructor(
         @inject(TYPES.IDEAConnection) private ideaConnection: IDEAConnection,
-        @inject(TYPES.UrlMatcher) private urlMatcher: IUrlMatcher,
+        @inject(TYPES.UrlMatcher) private urlMatcher: IMatchUrlService,
     ) {
         ideaConnection.addListener(MessageTypes.ProjectDataReceived, this.onProjectDataReceived.bind(this));
         ideaConnection.addListener(MessageTypes.ProjectUpdated, this.onProjectUpdated.bind(this));
@@ -48,20 +48,13 @@ export default class JDISynchronizationService implements IProjectSynchronizerSe
 
     matchPage() {
         if (RootStore.uiStore.currentUrl) {
-            const matchingWebsite: WebSite = this.urlMatcher.matchWebsite(
-                RootStore.projectStore,
-                RootStore.uiStore.currentUrl,
-            );
-            const matchingPages: PageInstance[] = this.urlMatcher.matchPage(
-                matchingWebsite,
-                RootStore.uiStore.currentUrl,
-            );
-            RootStore.uiStore.setMatchingWebsite(matchingWebsite);
-            RootStore.uiStore.setMathchingPages(matchingPages);
+            this.urlMatcher.matchUrl(RootStore.uiStore.currentUrl).then((matchResult) => {
+                RootStore.uiStore.setUrlMatchResult(matchResult);
+            });
         }
     }
 
-    async createPageType(name: string, url: string): Promise<void> {
+    async createPageType(name: string, url: string): Promise<object> {
         if (!RootStore.uiStore.selectedProject) {
             throw new Error('Project not set');
         }

@@ -9,6 +9,8 @@ import WebSite, { WebSiteModel } from './WebSite';
 import ComponentsContainer from './ComponentsContainer';
 import { ComponentTypeModel } from './ComponentType';
 import { Component } from 'react';
+import { UrlMatchResult } from 'services/IMatchUrlService';
+import { RootStore } from 'context';
 
 export enum BreadcrumbType {
     ProjectExplorer = 'ProjectExplorer',
@@ -72,6 +74,7 @@ export const UiStoreModel = types
         selectedProjectIsLoaded: types.optional(types.boolean, false),
         blankComponents: types.array(ComponentInstanceModel),
         matchingWebsite: types.maybeNull(types.reference(WebSiteModel)),
+        websiteIsMatchedManually: types.optional(types.boolean, false),
         matchingPages: types.array(
             types.reference(PageInstanceModel, {
                 onInvalidated: (ev) => {
@@ -245,22 +248,47 @@ export const UiStoreModel = types
         // removeEditedPageObject(pageObject: ComponentsContainer) {
         //     self.editedPageObjects.remove(pageObject);
         // },
-        setMatchingWebsite(website: WebSite | null) {
-            self.matchingWebsite = website;
-            if (self.matchingWebsite) {
-                self.matchingWebsite.expand();
+        setUrlMatchResult(urlMatchResult: UrlMatchResult) {
+            if (urlMatchResult.websiteId) {
+                const website = RootStore.projectStore.webSites.find((ws) => ws.id === urlMatchResult.websiteId);
+                if (!website) {
+                    throw new Error('Unable to find matching website.');
+                }
+                this.setMatchingWebsite(website);
+                const pages = website.pageInstances.filter((pi) => urlMatchResult.pageIds.includes(pi.id));
+                this.setMathchingPages(pages);
+            } else {
+                this.setMatchingWebsite(null);
+                this.setMathchingPages([]);
+            }
+        },
+        setMatchingWebsite(website: WebSite | null, websiteIsMatchedManually?: boolean) {
+            if (website) {
+                self.matchingWebsite = website;
+                self.websiteIsMatchedManually = !!websiteIsMatchedManually;
+                if (self.matchingWebsite) {
+                    self.matchingWebsite.expand();
+                }
+            } else {
+                if (self.matchingWebsite && self.matchingWebsite.selected) {
+                    self.websiteIsMatchedManually = true;
+                } else {
+                    self.matchingWebsite = null;
+                }
             }
         },
         setMathchingPages(pageInstances: PageInstance[]) {
             const oldMatchingPage = self.matchingPages.length == 1 ? self.matchingPages[0] : null;
-
             self.matchingPages.replace(pageInstances);
-            if (pageInstances.length === 1) {
-                if (pageInstances[0] !== oldMatchingPage) {
-                    this.selectBreadcrumb(BreadcrumbType.MatchingPage);
-                }
-            } else {
+            if (pageInstances.length !== 1) {
                 this.selectBreadcrumb(BreadcrumbType.ProjectExplorer);
+                return;
+            }
+            if (
+                self.matchingPage !== oldMatchingPage &&
+                self.selectedBreadcrumb == BreadcrumbType.EditedComponentInstance
+            ) {
+                this.selectBreadcrumb(BreadcrumbType.MatchingPage);
             }
         },
         generateBlankComponents(selectors) {
