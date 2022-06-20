@@ -42,14 +42,14 @@
     "test": "react-scripts test",
     "test:debug": "react-scripts --inspect-brk test --runInBand",
     "eject": "react-scripts eject",
-    "lint": "eslint --config ./config/eslint.config.js --color --ext .js,.jsx,.ts,.tsx --report-unused-disable-directives ./src",
+    "lint": "eslint --config ./eslint.config.js --color --ext .js,.jsx,.ts,.tsx --report-unused-disable-directives ./src",
     "lint:fix": "npm run lint -- --fix",
     "check:types": "tsc -p tsconfig.json --noEmit",
     "check:pre-commit": "npm run check:types && npm run lint:fix && git add ."
   },
-  "prettier": "./config/prettier.config.js",
+  "prettier": "./prettier.config.js",
   "eslintConfig": {
-    "extends": "./config/eslint.config.js"
+    "extends": "./eslint.config.js"
   },
   "browserslist": {
     "production": [
