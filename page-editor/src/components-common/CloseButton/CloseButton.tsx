@@ -1,6 +1,6 @@
 import React from 'react';
 import './CloseButton.sass';
-import { ReactComponent as TimesIcon } from './times.svg';
+import TimesIcon from './times.svg';
 
 interface Props {
     onClick: () => void;

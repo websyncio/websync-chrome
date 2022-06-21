@@ -6,7 +6,7 @@ import WebSite from 'entities/mst/WebSite';
 import { injectable, inject } from 'inversify';
 import { TYPES } from 'inversify.config';
 import IProjectSynchronizerService from 'services/ISynchronizationService';
-import IMatchUrlService, { UrlMatchResult } from 'services/IMatchUrlService';
+import type IMatchUrlService from 'services/IMatchUrlService';
 
 @injectable()
 export default class JDISynchronizationService implements IProjectSynchronizerService {

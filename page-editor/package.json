@@ -27,21 +27,13 @@
     "react": "^16.13.0",
     "react-contenteditable": "^3.3.5",
     "react-dom": "^16.13.0",
-    "react-scripts": "^5.0.1",
     "reflect-metadata": "^0.1.13",
-    "sass": "^1.52.3",
-    "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^0.88.2",
-    "typescript": "^3.8.3",
     "websocket": "^1.0.31"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "start:debug": "react-scripts --inspect-brk start --runInBand",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "test:debug": "react-scripts --inspect-brk test --runInBand",
-    "eject": "react-scripts eject",
+    "serve": "webpack serve --mode development",
+    "build": "webpack --mode development",
+    "build:prod": "webpack --mode production",
     "lint": "eslint --config ./eslint.config.js --color --ext .js,.jsx,.ts,.tsx --report-unused-disable-directives ./src",
     "lint:fix": "npm run lint -- --fix",
     "check:types": "tsc -p tsconfig.json --noEmit",
@@ -69,7 +61,23 @@
     }
   },
   "devDependencies": {
+    "@babel/core": "^7.18.5",
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-react": "^7.17.12",
     "@types/react-modal": "^3.13.1",
-    "react-modal": "^3.14.4"
+    "@webpack-cli/serve": "^1.7.0",
+    "babel-loader": "^8.2.5",
+    "css-loader": "^6.7.1",
+    "html-webpack-plugin": "^5.5.0",
+    "react-modal": "^3.14.4",
+    "sass": "^1.52.3",
+    "sass-loader": "^13.0.0",
+    "style-loader": "^3.3.1",
+    "ts-loader": "^9.3.0",
+    "typescript": "^4.7.4",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.9.2"
   }
 }

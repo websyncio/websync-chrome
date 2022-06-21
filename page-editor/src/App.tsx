@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import 'App.sass';
 
-import 'semantic-ui-css/semantic.min.css';
 import { observer } from 'mobx-react';
 
 import IIdeProxy from 'connections/IDE/IIdeConnection';

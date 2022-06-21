@@ -5,7 +5,7 @@ import SelectorEditorConnection, { MessageTargets, MessageTypes } from '../conne
 import { TYPES } from 'inversify.config';
 import ISelectorsBagService from './ISelectorsBagService';
 import ComponentInstance from 'entities/mst/ComponentInstance';
-import IProjectSynchronizationService from './ISynchronizationService';
+import type IProjectSynchronizationService from './ISynchronizationService';
 
 @injectable()
 export class SelectorsBagService implements ISelectorsBagService {

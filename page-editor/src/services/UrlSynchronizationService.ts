@@ -7,7 +7,7 @@ import { RootStore } from '../context';
 import PageInstance from 'entities/mst/PageInstance';
 import Reactor from '../utils/Reactor';
 import WebSite from 'entities/mst/WebSite';
-import IMatchUrlService from './IMatchUrlService';
+import type IMatchUrlService from './IMatchUrlService';
 
 @injectable()
 export class UrlSynchronizationService implements IUrlSynchronizationService {
