@@ -1,8 +1,9 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 
-export default Ember.Route.extend({
-	vsclient: Ember.inject.service(),
-	backgroundConnection: Ember.inject.service('background-connection'),
+export default Route.extend({
+	vsclient: service(),
+	backgroundConnection: service('background-connection'),
 	// renderTemplate(){
 	// 	this.render('current-page', { outlet: 'current-page' });
 	// 	this.render('current-service', { outlet: 'current-service' });

@@ -1,7 +1,8 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import Service from '@ember/service';
 import RSVP from 'rsvp';
 
-export default Ember.Service.extend({
+export default Service.extend({
 	validate(selector, onValidated){
 		// if( !selector || (!selector.css && !selector.xpath)){
 		// 	return Promise.resolve(null);
@@ -30,7 +31,7 @@ export default Ember.Service.extend({
 		return this._callEval('evaluateXpath(`' + xpath + '`)', onValidated);
 	},
 	_callEval(script, onValidated){
-		let deferred = Ember.$.Deferred();
+		let deferred = $.Deferred();
 		chrome.devtools.inspectedWindow.eval(
 			script,
 			{ useContentScriptContext: true },

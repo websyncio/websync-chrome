@@ -1,7 +1,7 @@
-import Ember from 'ember';
+import EmberObject, { computed } from '@ember/object';
 import ScssBuilder from '../services/scss-builder';
 
-export default Ember.Object.extend({
+export default EmberObject.extend({
 	// viewableElements: Ember.computed('elements', function(){
 	// 	var elements = this.get('elements');
 	// 	console.log("Update viewable elements");
@@ -13,13 +13,13 @@ export default Ember.Object.extend({
 	// 		xpath: this.get('fullXpath')
 	// 	};
 	// }),
-	isBlank: Ember.computed('scss', function(){
+	isBlank: computed('scss', function(){
 		return !this.get('scss');
 	}),
 	selectorsEqualTo(part){
 		return (this.get('scss')||'').trim()==(part.get('scss')||'').trim();
 	},
-	endIndex: Ember.computed('startIndex','scss', function(){
+	endIndex: computed('startIndex','scss', function(){
 		return this.get('startIndex') + this.get('scss').length;
 	}),
 	getSelector(){

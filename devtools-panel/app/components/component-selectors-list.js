@@ -1,3 +1,6 @@
+import { scheduleOnce } from '@ember/runloop';
+import { observer, computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 
 export default Component.extend({
@@ -5,17 +8,17 @@ export default Component.extend({
 	classNameBindings:[
 		'isExpanded:expanded'
 	],
-	selectorHighlighter: Ember.inject.service(),
-	selectorInspector: Ember.inject.service(),
-	pluralizer: Ember.inject.service(),
-	clipboard: Ember.inject.service(),
-	onComponentsListChange: Ember.observer('selectors.[]', function(){
+	selectorHighlighter: service(),
+	selectorInspector: service(),
+	pluralizer: service(),
+	clipboard: service(),
+	onComponentsListChange: observer('selectors.[]', function(){
 		if(this.get("componentsAreHighlighted")){
 			const componentSelectors = this.get('selectors').map(s=>s.selector);
 			this.get("selectorHighlighter").highlightComponents(componentSelectors);
 		}
 	}),
-	selectorsCountStatus: Ember.computed('selectors.[]', function(){
+	selectorsCountStatus: computed('selectors.[]', function(){
 		return this.get('pluralizer').pluralize(this.get('selectors.length'), "selector");
 	}),
 	highlightComponentsCheched(){
@@ -118,7 +121,7 @@ export default Component.extend({
 		// var nameSpanEl = window.event.target.tagName=="TD"?
 		// 	window.event.target.children[0]:
 		// 	window.event.target;
-		Ember.run.scheduleOnce('afterRender', function(){
+		scheduleOnce('afterRender', function(){
 			var nameSpanEl = document.querySelector('.name.editing');
         	nameSpanEl.focus();
         	var range = document.createRange();

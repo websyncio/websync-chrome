@@ -1,3 +1,4 @@
+import EmberObject from '@ember/object';
 import Service from '@ember/service';
 import SelectorPartElement from '../models/selector-part-element';
 import SelectorPart from '../models/selector-part';
@@ -11,7 +12,7 @@ export default Service.extend({
 					id: '',
 					tagName: '',
 					classNames: A([]),
-					attributes: Ember.Object.create({}),
+					attributes: EmberObject.create({}),
 					texts: A([]),
 					scss: '',
 					xpath: '',
@@ -37,7 +38,7 @@ export default Service.extend({
 					scssPart.func ||
 					scssPart.functionArgument && scssPart.functionArgument.length;
 
-				var attributes = Ember.Object.create({});
+				var attributes = EmberObject.create({});
 				if(scssPart.attributes){
 					scssPart.attributes.forEach((a)=>{
 						if(supportedAttributes.indexOf(a.name)!=-1){

@@ -1,5 +1,7 @@
-import Component from '@ember/component';;
-import Ember from 'ember';
+import { observer } from '@ember/object';
+import { schedule } from '@ember/runloop';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 
 export default Component.extend({
 	tagName: 'li',
@@ -9,13 +11,13 @@ export default Component.extend({
 		'partElement.displayed::not-displayed',
 		'partElement.hasChildren:parent',
 		'partElement.isExpanded:expanded'],
-	selectorPartFactory: Ember.inject.service(),
-	selectorHighlighter: Ember.inject.service(),
-	selectorInspector: Ember.inject.service(),
-	selectorValidator: Ember.inject.service(),
+	selectorPartFactory: service(),
+	selectorHighlighter: service(),
+	selectorInspector: service(),
+	selectorValidator: service(),
 	init(){
 		this._super(...arguments);
-		Ember.run.schedule("afterRender", this, function() {
+		schedule("afterRender", this, function() {
 			this.scrollToIfSelected();
 			let level = this.get('partElement.level')||0;
 			this.$('.selection').css('marginLeft', '-'+(43+12*level)+'px');
@@ -39,7 +41,7 @@ export default Component.extend({
 			this.$()[0].scrollIntoViewIfNeeded(true);
 		}
 	},
-	selectedChanged: Ember.observer('partElement.isSelected', function(){
+	selectedChanged: observer('partElement.isSelected', function(){
 		this.scrollToIfSelected();
 	}),
 	inspectElement(){

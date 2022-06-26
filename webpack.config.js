@@ -47,8 +47,8 @@ module.exports = {
         { from: 'js/content/index.css', to:'content.css' },
         { from: '../devtools-panel/dist/index.html', to:'../devtools-panel.html' },
         { from: '../devtools-panel/dist/assets', to:'./' },
-        { from: '../page-editor/build/index.html', to:'../page-editor.html' },
-        { from: '../page-editor/build/static', to:'../static' }
+        { from: '../page-editor/dist/index.html', to:'../page-editor.html' },
+        { from: '../page-editor/dist/main.bundle.js', to:'../main.bundle.js' }
     ],{
       copyUnmodified:true
     })

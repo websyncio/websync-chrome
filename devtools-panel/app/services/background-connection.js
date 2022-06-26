@@ -1,6 +1,7 @@
-import Ember from 'ember';
+import Evented from '@ember/object/evented';
+import Service from '@ember/service';
 
-let connection = Ember.Service.extend({
+let connection = Service.extend({
 	connect(){    
 		var port = chrome.runtime.connect({name: "devtools-panel"});
 		this.set('port', port);
@@ -29,6 +30,6 @@ let connection = Ember.Service.extend({
 	// }
 });
 
-connection.reopen(Ember.Evented);
+connection.reopen(Evented);
 
 export default connection;

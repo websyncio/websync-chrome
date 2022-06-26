@@ -1,7 +1,7 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import { A } from '@ember/array';
 
-export default Ember.Component.extend({
+export default Component.extend({
 	tagName: 'span',
 	classNames: ['validator'],
 	validatedParts: A([]),

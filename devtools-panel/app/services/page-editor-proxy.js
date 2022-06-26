@@ -1,4 +1,4 @@
-import Service from '@ember/service';
+import Service, { inject as service } from '@ember/service';
 import Reactor from './reactor';
 
 export const MessageTypes = {
@@ -28,12 +28,12 @@ export const MessageTargets = {
 }
 
 export default Service.extend({
-	scssParser: Ember.inject.service(),
-	selectorBuilder: Ember.inject.service(),
-	selectorValidator: Ember.inject.service(),
-	selectorHighlighter: Ember.inject.service(),
-	selectorInspector: Ember.inject.service(),
-	reactor: Ember.inject.service(),
+	scssParser: service(),
+	selectorBuilder: service(),
+	selectorValidator: service(),
+	selectorHighlighter: service(),
+	selectorInspector: service(),
+	reactor: service(),
 
 	init(){
 		this.get('reactor').registerEvent(MessageTypes.EditSelector);

@@ -1,8 +1,9 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 
-export default Ember.Route.extend({
-	vsclient: Ember.inject.service('vsclient'),
-	backgroundConnection: Ember.inject.service('background-connection'),
+export default Route.extend({
+	vsclient: service('vsclient'),
+	backgroundConnection: service('background-connection'),
 	// beforeModel(){
 	// 	// setTimeout(function(){
 	// 	// 	console.log("push payload");

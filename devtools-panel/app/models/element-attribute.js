@@ -1,7 +1,7 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 import { isArray } from '@ember/array';
 
-export default Ember.Object.extend({
+export default EmberObject.extend({
 	toggle(){
 		let isSelected = this.get('isSelected');
 		let attributeValue = this.get('value');

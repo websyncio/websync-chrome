@@ -1,19 +1,19 @@
-import Ember from 'ember';
+import EmberObject, { computed } from '@ember/object';
 
-export default Ember.Object.extend({
-	isUnlocked: Ember.computed('isSelected', 'part.isCssStyle', 'part.isEditable', function(){
+export default EmberObject.extend({
+	isUnlocked: computed('isSelected', 'part.isCssStyle', 'part.isEditable', function(){
 		return this.get('isSelected') && this.get('part.isCssStyle') && this.get('part.isEditable');
 	}),
-	isChild: Ember.computed('parentElement', function(){
+	isChild: computed('parentElement', function(){
 		return !!this.get('parentElement');
 	}),
-	rootElement: Ember.computed('parentElement', function(){
+	rootElement: computed('parentElement', function(){
 		if(this.get('parentElement')){
 			return this.get('parentElement.rootElement');
 		}
 		return this;
 	}),
-	level : Ember.computed('childIndicesChain', function(){
+	level : computed('childIndicesChain', function(){
 		return (this.get('childIndicesChain')||[]).length;
 	}),
 	getSelector(){

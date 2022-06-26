@@ -1,8 +1,8 @@
-import Ember from 'ember';
+import EmberObject, { computed } from '@ember/object';
 
-export default Ember.Object.extend({
+export default EmberObject.extend({
 	nameIsEdited: false,
-	value: Ember.computed('selector', function(){
+	value: computed('selector', function(){
 		return this.get('selector.css')?
 			this.get('selector.css'):
 			this.get('selector.xpath');

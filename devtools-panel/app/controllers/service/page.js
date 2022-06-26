@@ -1,11 +1,12 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Controller, { inject as controller } from '@ember/controller';
 
-export default Ember.Controller.extend({
-	vsclient: Ember.inject.service(),
-	selectorValidator: Ember.inject.service(),
-	selectorHighlighter: Ember.inject.service(),
-	selectorBuilder: Ember.inject.service(),
-	applicationCtrl: Ember.inject.controller('application'),
+export default Controller.extend({
+	vsclient: service(),
+	selectorValidator: service(),
+	selectorHighlighter: service(),
+	selectorBuilder: service(),
+	applicationCtrl: controller('application'),
 	skipLoading: true,
 	highlightInner:false,
 	plugins: "wholerow, types, state",

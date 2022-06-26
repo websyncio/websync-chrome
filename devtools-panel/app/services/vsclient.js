@@ -1,4 +1,6 @@
-import Ember from 'ember';
+import Evented from '@ember/object/evented';
+import { run } from '@ember/runloop';
+import Service, { inject } from '@ember/service';
 import ENV from 'devtools-panel/config/environment';
 
 let SIMessageTypes = {
@@ -10,8 +12,8 @@ let SIMessageTypes = {
 	UrlMatchResult: "UrlMatchResult"
 };
 
-var service = Ember.Service.extend({
-	store: Ember.inject.service(),
+var vsclient = Service.extend({
+	store: inject(),
 	isConnected: false,
 	requests:{},
 	saveRequestPromise(requestId, resolve, reject){
@@ -107,7 +109,7 @@ var service = Ember.Service.extend({
 	},
 	updateStore(jsonData){
 		this.get('store').unloadAll();
-		Ember.run(() => {
+		run(() => {
 			var data = JSON.parse(jsonData);
 			this.get('store').pushPayload(data);
 			// TODO: create services in WebSync.VS
@@ -124,6 +126,6 @@ var service = Ember.Service.extend({
 	}
 });
 
-service.reopen(Ember.Evented);
+vsclient.reopen(Evented);
 
-export default service;
+export default vsclient;

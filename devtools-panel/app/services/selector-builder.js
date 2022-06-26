@@ -1,7 +1,7 @@
-import Ember from 'ember';
+import Service, { inject as service } from '@ember/service';
 
-export default Ember.Service.extend({
-	scssParser: Ember.inject.service(),
+export default Service.extend({
+	scssParser: service(),
 	innerSelector(rootSelector, relativeSelector){
 		if(!relativeSelector || !relativeSelector.scss){
 			return null;

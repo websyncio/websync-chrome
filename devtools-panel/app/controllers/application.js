@@ -1,20 +1,22 @@
-import Ember from 'ember';
+import { computed, observer } from '@ember/object';
+import { inject as service } from '@ember/service';
+import Controller from '@ember/controller';
 import { A } from '@ember/array';
-import { once } from '@ember/runloop';
+import { once, schedule } from '@ember/runloop';
 import ComponentSelector from '../models/component-selector';
 import Notification from '../models/notification';
-import {MessageTypes} from '../services/page-editor-proxy';
+import { MessageTypes } from '../services/page-editor-proxy';
 
-export default Ember.Controller.extend({
-	selectorPartFactory: Ember.inject.service(),
-	scssParser: Ember.inject.service(),
-	scssBuilder: Ember.inject.service(),
-	selectorBuilder: Ember.inject.service(),
-	elementLocator: Ember.inject.service(),
-	selectorHighlighter: Ember.inject.service(),
-	clipboard: Ember.inject.service(),
-	pluralizer: Ember.inject.service(),
-	pageEditorProxy: Ember.inject.service(),
+export default Controller.extend({
+	selectorPartFactory: service(),
+	scssParser: service(),
+	scssBuilder: service(),
+	selectorBuilder: service(),
+	elementLocator: service(),
+	selectorHighlighter: service(),
+	clipboard: service(),
+	pluralizer: service(),
+	pageEditorProxy: service(),
 	inputValue: '',
 	rootComponent: '',
 	rootParts: A([]),
@@ -22,7 +24,7 @@ export default Ember.Controller.extend({
 	selectors: A([]),
 	elements: A([]),
 	withPageEditor: false,
-	elementsSlice: Ember.computed('elements', function(){
+	elementsSlice: computed('elements', function(){
 		return this.get('elements');	//.slice(0, 50);
 	}),
 	init(){
@@ -34,7 +36,7 @@ export default Ember.Controller.extend({
 
 		this.configurePageEditor();
 		
-		Ember.run.schedule("afterRender", this, function() {
+		schedule("afterRender", this, function() {
       		this.focusInput();
       		this.locateInspectedElement();
       		resizeHandlerFrame.onresize = this.adjustLayout.bind(this);
@@ -125,21 +127,21 @@ export default Ember.Controller.extend({
 			}
 		});
 	},
-	isEditable: Ember.computed('selectedPart', function(){
+	isEditable: computed('selectedPart', function(){
 		let selectedPart = this.get('selectedPart');
 		let scss = this.get('scss');
 		return selectedPart && selectedPart.get('isEditable') && (!scss || scss.isCssStyle);
 	}),
-	isEditMode: Ember.computed('selectorToUpdate', 'componentSelectorToUpdate', function(){
+	isEditMode: computed('selectorToUpdate', 'componentSelectorToUpdate', function(){
 		return this.get('selectorToUpdate') || this.get('componentSelectorToUpdate');
 	}),
-	rootScss: Ember.computed('rootParts.[]', function(){
+	rootScss: computed('rootParts.[]', function(){
 		return this.get('rootParts.lastObject.fullScss');
 	}),
-	lastPart: Ember.computed('parts.[]', function(){
+	lastPart: computed('parts.[]', function(){
 		return this.get('parts').rejectBy('isBlank').get('lastObject');
 	}),
-	status: Ember.computed(
+	status: computed(
 		'lastPart.xpathElements.[]',
 		'lastPart.cssElements.[]', function(){
 		let lastPart = this.get('lastPart');
@@ -237,7 +239,7 @@ export default Ember.Controller.extend({
 				isCssStyle: true
 			};
 	},
-	onSourceSelectorChanged: Ember.observer('inputValue', function(){
+	onSourceSelectorChanged: observer('inputValue', function(){
 		var inputValue = this.get('inputValue').trim();
 		const scss = this.parseSelector(inputValue);
 		this.set('scss', scss);
@@ -590,7 +592,7 @@ export default Ember.Controller.extend({
 			}.bind(this), 2500);
 		}
 	},
-	selectorsListUpdatedObserver: Ember.observer('selectors.@each.name','selectors.@each.selector', function(){
+	selectorsListUpdatedObserver: observer('selectors.@each.name','selectors.@each.selector', function(){
 		if(this.get('disableSelectorsListObserver')){
 			return;
 		}

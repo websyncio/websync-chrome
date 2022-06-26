@@ -1,6 +1,8 @@
-import Ember from 'ember';
+import { computed, observer } from '@ember/object';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
+export default Component.extend({
 	tagName: 'span',
 	classNames: ['part'],
 	classNameBindings:[
@@ -10,11 +12,11 @@ export default Ember.Component.extend({
 		'displayed::not-displayed',
 		'part.isSelected:selected',
 		'part.isBlank:blank'],
-	selectorPartFactory: Ember.inject.service(),
-	selectorValidator: Ember.inject.service(),
-	selectorHighlighter: Ember.inject.service(),
-	selectorInspector: Ember.inject.service(),
-	pluralizer: Ember.inject.service(),
+	selectorPartFactory: service(),
+	selectorValidator: service(),
+	selectorHighlighter: service(),
+	selectorInspector: service(),
+	pluralizer: service(),
 	isXPath: false,
 
 	init(){
@@ -31,7 +33,7 @@ export default Ember.Component.extend({
 		{ label: 'Delete part', action: 'deletePart' },
 	    // { label: 'Make root:', action: 'makeRoot' }	    
   	],
-	tooltipText: Ember.computed('elements.[]', function(){
+	tooltipText: computed('elements.[]', function(){
 		let totalCount = this.get('elements.length');
 		if(!totalCount){
 			return "0 elements";
@@ -45,18 +47,18 @@ export default Ember.Component.extend({
 			this.get("pluralizer").pluralize(displayedCount,'element') + 
 			" displayed";
 	}),
-	isSeveral: Ember.computed('elements.[]', function(){
+	isSeveral: computed('elements.[]', function(){
 		return this.get('elements.length')>1;
 	}),
-	isExist: Ember.computed('elements.[]', function(){
+	isExist: computed('elements.[]', function(){
 		return this.get('elements.length')>0;
 	}),
-	displayed: Ember.computed('elements.[]', function(){
+	displayed: computed('elements.[]', function(){
 		return this.get('elements')? 
 			this.get('elements').some(e=>e.get('displayed')):
 			false;
 	}),
-	onElementsChanged: Ember.observer('elements.[]',  function(){
+	onElementsChanged: observer('elements.[]',  function(){
 		if(this.get('part.isSelected')){
 			this.triggerOnSelected();
 		}
