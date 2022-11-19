@@ -42,7 +42,7 @@
     "ember-source": "~2.17.0",
     "ember-welcome-page": "^3.0.0",
     "loader.js": "^4.2.3",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.12"
   },
   "engines": {
     "node": "^4.5 || 6.* || >= 7.*"
