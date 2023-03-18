@@ -1,16 +1,17 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "author": "wsbaser",
   "name": "WebSync: Generate & Validate Selectors",
   "version": "0.0.28",
   "description": "Easily write and verify CSS and XPath selectors.",
-  "content_security_policy": "script-src 'self' 'sha256-6GI8TWwBDUP0cAKRbM6TJHRP46p63I8uKi+UiWW6lvQ='; object-src 'self'",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
   "icons": {
     "64": "icons/icon64.png"
   }, 
   "background": {
-    "page": "background.html",
-    "persistent": false
+    "service_worker": "assets/background.js"
   },
   "content_scripts": [
     {
