@@ -20,6 +20,10 @@ html{
   background-color: rgb(218,220,224);
 }
 
+*, *:before, *:after {
+	box-sizing: border-box;
+}
+
 .clearfix::after {
   content: "";
   display: table;
@@ -203,6 +207,7 @@ input#source:focus{
 }
 
 .input-wrap{
+	margin-top: 2px;
 	position: relative;
 	width: 100%;
 }
