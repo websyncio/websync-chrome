@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "author": "wsbaser",
   "name": "WebSync: Generate & Validate Selectors",
-  "version": "0.0.28",
+  "version": "0.1.0",
   "description": "Easily write and verify CSS and XPath selectors.",
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"

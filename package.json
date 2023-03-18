@@ -1,7 +1,7 @@
 {
-  "name": "synchronizeit-chrome",
+  "name": "WebSync",
   "version": "0.0.1",
-  "description": "Browser side tool to synchronize web page and it's Page Object.",
+  "description": "Chrome extension for selectors generations",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wsbaser/synchronizeit-chrome.git"
+    "url": "git@github.com:wsbaser/Natu.WebSync.Chrome.git"
   },
   "author": "wsbaser",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wsbaser/synchronizeit-chrome/issues"
+    "url": "https://github.com/wsbaser/Natu.WebSync.Chrome/issues"
   },
-  "homepage": "https://github.com/wsbaser/synchronizeit-chrome#readme",
+  "homepage": "https://github.com/wsbaser/Natu.WebSync.Chrome",
   "devDependencies": {
     "babel-core": "^6.8.0",
     "babel-loader": "^6.2.4",
