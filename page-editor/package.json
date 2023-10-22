@@ -68,6 +68,7 @@
     "@webpack-cli/serve": "^1.7.0",
     "babel-loader": "^8.2.5",
     "css-loader": "^6.7.1",
+    "eslint-plugin-react": "^7.33.2",
     "html-webpack-plugin": "^5.5.0",
     "react-modal": "^3.14.4",
     "sass": "^1.52.3",
