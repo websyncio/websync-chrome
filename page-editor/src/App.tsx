@@ -10,9 +10,10 @@ import ProjectViewer from 'components/ProjectViewer/ProjectViewer';
 import RootStore from 'entities/mst/RootStore';
 import { useRootStore } from 'context';
 // import SelectorsBagService from 'services/SelectorsBagService';
-import { DependencyContainer, TYPES } from 'inversify.config';
+import { DependencyContainer } from 'inversify.config';
 import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
 import { NotificationToast } from 'components/NotificationToast/NotificationToast';
+import TYPES from 'inversify.types';
 
 const App: React.FC = observer(() => {
     const { projectStore, uiStore }: RootStore = useRootStore();

@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { injectable, inject } from 'inversify';
 import SelectorEditorConnection, { MessageTargets, MessageTypes } from '../connections/SelectorEditorConnection';
-import { TYPES } from 'inversify.config';
 import XcssSelector from 'entities/XcssSelector';
+import TYPES from 'inversify.types';
 export const SELECTOR_VALIDATED = 'selector-validated';
 
 // https://stackoverflow.com/questions/27383224/chrome-extension-long-lived-message-connection-how-to-use-callback-functions

@@ -8,12 +8,13 @@ import BlankComponentInstance from 'components/ProjectViewer/PageObjectEditor/Co
 import RootStore from 'entities/mst/RootStore';
 import { useRootStore } from 'context';
 import './ComponentsContainer.sass';
-import { DependencyContainer, TYPES } from 'inversify.config';
+import { DependencyContainer } from 'inversify.config';
 import { useState } from 'react';
 import TreeOutline from 'components-common/TreeOutline/TreeOutline';
 import SelectorHighlighter from 'services/SelectorHighlighterService';
 import XcssSelector from 'entities/XcssSelector';
 import IAttributeToXcssMapper from 'services/IAttributeToXcssMapper';
+import TYPES from 'inversify.types';
 
 interface Props {
     container: IComponentsContainer;

@@ -4,9 +4,9 @@ import ComponentInstance from 'entities/mst/ComponentInstance';
 import PageInstance from 'entities/mst/PageInstance';
 import WebSite from 'entities/mst/WebSite';
 import { injectable, inject } from 'inversify';
-import { TYPES } from 'inversify.config';
 import IProjectSynchronizerService from 'services/ISynchronizationService';
 import type IMatchUrlService from 'services/IMatchUrlService';
+import TYPES from 'inversify.types';
 
 @injectable()
 export default class JDISynchronizationService implements IProjectSynchronizerService {

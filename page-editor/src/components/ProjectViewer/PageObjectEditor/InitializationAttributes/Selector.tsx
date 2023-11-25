@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import SelectorValidator from 'services/SelectorValidatorService';
 import SelectorHighlighter from 'services/SelectorHighlighterService';
 import { observer } from 'mobx-react';
-import { DependencyContainer, TYPES } from 'inversify.config';
+import { DependencyContainer } from 'inversify.config';
 import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
 import XcssSelector from 'entities/XcssSelector';
+import TYPES from 'inversify.types';
 
 interface Props {
     selector: XcssSelector | null;

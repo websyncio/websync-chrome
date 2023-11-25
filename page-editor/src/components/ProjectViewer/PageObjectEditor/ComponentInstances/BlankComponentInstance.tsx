@@ -3,13 +3,14 @@ import { observer } from 'mobx-react';
 import ComponentInstanceProps from 'components/ProjectViewer/PageObjectEditor/ComponentInstances/ComponentInstanceProps';
 import TypeNameEditor from 'components/ProjectViewer/PageObjectEditor/TypeNameEditor/TypeNameEditor';
 import './BlankComponentInstance.sass';
-import { DependencyContainer, TYPES } from 'inversify.config';
+import { DependencyContainer } from 'inversify.config';
 import ISelectorsBagService from 'services/ISelectorsBagService';
 import SelectorHighlighter from 'services/SelectorHighlighterService';
 import XcssSelector from 'entities/XcssSelector';
 import ISynchronizationService from 'services/ISynchronizationService';
 import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
+import TYPES from 'inversify.types';
 
 const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
     ({

@@ -7,12 +7,13 @@ import { GenericAttributes } from 'supported-frameworks/JDI/JDIInitializationAtt
 import { observer } from 'mobx-react';
 import TypeNameEditor from '../TypeNameEditor/TypeNameEditor';
 import ComponentInstanceProps from './ComponentInstanceProps';
-import { DependencyContainer, TYPES } from 'inversify.config';
+import { DependencyContainer } from 'inversify.config';
 import { SelectorsBagService } from 'services/SelectorsBagService';
 import './ComponentInstance.sass';
 import ISynchronizationService from 'services/ISynchronizationService';
 import RootStore from 'entities/mst/RootStore';
 import { useRootStore } from 'context';
+import TYPES from 'inversify.types';
 
 const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
     ({

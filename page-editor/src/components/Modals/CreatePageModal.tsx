@@ -1,10 +1,11 @@
 import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
-import { DependencyContainer, TYPES } from 'inversify.config';
+import { DependencyContainer } from 'inversify.config';
 import { observer } from 'mobx-react';
 import React from 'react';
 import IProjectSynchronizationService from 'services/ISynchronizationService';
 import CreateModal from './CreateModal/CreateModal';
+import TYPES from 'inversify.types';
 
 interface Props {
     onRequestClose: () => void;

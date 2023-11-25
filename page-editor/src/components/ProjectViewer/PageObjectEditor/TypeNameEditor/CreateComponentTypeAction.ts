@@ -1,8 +1,9 @@
 import ComponentsContainer from 'entities/mst/ComponentsContainer';
 import ComponentType, { ComponentTypeModel } from 'entities/mst/ComponentType';
-import { DependencyContainer, TYPES } from 'inversify.config';
+import { DependencyContainer } from 'inversify.config';
 import ISynchronizationService from 'services/ISynchronizationService';
 import IEditorPopupAction from '../EditorPopup/IEditorPopupAction';
+import TYPES from 'inversify.types';
 
 export default class CreateComponentTypeAction implements IEditorPopupAction {
     iconLetter: string | undefined;

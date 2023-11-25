@@ -1,13 +1,11 @@
 import 'reflect-metadata';
 import { inject, injectable } from 'inversify';
 import IUrlSynchronizationService from './IUrlSynchronizationService';
-import { TYPES } from 'inversify.config';
 import SelectorEditorConnection, { MessageTypes, MessageTargets } from '../connections/SelectorEditorConnection';
 import { RootStore } from '../context';
-import PageInstance from 'entities/mst/PageInstance';
 import Reactor from '../utils/Reactor';
-import WebSite from 'entities/mst/WebSite';
 import type IMatchUrlService from './IMatchUrlService';
+import TYPES from 'inversify.types';
 
 @injectable()
 export class UrlSynchronizationService implements IUrlSynchronizationService {

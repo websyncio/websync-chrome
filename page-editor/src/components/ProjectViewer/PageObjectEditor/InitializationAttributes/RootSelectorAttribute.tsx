@@ -5,8 +5,9 @@ import { observer } from 'mobx-react';
 import Selector from 'components/ProjectViewer/PageObjectEditor/InitializationAttributes/Selector';
 import './RootSelectorAttribute.sass';
 import IAttributeToXcssMapper from 'services/IAttributeToXcssMapper';
-import { DependencyContainer, TYPES } from 'inversify.config';
+import { DependencyContainer } from 'inversify.config';
 import XcssSelector from 'entities/XcssSelector';
+import TYPES from 'inversify.types';
 
 interface Props {
     attribute: AttributeModel;

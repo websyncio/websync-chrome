@@ -4,7 +4,7 @@ import PageInstance from 'entities/mst/PageInstance';
 import ProjectStore from 'entities/mst/ProjectStore';
 import WebSite from 'entities/mst/WebSite';
 import { inject, injectable } from 'inversify';
-import { TYPES } from 'inversify.config';
+import TYPES from 'inversify.types';
 import IMatchUrlService, { UrlMatchResult } from 'services/IMatchUrlService';
 import { trimStart } from 'utils/StringUtils';
 

@@ -2,10 +2,10 @@ import 'reflect-metadata';
 import { inject, injectable } from 'inversify';
 import { RootStore } from '../context';
 import SelectorEditorConnection, { MessageTargets, MessageTypes } from '../connections/SelectorEditorConnection';
-import { TYPES } from 'inversify.config';
 import ISelectorsBagService from './ISelectorsBagService';
 import ComponentInstance from 'entities/mst/ComponentInstance';
 import type IProjectSynchronizationService from './ISynchronizationService';
+import TYPES from 'inversify.types';
 
 @injectable()
 export class SelectorsBagService implements ISelectorsBagService {

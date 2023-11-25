@@ -3,11 +3,12 @@ import { observer } from 'mobx-react';
 import WebSite from 'entities/mst/WebSite';
 import Input from 'components-common/Input/Input';
 import './TreeItemDetails.sass';
-import { DependencyContainer, TYPES } from 'inversify.config';
+import { DependencyContainer } from 'inversify.config';
 import ISynchronizationService from 'services/ISynchronizationService';
 import { useRootStore } from 'context';
 import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
 import { debounce } from 'utils/TimerUtils';
+import TYPES from 'inversify.types';
 
 interface Props {
     website: WebSite;

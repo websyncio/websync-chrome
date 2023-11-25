@@ -41,7 +41,7 @@ module.exports = (env = {}, argv = {}) => ({
                   options: {
                     sourceMap: true,
                     modules: {
-                      localIdentName: '[local]--[hash:base64:5]'
+                      localIdentName: '[local]'
                     }
                   }
                 },

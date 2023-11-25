@@ -13,18 +13,7 @@ import ISelectorsBagService from 'services/ISelectorsBagService';
 import IAttributeToXcssMapper from 'services/IAttributeToXcssMapper';
 import IMatchUrlService from 'services/IMatchUrlService';
 import JDIMatchUrlService from 'supported-frameworks/JDI/services/JDIMatchUrlService';
-
-export const TYPES = {
-    SynchronizationService: Symbol.for('ProjectSynchronizationService'),
-    SelectorsBagService: Symbol.for('SelectorsBagService'),
-    SelectorEditorConnection: Symbol.for('SelectorEditorConnection'),
-    SelectorValidator: Symbol.for('SelectorValidator'),
-    SelectorHighlighter: Symbol.for('SelectorHighlighter'),
-    IDEAConnection: Symbol.for('IDEAConnection'),
-    UrlSynchronizationService: Symbol.for('UrlSynchronizationService'),
-    UrlMatcher: Symbol.for('UrlMatcher'),
-    AttributeToXcssMapper: Symbol.for('AttributeToXcssMapper'),
-};
+import TYPES from 'inversify.types';
 
 export const DependencyContainer = new Container();
 

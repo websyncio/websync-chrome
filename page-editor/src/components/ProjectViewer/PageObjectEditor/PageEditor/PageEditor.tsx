@@ -7,8 +7,9 @@ import RootStore from 'entities/mst/RootStore';
 import './PageEditor.sass';
 import MatchUrlNotifications from 'components/ProjectViewer/MatchUrlNotifications/MatchUrlNotifications';
 import PageInstance from 'entities/mst/PageInstance';
-import { DependencyContainer, TYPES } from 'inversify.config';
+import { DependencyContainer } from 'inversify.config';
 import ISynchronizationService from 'services/ISynchronizationService';
+import TYPES from 'inversify.types';
 
 interface Props {
     pageInstance: PageInstance;

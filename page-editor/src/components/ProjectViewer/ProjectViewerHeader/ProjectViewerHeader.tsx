@@ -6,9 +6,10 @@ import './ProjectViewerHeader.sass';
 import { BreadcrumbType, ProjectTab, ProjectTabType } from 'entities/mst/UiStore';
 import CreatePageModal from 'components/Modals/CreatePageModal';
 import IAttributeToXcssMapper from 'services/IAttributeToXcssMapper';
-import { DependencyContainer, TYPES } from 'inversify.config';
+import { DependencyContainer } from 'inversify.config';
 import Selector from 'components/ProjectViewer/PageObjectEditor/InitializationAttributes/Selector';
 import ComponentInstance from 'entities/mst/ComponentInstance';
+import TYPES from 'inversify.types';
 
 interface Props {}
 

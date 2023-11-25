@@ -1,12 +1,13 @@
 import { observer } from 'mobx-react';
 import React from 'react';
 import { useRootStore } from 'context';
-import { DependencyContainer, TYPES } from 'inversify.config';
+import { DependencyContainer } from 'inversify.config';
 import IProjectSynchronizationService from 'services/ISynchronizationService';
 import './WebsiteSelector.sass';
 import IUrlSynchronizationService from 'services/IUrlSynchronizationService';
 import WebSite from 'entities/mst/WebSite';
 import CreateWebsiteModal from 'components/Modals/CreateWebsiteModal';
+import TYPES from 'inversify.types';
 
 interface Props {}
 

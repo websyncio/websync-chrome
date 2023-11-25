@@ -7,9 +7,10 @@ import RootStore from 'entities/mst/RootStore';
 import ComponentInstance from 'entities/mst/ComponentInstance';
 import XcssSelector from 'entities/XcssSelector';
 import IAttributeToXcssMapper from 'services/IAttributeToXcssMapper';
-import { DependencyContainer, TYPES } from 'inversify.config';
+import { DependencyContainer } from 'inversify.config';
 import { SelectorsBagService } from 'services/SelectorsBagService';
 import ISynchronizationService from 'services/ISynchronizationService';
+import TYPES from 'inversify.types';
 
 interface Props {
     componentInstance: ComponentInstance;
