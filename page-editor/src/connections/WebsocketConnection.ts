@@ -41,7 +41,7 @@ export default class IdeConnection {
     }
 
     connect() {
-        this.client = new WebSocket(`ws://localhost:${this.port}/`);
+        this.client = new WebSocket(`ws://localhost:${this.port}/websync`);
         this.client.onerror = this.onError.bind(this);
         this.client.onopen = this.onOpen.bind(this);
         this.client.onclose = this.onClose.bind(this);

@@ -8,7 +8,20 @@ import PageInstance from 'entities/mst/PageInstance';
 import WebSite from 'entities/mst/WebSite';
 import Reactor from 'utils/Reactor';
 import { generateId } from 'utils/StringUtils';
-import { UrlMatchResult } from 'services/IMatchUrlService';
+
+export const IDEMessageTypes = {
+    GetProjectNames: 'GetProjectNames',
+    GetProject: 'GetProject',
+    OpenFile: 'OpenFile',
+    CreateWebsite: 'CreateWebsite',
+    CreatePageType: 'CreatePageType',
+    CreateComponentType: 'CreateComponentType',
+    UpdateWebsite: 'UpdateWebsite',
+    UpdatePageInstance: 'UpdatePageInstance',
+    UpdateComponentInstance: 'UpdateComponentInstance',
+    AddComponentInstance: 'AddComponentInstance',
+    DeleteComponentInstance: 'DeleteComponentInstance',
+};
 
 export const MessageTypes = {
     ProjectDataReceived: 'project-data-received',
@@ -70,7 +83,7 @@ export default class IDEAConnection implements IIdeConnection {
         absoluteUrl: string,
     ): Promise<object> {
         const message = {
-            type: 'create-page-type',
+            type: IDEMessageTypes.CreatePageType,
             asyncId: generateId(),
             projectName,
             name: name,
@@ -84,7 +97,7 @@ export default class IDEAConnection implements IIdeConnection {
 
     openFileForClass(projectName: string, fullClassName: string) {
         const message = {
-            type: 'open-file',
+            type: IDEMessageTypes.OpenFile,
             projectName,
             fullClassName,
         };
@@ -93,7 +106,7 @@ export default class IDEAConnection implements IIdeConnection {
 
     createWebsite(projectName: string, name: string, baseUrl: string) {
         const message = {
-            type: 'create-website',
+            type: IDEMessageTypes.CreateWebsite,
             asyncId: generateId(),
             projectName,
             name: name,
@@ -105,7 +118,7 @@ export default class IDEAConnection implements IIdeConnection {
 
     createComponentType(projectName: string, name: string, parentType: string, baseType: string | null) {
         const message = {
-            type: 'create-component-type',
+            type: IDEMessageTypes.CreateComponentType,
             projectName,
             name: name,
             parentType: parentType,
@@ -116,7 +129,7 @@ export default class IDEAConnection implements IIdeConnection {
 
     updateComponentInstance(projectName: string, componentInstance: ComponentInstance) {
         const message = {
-            type: 'update-component-instance',
+            type: IDEMessageTypes.UpdateComponentInstance,
             projectName,
             componentInstance,
         };
@@ -125,7 +138,7 @@ export default class IDEAConnection implements IIdeConnection {
 
     addComponentInstance(projectName: string, componentInstance: ComponentInstance) {
         this.connection.send({
-            type: 'add-component-instance',
+            type: IDEMessageTypes.AddComponentInstance,
             projectName,
             componentInstance,
         });
@@ -133,7 +146,7 @@ export default class IDEAConnection implements IIdeConnection {
 
     deleteComponentInstance(projectName: string, componentInstance: ComponentInstance) {
         this.connection.send({
-            type: 'delete-component-instance',
+            type: IDEMessageTypes.DeleteComponentInstance,
             projectName,
             componentInstance,
         });
@@ -141,7 +154,7 @@ export default class IDEAConnection implements IIdeConnection {
 
     updateWebSite(projectName: string, webSite: WebSite) {
         const message = {
-            type: 'update-website',
+            type: IDEMessageTypes.UpdateWebsite,
             projectName,
             webSite,
         };
@@ -150,7 +163,7 @@ export default class IDEAConnection implements IIdeConnection {
 
     updatePageInstance(projectName: string, pageInstance: PageInstance) {
         const message = {
-            type: 'update-page-instance',
+            type: IDEMessageTypes.UpdatePageInstance,
             projectName,
             pageInstance,
         };
@@ -169,12 +182,12 @@ export default class IDEAConnection implements IIdeConnection {
     }
 
     requestProjects() {
-        this.connection.send({ type: 'get-projects-list' });
+        this.connection.send({ type: IDEMessageTypes.GetProjectNames });
     }
 
     requestProjectData(projectName: string) {
         this.connection.send({
-            type: 'get-project',
+            type: IDEMessageTypes.GetProject,
             projectName,
         });
     }
