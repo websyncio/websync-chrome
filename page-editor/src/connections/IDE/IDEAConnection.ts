@@ -11,7 +11,9 @@ import { generateId } from 'utils/StringUtils';
 
 export const IDEMessageTypes = {
     GetProjectNames: 'GetProjectNames',
+    ProjectNames: 'ProjectNames',
     GetProject: 'GetProject',
+    Project: 'Project',
     OpenFile: 'OpenFile',
     CreateWebsite: 'CreateWebsite',
     CreatePageType: 'CreatePageType',
@@ -23,7 +25,7 @@ export const IDEMessageTypes = {
     DeleteComponentInstance: 'DeleteComponentInstance',
 };
 
-export const MessageTypes = {
+export const EventTypes = {
     ProjectDataReceived: 'project-data-received',
     ProjectUpdated: 'project-updated',
     ProjectOpened: 'project-opened',
@@ -31,7 +33,7 @@ export const MessageTypes = {
     WebsiteUpdated: 'website-updated',
 };
 
-const RESPONSE_SUFFIX = '-response';
+const RESPONSE_SUFFIX = 'Response';
 class AsyncRequestInfo {
     responseType: string;
     id: string;
@@ -53,8 +55,8 @@ class AsyncRequestInfo {
 export default class IDEAConnection implements IIdeConnection {
     connection: WebsocketConnection;
     type = 'IDEA';
-    reactor: Reactor;
     asyncRequests: AsyncRequestInfo[] = [];
+    reactor: Reactor;
 
     constructor() {
         this.connection = new WebsocketConnection(1804);
@@ -62,11 +64,11 @@ export default class IDEAConnection implements IIdeConnection {
         this.connection.addListener(Events.onclosed, this.onSocketClosed.bind(this));
         this.connection.addListener(Events.onmessage, this.onMessage.bind(this));
         this.reactor = new Reactor();
-        this.reactor.registerEvent(MessageTypes.ProjectDataReceived);
-        this.reactor.registerEvent(MessageTypes.ProjectUpdated);
-        this.reactor.registerEvent(MessageTypes.ProjectOpened);
-        this.reactor.registerEvent(MessageTypes.ProjectClosed);
-        this.reactor.registerEvent(MessageTypes.WebsiteUpdated);
+        this.reactor.registerEvent(EventTypes.ProjectDataReceived);
+        this.reactor.registerEvent(EventTypes.ProjectUpdated);
+        this.reactor.registerEvent(EventTypes.ProjectOpened);
+        this.reactor.registerEvent(EventTypes.ProjectClosed);
+        this.reactor.registerEvent(EventTypes.WebsiteUpdated);
     }
 
     saveAsyncRequest(type: string, id: string) {
@@ -198,8 +200,8 @@ export default class IDEAConnection implements IIdeConnection {
     }
 
     handleErrors(message) {
-        if (!message.isSuccessful) {
-            RootStore.uiStore.showNotification(null, message.error, true);
+        if (message.Error) {
+            RootStore.uiStore.showNotification(null, message.Error, true);
             setTimeout(function () {
                 RootStore.uiStore.hideNotification();
             }, 5000);
@@ -235,19 +237,19 @@ export default class IDEAConnection implements IIdeConnection {
     }
 
     onMessage(message) {
-        if (message.type.endsWith('-response')) {
+        if (message.Type.endsWith(RESPONSE_SUFFIX)) {
             this.handleErrors(message);
             this.handleResponses(message);
         }
 
-        switch (message.type) {
-            case 'get-projects-list-response':
-                this.onProjectsReceived(message.data);
+        switch (message.Type) {
+            case IDEMessageTypes.ProjectNames:
+                this.onProjectsReceived(message.Data);
                 break;
-            case 'get-project-response':
-                this.reactor.dispatchEvent(MessageTypes.ProjectDataReceived, this.type, message.data);
+            case IDEMessageTypes.Project:
+                this.reactor.dispatchEvent(EventTypes.ProjectDataReceived, this.type, message.Data);
                 break;
-            case 'show-page':
+            case IDEMessageTypes.OpenFile:
                 console.log('page is opened:', message.className);
                 // return this.props.onSelectedPageChange(null, message.className);
                 break;
@@ -258,10 +260,10 @@ export default class IDEAConnection implements IIdeConnection {
                 RootStore.projectStore.updatePageType(message.pageType);
                 return;
             case 'update-website':
-                this.reactor.dispatchEvent(MessageTypes.WebsiteUpdated, message.website);
+                this.reactor.dispatchEvent(EventTypes.WebsiteUpdated, message.website);
                 return;
             case 'update-project':
-                this.reactor.dispatchEvent(MessageTypes.ProjectUpdated, message.project);
+                this.reactor.dispatchEvent(EventTypes.ProjectUpdated, message.project);
                 return;
             case 'project-opened':
                 RootStore.uiStore.addProject(this.type, message.projectName);

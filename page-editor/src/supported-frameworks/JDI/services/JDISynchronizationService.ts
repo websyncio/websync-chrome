@@ -1,4 +1,4 @@
-import IDEAConnection, { MessageTypes } from 'connections/IDE/IDEAConnection';
+import IDEAConnection, { EventTypes } from 'connections/IDE/IDEAConnection';
 import { RootStore } from 'context';
 import ComponentInstance from 'entities/mst/ComponentInstance';
 import PageInstance from 'entities/mst/PageInstance';
@@ -14,9 +14,9 @@ export default class JDISynchronizationService implements IProjectSynchronizerSe
         @inject(TYPES.IDEAConnection) private ideaConnection: IDEAConnection,
         @inject(TYPES.UrlMatcher) private urlMatcher: IMatchUrlService,
     ) {
-        ideaConnection.addListener(MessageTypes.ProjectDataReceived, this.onProjectDataReceived.bind(this));
-        ideaConnection.addListener(MessageTypes.ProjectUpdated, this.onProjectUpdated.bind(this));
-        ideaConnection.addListener(MessageTypes.WebsiteUpdated, this.onWebsiteUpdated.bind(this));
+        ideaConnection.addListener(EventTypes.ProjectDataReceived, this.onProjectDataReceived.bind(this));
+        ideaConnection.addListener(EventTypes.ProjectUpdated, this.onProjectUpdated.bind(this));
+        ideaConnection.addListener(EventTypes.WebsiteUpdated, this.onWebsiteUpdated.bind(this));
     }
 
     openFileForClass(classFullName: string) {
