@@ -11,7 +11,7 @@ export const RootStoreModel = types
         setProjectData(ideConnectionType: string, projectData) {
             if (
                 self.uiStore.selectedIdeConnectionType == ideConnectionType &&
-                self.uiStore.selectedProject == projectData.project
+                self.uiStore.selectedProject == projectData.projectName
             ) {
                 self.uiStore.selectedProjectIsLoaded = true;
                 self.projectStore = ProjectStoreModel.create(projectData);

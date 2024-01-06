@@ -43,7 +43,7 @@ export default class JDISynchronizationService implements IProjectSynchronizerSe
         // RootStore.uiStore.setMatchingWebsite(null);
         // RootStore.uiStore.setMathchingPages([]);
         RootStore.setProjectData(connectionType, projectData);
-        this.matchPage();
+        // this.matchPage();
     }
 
     matchPage() {

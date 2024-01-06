@@ -23,6 +23,7 @@ export const IDEMessageTypes = {
     UpdateComponentInstance: 'UpdateComponentInstance',
     AddComponentInstance: 'AddComponentInstance',
     DeleteComponentInstance: 'DeleteComponentInstance',
+    MatchUrl: 'MatchUrl',
 };
 
 export const EventTypes = {
@@ -227,7 +228,7 @@ export default class IDEAConnection implements IIdeConnection {
 
     async matchUrl(projectName: string, url: string): Promise<object> {
         const message = {
-            type: 'match-url',
+            type: IDEMessageTypes.MatchUrl,
             asyncId: generateId(),
             projectName,
             url,
