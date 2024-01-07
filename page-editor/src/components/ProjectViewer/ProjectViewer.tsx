@@ -45,7 +45,7 @@ const ProjectViewer: React.FC<Props> = observer(() => {
             case BreadcrumbType.ProjectExplorer:
                 return <ProjectExplorer />;
             case BreadcrumbType.MatchingPage:
-                return <PageEditor pageInstance={uiStore.matchingPage} />;
+                return <PageEditor pageType={uiStore.matchingPage} />;
             case BreadcrumbType.EditedComponentInstance:
                 return componentEditor();
         }

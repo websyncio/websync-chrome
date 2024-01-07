@@ -9,6 +9,7 @@ import './ProjectExplorer.sass';
 import WebSiteDetails from './ProjectTreeItemDetails/WebSiteDetails';
 import PageInstanceDetails from './ProjectTreeItemDetails/PageInstanceDetails';
 import MatchUrlNotifications from '../MatchUrlNotifications/MatchUrlNotifications';
+import PageType from 'entities/mst/PageType';
 // import Selectable from 'entities/mst/Selectable';
 
 interface Props {}
@@ -19,15 +20,15 @@ const Explorer: React.FC<Props> = observer(() => {
     // const [selectedWebSite, setSelectedWebSite] = useState<WebSite | undefined>(undefined);
     // const [selectedPageInstance, setSelectedPageInstance] = useState<PageInstance | undefined>(undefined);
 
-    function onSelected(ws: WebSite, pi: PageInstance | null) {
+    function onSelected(ws: WebSite, pt: PageType | null) {
         if (projectStore.selectedWebSite) {
             projectStore.selectedWebSite.deselect();
         }
         if (projectStore.selectedPageInstance) {
             projectStore.selectedPageInstance.deselect();
         }
-        if (pi) {
-            pi.select();
+        if (pt) {
+            pt.select();
         } else {
             ws.select();
         }

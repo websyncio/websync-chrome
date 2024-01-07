@@ -1,7 +1,7 @@
 import { types, Instance } from 'mobx-state-tree';
 import { ExpandableModel } from './Expandable';
-import { PageInstanceModel } from './PageInstance';
 import { SelectableModel } from './Selectable';
+import { PageTypeModel } from './PageType';
 
 export const WebSiteModel = types
     .compose(
@@ -10,8 +10,9 @@ export const WebSiteModel = types
         types.model({
             id: types.identifier,
             baseWebSite: types.maybeNull(types.reference(types.late(() => WebSiteModel))),
-            url: types.string,
-            pageInstances: types.array(PageInstanceModel),
+            // url: types.string,
+            pageTypes: types.array(PageTypeModel),
+            // pageInstances: types.array(PageInstanceModel),
         }),
     )
     .views((self) => ({
@@ -21,9 +22,9 @@ export const WebSiteModel = types
         },
     }))
     .actions((self) => ({
-        setUrl(newUrl) {
-            self.url = newUrl;
-        },
+        // setUrl(newUrl) {
+        //     self.url = newUrl;
+        // },
     }));
 
 export default interface WebSite extends Instance<typeof WebSiteModel> {}

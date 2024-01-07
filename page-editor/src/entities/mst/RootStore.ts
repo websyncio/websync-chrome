@@ -16,6 +16,8 @@ export const RootStoreModel = types
                 self.uiStore.selectedProjectIsLoaded = true;
                 self.projectStore = ProjectStoreModel.create(projectData);
                 self.uiStore.selectBreadcrumb(BreadcrumbType.ProjectExplorer);
+                debugger;
+                self.uiStore.setMathchingPages(self.projectStore.webSites[0].pageTypes);
             }
         },
     }));

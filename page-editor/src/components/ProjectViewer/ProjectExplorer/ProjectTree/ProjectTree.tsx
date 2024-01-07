@@ -6,6 +6,7 @@ import './ProjectTree.sass';
 import RootStore from 'entities/mst/RootStore';
 import { useRootStore } from 'context';
 import TreeOutline from 'components-common/TreeOutline/TreeOutline';
+import PageType from 'entities/mst/PageType';
 
 interface Props {
     websites: WebSite[];
@@ -20,24 +21,24 @@ const WebSitesTree: React.FC<Props> = observer(({ websites, onSelected }) => {
         website.toggleExpanded();
     }
 
-    function editPageObject(pi: PageInstance) {
-        uiStore.showTabForEditedPage(pi);
+    function editPageObject(pt: PageType) {
+        uiStore.showTabForEditedPage(pt);
     }
 
     function pageList(website: WebSite) {
         return (
             <ul className="pages-list">
-                {website.pageInstances.map((pi) => (
+                {website.pageTypes.map((pt) => (
                     <li
-                        className={`tree-item website-page selectable ${pi.selected ? 'selected' : ''}`}
-                        key={pi.pageType.name}
-                        onClick={() => onSelected(website, pi)}
-                        onDoubleClick={() => editPageObject(pi)}
+                        className={`tree-item website-page selectable ${pt.selected ? 'selected' : ''}`}
+                        key={pt.name}
+                        onClick={() => onSelected(website, pt)}
+                        onDoubleClick={() => editPageObject(pt)}
                         title="Double click to edit page"
                     >
                         <i className="tree-icon page-icon" />
-                        <span className="tree-name">{pi.pageType.name}</span>
-                        {uiStore.matchingPages.includes(pi) && <span className={`match-circle`} />}
+                        <span className="tree-name">{pt.name}</span>
+                        {uiStore.matchingPages.includes(pt) && <span className={`match-circle`} />}
                     </li>
                 ))}
             </ul>

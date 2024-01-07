@@ -126,7 +126,7 @@ const Header: React.FC<Props> = observer(() => {
                             onClick={() => uiStore.selectBreadcrumb(BreadcrumbType.MatchingPage)}
                         >
                             <i className="tab-icon page-icon" />
-                            <span className="tab-name">{uiStore.matchingPages[0].pageType.name}</span>
+                            <span className="tab-name">{uiStore.matchingPages[0].name}</span>
                             <span className="match-circle" />
                         </div>
                     </>

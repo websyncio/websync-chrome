@@ -10,18 +10,19 @@ import PageInstance from 'entities/mst/PageInstance';
 import { DependencyContainer } from 'inversify.config';
 import ISynchronizationService from 'services/ISynchronizationService';
 import TYPES from 'inversify.types';
+import PageType from 'entities/mst/PageType';
 
 interface Props {
-    pageInstance: PageInstance;
+    pageType: PageType;
 }
 
-const PageEditor: React.FC<Props> = observer(({ pageInstance }) => {
+const PageEditor: React.FC<Props> = observer(({ pageType }) => {
     const { projectStore, uiStore }: RootStore = useRootStore();
     const [expandedContainerIndex, setExpandedContainerIndex] = useState(0);
     const synchronizationService = DependencyContainer.get<ISynchronizationService>(TYPES.SynchronizationService);
 
     useEffect(() => {
-        synchronizationService.openFileForClass(pageInstance.pageType.id);
+        synchronizationService.openFileForClass(pageType.id);
         return () => {
             // do we need to do something here?
             //console.log("PageEditor is dismounted for:", pageInstance.name);
@@ -53,8 +54,8 @@ const PageEditor: React.FC<Props> = observer(({ pageInstance }) => {
 
     return (
         <div className="page-editor flex-auto">
-            <MatchUrlNotifications currentPageInstance={pageInstance} />
-            {componentContainers(0, pageInstance?.pageType)}
+            {/* <MatchUrlNotifications currentPageInstance={pageType} /> */}
+            {componentContainers(0, pageType)}
         </div>
     );
 });

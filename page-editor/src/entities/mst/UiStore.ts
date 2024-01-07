@@ -76,7 +76,7 @@ export const UiStoreModel = types
         matchingWebsite: types.maybeNull(types.reference(WebSiteModel)),
         websiteIsMatchedManually: types.optional(types.boolean, false),
         matchingPages: types.array(
-            types.reference(PageInstanceModel, {
+            types.reference(PageTypeModel, {
                 onInvalidated: (ev) => {
                     console.log('matchingPages invalidated', ev);
                     ev.removeRef();
@@ -98,7 +98,7 @@ export const UiStoreModel = types
         // get selectedPageObject() {
         //     return self.editedPageObjects.find((po) => po.selected);
         // },
-        get matchingPage(): PageInstance {
+        get matchingPage(): PageType {
             if (self.matchingPages.length == 1) {
                 return self.matchingPages[0];
             }
@@ -107,9 +107,9 @@ export const UiStoreModel = types
         get selectedComponentsContainer(): ComponentsContainer | null {
             switch (self.selectedBreadcrumb) {
                 case BreadcrumbType.MatchingPage:
-                    return self.matchingPages[0].pageType;
+                    return self.matchingPages[0];
                 case BreadcrumbType.EditedComponentInstance:
-                    return self.editedComponentsChain.find((ci) => ci.selected).componentType;
+                    return self.editedComponentsChain.find((ci) => ci.selected)?.componentType;
                 default:
                     return null;
             }
@@ -223,7 +223,8 @@ export const UiStoreModel = types
         },
         editComponent(componentInstance: ComponentInstance, parentComponentInstance: ComponentInstance | null) {
             // .define a chain of edited components
-            const parentIndex = self.editedComponentsChain.indexOf(parentComponentInstance);
+            const parentIndex =
+                parentComponentInstance == null ? -1 : self.editedComponentsChain.indexOf(parentComponentInstance);
             const newEditedComponentsChain: ComponentInstance[] =
                 parentIndex === -1
                     ? [] // .starting a new chain
@@ -277,7 +278,7 @@ export const UiStoreModel = types
                 }
             }
         },
-        setMathchingPages(pageInstances: PageInstance[]) {
+        setMathchingPages(pageInstances: PageType[]) {
             const oldMatchingPage = self.matchingPages.length == 1 ? self.matchingPages[0] : null;
             self.matchingPages.replace(pageInstances);
             if (pageInstances.length !== 1) {
