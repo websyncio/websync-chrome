@@ -76,7 +76,7 @@ export const UiStoreModel = types
         matchingWebsite: types.maybeNull(types.reference(WebSiteModel)),
         websiteIsMatchedManually: types.optional(types.boolean, false),
         matchingPages: types.array(
-            types.reference(PageTypeModel, {
+            types.reference(PageInstanceModel, {
                 onInvalidated: (ev) => {
                     console.log('matchingPages invalidated', ev);
                     ev.removeRef();
@@ -98,7 +98,7 @@ export const UiStoreModel = types
         // get selectedPageObject() {
         //     return self.editedPageObjects.find((po) => po.selected);
         // },
-        get matchingPage(): PageType {
+        get matchingPage(): PageInstance {
             if (self.matchingPages.length == 1) {
                 return self.matchingPages[0];
             }
@@ -107,7 +107,7 @@ export const UiStoreModel = types
         get selectedComponentsContainer(): ComponentsContainer | null {
             switch (self.selectedBreadcrumb) {
                 case BreadcrumbType.MatchingPage:
-                    return self.matchingPages[0];
+                    return self.matchingPages[0].pageType;
                 case BreadcrumbType.EditedComponentInstance:
                     return self.editedComponentsChain.find((ci) => ci.selected)?.componentType;
                 default:
@@ -206,6 +206,7 @@ export const UiStoreModel = types
         },
         showTabForEditedPage(pageInstance: PageInstance) {
             console.log('showTabForEditedPage');
+            this.setMathchingPages([pageInstance]);
             this.selectBreadcrumb(BreadcrumbType.MatchingPage);
             // let tab = this.findTabFor(pageInstance);
             // if (!tab) {
@@ -278,7 +279,7 @@ export const UiStoreModel = types
                 }
             }
         },
-        setMathchingPages(pageInstances: PageType[]) {
+        setMathchingPages(pageInstances: PageInstance[]) {
             const oldMatchingPage = self.matchingPages.length == 1 ? self.matchingPages[0] : null;
             self.matchingPages.replace(pageInstances);
             if (pageInstances.length !== 1) {

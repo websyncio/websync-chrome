@@ -1,7 +1,7 @@
 import { types, Instance } from 'mobx-state-tree';
 import { ExpandableModel } from './Expandable';
 import { SelectableModel } from './Selectable';
-import { PageTypeModel } from './PageType';
+import { PageInstanceModel } from './PageInstance';
 
 export const WebSiteModel = types
     .compose(
@@ -11,8 +11,7 @@ export const WebSiteModel = types
             id: types.identifier,
             baseWebSite: types.maybeNull(types.reference(types.late(() => WebSiteModel))),
             // url: types.string,
-            pageTypes: types.array(PageTypeModel),
-            // pageInstances: types.array(PageInstanceModel),
+            pageInstances: types.array(PageInstanceModel),
         }),
     )
     .views((self) => ({

@@ -39,7 +39,7 @@ class AsyncRequestInfo {
 @injectable()
 export default class VSConnection implements IIdeConnection {
     connection: WebsocketConnection;
-    type = 'IDEA';
+    type = 'VS';
     asyncRequests: AsyncRequestInfo[] = [];
     reactor: Reactor;
 

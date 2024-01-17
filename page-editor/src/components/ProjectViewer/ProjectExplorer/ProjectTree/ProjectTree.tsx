@@ -28,17 +28,17 @@ const WebSitesTree: React.FC<Props> = observer(({ websites, onSelected }) => {
     function pageList(website: WebSite) {
         return (
             <ul className="pages-list">
-                {website.pageTypes.map((pt) => (
+                {website.pageInstances.map((pi) => (
                     <li
-                        className={`tree-item website-page selectable ${pt.selected ? 'selected' : ''}`}
-                        key={pt.name}
-                        onClick={() => onSelected(website, pt)}
-                        onDoubleClick={() => editPageObject(pt)}
+                        className={`tree-item website-page selectable ${pi.selected ? 'selected' : ''}`}
+                        key={pi.name}
+                        onClick={() => onSelected(website, pi)}
+                        onDoubleClick={() => editPageObject(pi)}
                         title="Double click to edit page"
                     >
                         <i className="tree-icon page-icon" />
-                        <span className="tree-name">{pt.name}</span>
-                        {uiStore.matchingPages.includes(pt) && <span className={`match-circle`} />}
+                        <span className="tree-name">{pi.name}</span>
+                        {uiStore.matchingPages.includes(pi) && <span className={`match-circle`} />}
                     </li>
                 ))}
             </ul>
