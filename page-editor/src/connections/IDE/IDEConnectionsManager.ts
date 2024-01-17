@@ -1,8 +1,8 @@
-import IIdeProxy from 'connections/IDE/IIdeConnection';
+import IIdeConnection from 'connections/IDE/IIDEConnection';
 
 export default class IDEConnectionsManager {
-    ideProxies: IIdeProxy[] = [];
-    registerIde(ideProxy: IIdeProxy) {
+    ideProxies: IIdeConnection[] = [];
+    registerIde(ideProxy: IIdeConnection) {
         this.ideProxies.push(ideProxy);
     }
 }

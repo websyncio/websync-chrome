@@ -1,4 +1,4 @@
-import IDEAConnection, { EventTypes } from 'connections/IDE/IDEAConnection';
+import VSConnection, { EventTypes } from 'connections/IDE/VSConnection';
 import { RootStore } from 'context';
 import ComponentInstance from 'entities/mst/ComponentInstance';
 import PageInstance from 'entities/mst/PageInstance';
@@ -11,7 +11,7 @@ import TYPES from 'inversify.types';
 @injectable()
 export default class JDISynchronizationService implements IProjectSynchronizerService {
     constructor(
-        @inject(TYPES.IDEAConnection) private ideaConnection: IDEAConnection,
+        @inject(TYPES.IDEAConnection) private ideaConnection: VSConnection,
         @inject(TYPES.UrlMatcher) private urlMatcher: IMatchUrlService,
     ) {
         ideaConnection.addListener(EventTypes.ProjectDataReceived, this.onProjectDataReceived.bind(this));

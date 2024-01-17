@@ -3,8 +3,8 @@ import 'App.sass';
 
 import { observer } from 'mobx-react';
 
-import IIdeProxy from 'connections/IDE/IIdeConnection';
-import IDEAConnection from 'connections/IDE/IDEAConnection';
+import IIdeProxy from 'connections/IDE/IIDEConnection';
+import VSConnection from 'connections/IDE/VSConnection';
 import ProjectSelector from 'components/ProjectSelector/ProjectSelector';
 import ProjectViewer from 'components/ProjectViewer/ProjectViewer';
 import RootStore from 'entities/mst/RootStore';
@@ -20,7 +20,7 @@ const App: React.FC = observer(() => {
     const urlSynchronizationService = DependencyContainer.get<IUrlSynchronizationService>(
         TYPES.UrlSynchronizationService,
     );
-    const ideaConnection: IDEAConnection = DependencyContainer.get<IDEAConnection>(TYPES.IDEAConnection);
+    const ideaConnection: VSConnection = DependencyContainer.get<VSConnection>(TYPES.IDEAConnection);
     const ideProxies: IIdeProxy[] = [ideaConnection];
 
     useEffect(() => {

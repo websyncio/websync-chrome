@@ -19,11 +19,11 @@ const PageInstanceDetails: React.FC<Props> = observer(({ pageInstance }) => {
     const { uiStore, projectStore }: RootStore = useRootStore();
     const synchronizationService = DependencyContainer.get<ISynchronizationService>(TYPES.SynchronizationService);
     const urlSynchroService = DependencyContainer.get<IUrlSynchronizationService>(TYPES.UrlSynchronizationService);
-    const pageMatch: boolean = uiStore.matchingPages.includes(pageInstance);
+    const pageMatch = true; // uiStore.matchingPages.includes(pageInstance);
     const URL_DOES_NOT_MATCH = 'Does not match current URL Path';
     const URL_IS_EMPTY = 'Please, specify URL Path';
     const originalUrl = useMemo(() => pageInstance.url, [pageInstance]);
-    const urlIsStatic = !pageInstance.url.includes('{0}');
+    // const urlIsStatic = !pageInstance.url.includes('{0}');
 
     let matchStatusText = '';
     if (!pageInstance.url) {
@@ -63,11 +63,12 @@ const PageInstanceDetails: React.FC<Props> = observer(({ pageInstance }) => {
                         Edit this page
                     </span>
                 ) : (
-                    urlIsStatic && (
-                        <span className="action-button" onClick={redirectToUrl}>
-                            Redirect to this page
-                        </span>
-                    )
+                    <></>
+                    // urlIsStatic && (
+                    //     <span className="action-button" onClick={redirectToUrl}>
+                    //         Redirect to this page
+                    //     </span>
+                    // )
                 )}
             </div>
             <div className="field-wrap">

@@ -8,7 +8,7 @@ import { UrlSynchronizationService } from 'services/UrlSynchronizationService';
 import SelectorEditorConnection from 'connections/SelectorEditorConnection';
 import SelectorValidator from 'services/SelectorValidatorService';
 import SelectorHighlighter from 'services/SelectorHighlighterService';
-import IDEAConnection from 'connections/IDE/IDEAConnection';
+import VSConnection from 'connections/IDE/VSConnection';
 import ISelectorsBagService from 'services/ISelectorsBagService';
 import IAttributeToXcssMapper from 'services/IAttributeToXcssMapper';
 import IMatchUrlService from 'services/IMatchUrlService';
@@ -51,11 +51,11 @@ DependencyContainer.bind<SelectorHighlighter>(TYPES.SelectorHighlighter)
     })
     .inSingletonScope();
 
-DependencyContainer.bind<IDEAConnection>(TYPES.IDEAConnection).to(IDEAConnection).inSingletonScope();
+DependencyContainer.bind<VSConnection>(TYPES.IDEAConnection).to(VSConnection).inSingletonScope();
 
 DependencyContainer.bind<ISynchronizationService>(TYPES.SynchronizationService)
     .toDynamicValue(() => {
-        const connection = DependencyContainer.get<IDEAConnection>(TYPES.IDEAConnection);
+        const connection = DependencyContainer.get<VSConnection>(TYPES.IDEAConnection);
         const urlMatcher = DependencyContainer.get<IMatchUrlService>(TYPES.UrlMatcher);
         return new JDISynchronizationService(connection, urlMatcher);
     })
@@ -67,7 +67,7 @@ DependencyContainer.bind<IAttributeToXcssMapper>(TYPES.AttributeToXcssMapper)
 
 DependencyContainer.bind<IMatchUrlService>(TYPES.UrlMatcher)
     .toDynamicValue(() => {
-        const connection = DependencyContainer.get<IDEAConnection>(TYPES.IDEAConnection);
+        const connection = DependencyContainer.get<VSConnection>(TYPES.IDEAConnection);
         return new JDIMatchUrlService(connection);
     })
     .inSingletonScope();

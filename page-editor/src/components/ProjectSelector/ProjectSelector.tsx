@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { useRootStore } from 'context';
-import IIdeProxy from 'connections/IDE/IIdeConnection';
+import IIdeProxy from 'connections/IDE/IIDEConnection';
 import IdeConnection from 'entities/mst/IdeConnection';
 import './ProjectSelector.sass';
 import { DependencyContainer } from 'inversify.config';

@@ -2,29 +2,13 @@ import 'reflect-metadata';
 import { injectable } from 'inversify';
 import WebsocketConnection, { Events } from '../WebsocketConnection';
 import { RootStore } from 'context';
-import IIdeConnection from 'connections/IDE/IIdeConnection';
+import IIdeConnection from 'connections/IDE/IIDEConnection';
 import ComponentInstance from 'entities/mst/ComponentInstance';
 import PageInstance from 'entities/mst/PageInstance';
 import WebSite from 'entities/mst/WebSite';
 import Reactor from 'utils/Reactor';
 import { generateId } from 'utils/StringUtils';
-
-export const IDEMessageTypes = {
-    GetProjectNames: 'GetProjectNames',
-    ProjectNames: 'ProjectNames',
-    GetProject: 'GetProject',
-    Project: 'Project',
-    OpenFile: 'OpenFile',
-    CreateWebsite: 'CreateWebsite',
-    CreatePageType: 'CreatePageType',
-    CreateComponentType: 'CreateComponentType',
-    UpdateWebsite: 'UpdateWebsite',
-    UpdatePageInstance: 'UpdatePageInstance',
-    UpdateComponentInstance: 'UpdateComponentInstance',
-    AddComponentInstance: 'AddComponentInstance',
-    DeleteComponentInstance: 'DeleteComponentInstance',
-    MatchUrl: 'MatchUrl',
-};
+import { IDEMessageTypes } from './IDEMessageTypes';
 
 export const EventTypes = {
     ProjectDataReceived: 'project-data-received',
@@ -53,7 +37,7 @@ class AsyncRequestInfo {
 }
 
 @injectable()
-export default class IDEAConnection implements IIdeConnection {
+export default class VSConnection implements IIdeConnection {
     connection: WebsocketConnection;
     type = 'IDEA';
     asyncRequests: AsyncRequestInfo[] = [];

@@ -1,4 +1,4 @@
-import IDEAConnection from 'connections/IDE/IDEAConnection';
+import VSConnection from 'connections/IDE/VSConnection';
 import { RootStore } from 'context';
 import PageInstance from 'entities/mst/PageInstance';
 import ProjectStore from 'entities/mst/ProjectStore';
@@ -10,7 +10,7 @@ import { trimStart } from 'utils/StringUtils';
 
 @injectable()
 export default class JDIMatchUrlService implements IMatchUrlService {
-    constructor(@inject(TYPES.IDEAConnection) private ideaConnection: IDEAConnection) {}
+    constructor(@inject(TYPES.IDEAConnection) private ideaConnection: VSConnection) {}
 
     async matchUrl(url: string): Promise<UrlMatchResult> {
         if (!RootStore.uiStore.selectedProject) {
