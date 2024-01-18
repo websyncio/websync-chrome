@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Container } from 'inversify';
 import ISynchronizationService from 'services/ISynchronizationService';
-import JDISynchronizationService from 'supported-frameworks/JDI/services/JDISynchronizationService';
+import UnionSynchronizationService from 'supported-frameworks/JDI/services/UnionSynchronizationService';
 import JDIAttributeToXcssMapper from 'supported-frameworks/JDI/services/JDIAttributeToXcssMapper';
 import { SelectorsBagService } from 'services/SelectorsBagService';
 import { UrlSynchronizationService } from 'services/UrlSynchronizationService';
@@ -57,7 +57,7 @@ DependencyContainer.bind<ISynchronizationService>(TYPES.SynchronizationService)
     .toDynamicValue(() => {
         const connection = DependencyContainer.get<VSConnection>(TYPES.IDEAConnection);
         const urlMatcher = DependencyContainer.get<IMatchUrlService>(TYPES.UrlMatcher);
-        return new JDISynchronizationService(connection, urlMatcher);
+        return new UnionSynchronizationService(connection, urlMatcher);
     })
     .inSingletonScope();
 

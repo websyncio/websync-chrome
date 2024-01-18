@@ -9,7 +9,7 @@ import type IMatchUrlService from 'services/IMatchUrlService';
 import TYPES from 'inversify.types';
 
 @injectable()
-export default class JDISynchronizationService implements IProjectSynchronizerService {
+export default class UnionSynchronizationService implements IProjectSynchronizerService {
     constructor(
         @inject(TYPES.IDEAConnection) private ideaConnection: VSConnection,
         @inject(TYPES.UrlMatcher) private urlMatcher: IMatchUrlService,
