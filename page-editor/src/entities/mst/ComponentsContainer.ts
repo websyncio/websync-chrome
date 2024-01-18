@@ -7,7 +7,7 @@ export const ComponentsContainerModel = types
         SelectableModel,
         types.model({
             id: types.identifier,
-            componentsInstances: types.array(ComponentInstanceModel),
+            componentInstances: types.array(ComponentInstanceModel),
         }),
     )
     .views((self) => ({
@@ -16,12 +16,12 @@ export const ComponentsContainerModel = types
             return arr[arr.length - 1];
         },
         getComponentInstance(componentId) {
-            return self.componentsInstances.find((ci) => ci.id == componentId);
+            return self.componentInstances.find((ci) => ci.id == componentId);
         },
     }))
     .actions((self) => ({
         addComponentInstance(component: ComponentInstance) {
-            self.componentsInstances.push(component);
+            self.componentInstances.push(component);
         },
     }));
 

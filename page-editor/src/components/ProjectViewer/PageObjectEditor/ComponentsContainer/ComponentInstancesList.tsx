@@ -161,7 +161,7 @@ const ComponentInstancesList: React.FC<Props> = observer(
                                 }}
                             />
                         </li>,
-                        // <ComponentInstancesList componentInstancesList={component.selectedPageType.componentsInstances}/>
+                        // <ComponentInstancesList componentInstancesList={component.selectedPageType.componentInstances}/>
                     ])}
                 </ul>
             </div>

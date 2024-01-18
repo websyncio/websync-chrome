@@ -54,7 +54,7 @@ const App: React.FC = observer(() => {
     //         return;
     //     }
 
-    //     const component = pageType.componentsInstances.find((c) => c.id === data.componentId);
+    //     const component = pageType.componentInstances.find((c) => c.id === data.componentId);
     //     if (!component) {
     //         return;
     //     }

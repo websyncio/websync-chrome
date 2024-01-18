@@ -50,7 +50,7 @@ const ComponentsContainer: React.FC<Props> = observer(
                 return [];
             }
             let selectors: XcssSelector[] = [];
-            container1.componentsInstances.forEach((c) => {
+            container1.componentInstances.forEach((c) => {
                 const componentSelector: XcssSelector | null = attributeToXcssMapper.GetXcss(c.initializationAttribute);
                 if (componentSelector) {
                     componentSelector.root = rootSelector;
@@ -91,18 +91,18 @@ const ComponentsContainer: React.FC<Props> = observer(
             console.log(
                 'ComponentsContainer. LineIndex: ' + uiStore.editorSelectedLineIndex + ', activeList: ' + activeList,
             );
-            // selectComponent(pageObject.componentsInstances, -1);
+            // selectComponent(pageObject.componentInstances, -1);
             // selectComponent(uiStore.blankComponents, 0);
             return true;
         }
 
         function selectLastComponentInstance(): boolean {
             setActiveList(ListType.PageObjectComponents);
-            uiStore.setEditorSelectedLineIndex(container.componentsInstances.length - 1);
+            uiStore.setEditorSelectedLineIndex(container.componentInstances.length - 1);
             console.log(
                 'ComponentsContainer. LineIndex: ' + uiStore.editorSelectedLineIndex + ', activeList: ' + activeList,
             );
-            // selectComponent(pageObject.componentsInstances, pageObject.componentsInstances.length - 1);
+            // selectComponent(pageObject.componentInstances, pageObject.componentInstances.length - 1);
             // selectComponent(uiStore.blankComponents, -1);
             return true;
         }
@@ -167,7 +167,7 @@ const ComponentsContainer: React.FC<Props> = observer(
                         <ComponentInstancesList
                             isActive={activeList === ListType.PageObjectComponents}
                             container={container}
-                            componentInstances={container.componentsInstances}
+                            componentInstances={container.componentInstances}
                             rootSelector={rootSelector}
                             parentComponentInstance={parentComponentInstance}
                             componentView={ComponentInstance}

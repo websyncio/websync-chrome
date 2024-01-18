@@ -19,7 +19,7 @@ export const ComponentTypeModel = types
 // types.model({
 //     id: types.identifier,
 //     baseComponentType: types.maybe(types.reference(types.late(() => ComponentTypeModel))),
-//     componentsInstances: types.array(ComponentInstanceModel),
+//     componentInstances: types.array(ComponentInstanceModel),
 // });
 
 export default interface ComponentType extends Instance<typeof ComponentTypeModel> {}

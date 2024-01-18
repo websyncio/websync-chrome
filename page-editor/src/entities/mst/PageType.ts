@@ -22,9 +22,9 @@ export const PageTypeModel = types
     }))
     .actions((self) => ({
         updateComponentInstance(old, updated) {
-            const index = self.componentsInstances.indexOf(old);
+            const index = self.componentInstances.indexOf(old);
             destroy(old);
-            self.componentsInstances.splice(index, 0, updated);
+            self.componentInstances.splice(index, 0, updated);
         },
         deleteComponentInstance(ci) {
             destroy(ci);
