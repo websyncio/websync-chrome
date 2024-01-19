@@ -10,8 +10,8 @@ export const ComponentInstanceModel = types
         SelectableModel,
         types.model({
             id: types.identifier,
-            parentId: types.string,
-            fieldIndex: types.number,
+            parentId: types.optional(types.string, ''),
+            fieldIndex: types.optional(types.number, 0),
             // try to fix - https://mobx-state-tree.js.org/tips/circular-deps
             componentTypeId: types.maybeNull(types.string), // types.maybe(types.safeReference(types.late(() => ComponentTypeModel))),
             fieldName: types.string,
