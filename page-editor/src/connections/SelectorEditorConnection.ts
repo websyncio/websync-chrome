@@ -36,7 +36,7 @@ export const MessageTargets = {
 export default class SelectorEditorProxy {
     reactor: Reactor;
     acknowledgments: { [id: string]: Function } = {};
-    backgroundConnection: chrome.runtime.Port;
+    backgroundConnection: chrome.runtime.Port | null = null;
     sourceName = 'page-editor';
 
     constructor() {
@@ -45,10 +45,37 @@ export default class SelectorEditorProxy {
         this.reactor.registerEvent(MessageTypes.SelectorsListUpdated);
         this.reactor.registerEvent(MessageTypes.UrlChanged);
 
-        this.backgroundConnection = chrome.runtime.connect();
-        this.backgroundConnection.onMessage.addListener(this.receiveMessage.bind(this));
+        this.connectToBackgroundPage();
+    }
+
+    connectToBackgroundPage() {
+        debugger;
+        try {
+            this.backgroundConnection = chrome.runtime.connect({ name: 'content' });
+        } catch (e: any) {
+            console.log('PageEditor is unable to connect to background.', e);
+            if (e.message != 'Extension context invalidated.') {
+                setTimeout(this.connectToBackgroundPage, 1000);
+            }
+            return;
+        }
+        console.log('PageEditor has created a connection to background.');
+        this.backgroundConnection.onDisconnect.addListener(() => {
+            console.log('Connection to background from PageEditor has broken.');
+            this.backgroundConnection = null;
+            setTimeout(this.connectToBackgroundPage, 1000);
+        });
+
+        this.addBackgroundPageListeners(this.backgroundConnection);
         // we need to send tabId to identify connection in background page
         this.postMessage(MessageTypes.InitConnection);
+    }
+
+    addBackgroundPageListeners(port: chrome.runtime.Port) {
+        if (!port) {
+            throw new Error('Connection to background page is not available.');
+        }
+        port.onMessage.addListener(this.receiveMessage.bind(this));
     }
 
     receiveMessage(message) {
@@ -87,14 +114,18 @@ export default class SelectorEditorProxy {
             this.acknowledgments[address] = callback;
         }
 
-        this.backgroundConnection.postMessage({
-            tabId: chrome.devtools.inspectedWindow.tabId,
-            source: this.sourceName,
-            target: target,
-            acknowledgment: address,
-            type: type,
-            data: data,
-        });
+        if (this.backgroundConnection) {
+            this.backgroundConnection.postMessage({
+                tabId: chrome.devtools.inspectedWindow.tabId,
+                source: this.sourceName,
+                target: target,
+                acknowledgment: address,
+                type: type,
+                data: data,
+            });
+        } else {
+            console.warn('PageEditor is unable to send message to background page. Connection is not available.');
+        }
     }
 
     addListener(messageType: string, listener: Function) {
