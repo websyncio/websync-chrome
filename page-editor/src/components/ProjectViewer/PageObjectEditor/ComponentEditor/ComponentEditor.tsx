@@ -6,7 +6,6 @@ import { useRootStore } from 'context';
 import RootStore from 'entities/mst/RootStore';
 import ComponentInstance from 'entities/mst/ComponentInstance';
 import XcssSelector from 'entities/XcssSelector';
-import IAttributeToXcssMapper from 'services/IAttributeToXcssMapper';
 import { DependencyContainer } from 'inversify.config';
 import { SelectorsBagService } from 'services/SelectorsBagService';
 import ISynchronizationService from 'services/ISynchronizationService';
@@ -19,9 +18,6 @@ interface Props {
 const ComponentEditor: React.FC<Props> = observer(({ componentInstance }) => {
     const { projectStore, uiStore }: RootStore = useRootStore();
     const [expandedContainerIndex, setExpandedContainerIndex] = useState(0);
-    const attributeToXcssMapper: IAttributeToXcssMapper = DependencyContainer.get<IAttributeToXcssMapper>(
-        TYPES.AttributeToXcssMapper,
-    );
     const selectorsBagService = DependencyContainer.get<SelectorsBagService>(TYPES.SelectorsBagService);
     const synchronizationService = DependencyContainer.get<ISynchronizationService>(TYPES.SynchronizationService);
 
@@ -30,7 +26,7 @@ const ComponentEditor: React.FC<Props> = observer(({ componentInstance }) => {
         const rootComponents: ComponentInstance[] = uiStore.editedComponentsChain.slice(0, index + 1);
         let rootSelector: XcssSelector | null = null;
         rootComponents.forEach((c: ComponentInstance) => {
-            const xcss: XcssSelector | null = attributeToXcssMapper.GetXcss(c.initializationAttribute);
+            const xcss: XcssSelector | null = c.initializationAttribute?.rootSelectorXcss;
             if (xcss) {
                 xcss.root = rootSelector;
                 rootSelector = xcss;

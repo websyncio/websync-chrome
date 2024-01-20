@@ -4,7 +4,6 @@ import ParameterModel from 'entities/mst/Parameter';
 import { observer } from 'mobx-react';
 import Selector from 'components/ProjectViewer/PageObjectEditor/InitializationAttributes/Selector';
 import './RootSelectorAttribute.sass';
-import IAttributeToXcssMapper from 'services/IAttributeToXcssMapper';
 import { DependencyContainer } from 'inversify.config';
 import XcssSelector from 'entities/XcssSelector';
 import TYPES from 'inversify.types';
@@ -17,32 +16,24 @@ interface Props {
 }
 
 const RootSelectorAttribute: React.FC<Props> = ({ attribute, rootSelector, onEditSelector, onValidated }: Props) => {
-    const attributeToXcssMapper: IAttributeToXcssMapper = DependencyContainer.get<IAttributeToXcssMapper>(
-        TYPES.AttributeToXcssMapper,
-    );
-
-    const valuesList = (parameter: ParameterModel) => {
+    const constructorArgument = (constructorArgument: string) => {
+        const selector: XcssSelector | null = attribute.rootSelectorXcss;
+        if (selector) {
+            selector.root = rootSelector;
+        }
         return (
             <span className="parameter-values">
-                {parameter.values.length > 1 && '{'}
-                {parameter.values.map((v, index) => {
-                    const selector = attributeToXcssMapper.GetXcss(attribute);
-                    if (selector) {
-                        selector.root = rootSelector;
-                    }
-                    return (
-                        <>
-                            <Selector
-                                parameterName={parameter.name}
-                                selector={selector}
-                                onEdit={() => onEditSelector(parameter, index)}
-                                onValidated={onValidated}
-                            />
-                            {index !== parameter.values.length - 1 && ', '}
-                        </>
-                    );
-                })}
-                {parameter.values.length > 1 && '}'}
+                {/* {parameter.values.length > 1 && '{'} */}
+                {/* {constructorArgument.map((v, index) => { */}
+                <Selector
+                    // parameterName={constructorArgument.name}
+                    selector={selector}
+                    onEdit={() => onEditSelector(constructorArgument, 0)}
+                    onValidated={onValidated}
+                />
+                {/* {index !== constructorArgument.values.length - 1 && ', '} */}
+                {/* })} */}
+                {/* {parameter.values.length > 1 && '}'} */}
             </span>
         );
     };
@@ -50,7 +41,13 @@ const RootSelectorAttribute: React.FC<Props> = ({ attribute, rootSelector, onEdi
     return (
         <span className="init-attribute">
             {'('}
-            {attribute.parameters.map((p, index) => (
+            {attribute.constructorArguments.map((p, index) => (
+                <span className="parameter" key={index}>
+                    {constructorArgument(p)}
+                    {index !== attribute.constructorArguments.length - 1 && ', '}
+                </span>
+            ))}
+            {/* {attribute.namedArguments.map((p, index) => (
                 <span className="parameter" key={index}>
                     {p.name && [
                         <span className="parameter-name" key={index}>
@@ -58,10 +55,10 @@ const RootSelectorAttribute: React.FC<Props> = ({ attribute, rootSelector, onEdi
                         </span>,
                         ' = ',
                     ]}
-                    {valuesList(p)}
+                    {constructorArgument(p)}
                     {index !== attribute.parameters.length - 1 && ', '}
                 </span>
-            ))}
+            ))} */}
             {')'}
         </span>
     );

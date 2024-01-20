@@ -49,7 +49,6 @@ export default class SelectorEditorProxy {
     }
 
     connectToBackgroundPage() {
-        debugger;
         try {
             this.backgroundConnection = chrome.runtime.connect({ name: 'content' });
         } catch (e: any) {

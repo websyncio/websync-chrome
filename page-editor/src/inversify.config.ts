@@ -2,7 +2,6 @@ import 'reflect-metadata';
 import { Container } from 'inversify';
 import ISynchronizationService from 'services/ISynchronizationService';
 import UnionSynchronizationService from 'supported-frameworks/JDI/services/UnionSynchronizationService';
-import JDIAttributeToXcssMapper from 'supported-frameworks/JDI/services/JDIAttributeToXcssMapper';
 import { SelectorsBagService } from 'services/SelectorsBagService';
 import { UrlSynchronizationService } from 'services/UrlSynchronizationService';
 import SelectorEditorConnection from 'connections/SelectorEditorConnection';
@@ -10,7 +9,6 @@ import SelectorValidator from 'services/SelectorValidatorService';
 import SelectorHighlighter from 'services/SelectorHighlighterService';
 import VSConnection from 'connections/IDE/VSConnection';
 import ISelectorsBagService from 'services/ISelectorsBagService';
-import IAttributeToXcssMapper from 'services/IAttributeToXcssMapper';
 import IMatchUrlService from 'services/IMatchUrlService';
 import JDIMatchUrlService from 'supported-frameworks/JDI/services/JDIMatchUrlService';
 import TYPES from 'inversify.types';
@@ -59,10 +57,6 @@ DependencyContainer.bind<ISynchronizationService>(TYPES.SynchronizationService)
         const urlMatcher = DependencyContainer.get<IMatchUrlService>(TYPES.UrlMatcher);
         return new UnionSynchronizationService(connection, urlMatcher);
     })
-    .inSingletonScope();
-
-DependencyContainer.bind<IAttributeToXcssMapper>(TYPES.AttributeToXcssMapper)
-    .to(JDIAttributeToXcssMapper)
     .inSingletonScope();
 
 DependencyContainer.bind<IMatchUrlService>(TYPES.UrlMatcher)

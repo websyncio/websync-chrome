@@ -69,22 +69,20 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
             });
 
         function initializationAttribute(attribute: AttributeModel) {
-            if (Object.values(GenericAttributes).includes(attribute.shortName as GenericAttributes)) {
-                return (
-                    <RootSelectorAttribute
-                        attribute={attribute}
-                        rootSelector={rootSelector}
-                        onEditSelector={(parameter, valueIndex) =>
-                            editSelector(componentInstance, parameter, valueIndex)
-                        }
-                        onValidated={(hasError) => {
-                            setHasError(hasError);
-                        }}
-                    />
-                );
-            } else {
-                console.error('Unsupported type of initialization attribute', attribute);
-            }
+            // if (Object.values(GenericAttributes).includes(attribute.shortName as GenericAttributes)) {
+            return (
+                <RootSelectorAttribute
+                    attribute={attribute}
+                    rootSelector={rootSelector}
+                    onEditSelector={(parameter, valueIndex) => editSelector(componentInstance, parameter, valueIndex)}
+                    onValidated={(hasError) => {
+                        setHasError(hasError);
+                    }}
+                />
+            );
+            // } else {
+            //     console.error('Unsupported type of initialization attribute', attribute);
+            // }
         }
 
         function onChange(componentTypeId: string, fieldName: string) {

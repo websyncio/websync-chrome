@@ -2,7 +2,6 @@ import { types, Instance, getParentOfType, destroy } from 'mobx-state-tree';
 import { AttributeModel } from './Attribute';
 import ProjectStore, { ProjectStoreModel } from 'entities/mst/ProjectStore';
 import { SelectableModel } from './Selectable';
-import ComponentsContainer from 'components/ProjectViewer/PageObjectEditor/ComponentsContainer/ComponentsContainer';
 import { ComponentsContainerModel } from './ComponentsContainer';
 
 export const ComponentInstanceModel = types
@@ -46,18 +45,18 @@ export const ComponentInstanceModel = types
         //     const arr = self.id.split('.');
         //     return arr[arr.length - 1].trim();
         // },
-        get rootXcss() {
-            if (self.initializationAttribute == null || !self.initializationAttribute.parameters.length) {
-                return '';
-            }
-            if (!self.initializationAttribute.parameters[0].values.length) {
-                throw new Error(
-                    `Initialization attribute '${self.initializationAttribute.name}' has no values for parameter '${self.initializationAttribute.parameters[0].name}'`,
-                );
-            }
+        // get rootXcss() {
+        //     if (self.initializationAttribute == null || !self.initializationAttribute.parameters.length) {
+        //         return '';
+        //     }
+        //     if (!self.initializationAttribute.parameters[0].values.length) {
+        //         throw new Error(
+        //             `Initialization attribute '${self.initializationAttribute.name}' has no values for parameter '${self.initializationAttribute.parameters[0].name}'`,
+        //         );
+        //     }
 
-            return self.initializationAttribute.parameters[0].values[0];
-        },
+        //     return self.initializationAttribute.parameters[0].values[0];
+        // },
     }))
     .actions((self) => ({
         setComponentTypeId(newComponentTypeId) {

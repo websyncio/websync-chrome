@@ -13,7 +13,6 @@ import { useState } from 'react';
 import TreeOutline from 'components-common/TreeOutline/TreeOutline';
 import SelectorHighlighter from 'services/SelectorHighlighterService';
 import XcssSelector from 'entities/XcssSelector';
-import IAttributeToXcssMapper from 'services/IAttributeToXcssMapper';
 import TYPES from 'inversify.types';
 
 interface Props {
@@ -38,9 +37,6 @@ const ComponentsContainer: React.FC<Props> = observer(
         const selectorHighlighter: SelectorHighlighter = DependencyContainer.get<SelectorHighlighter>(
             TYPES.SelectorHighlighter,
         );
-        const attributeToXcssMapper: IAttributeToXcssMapper = DependencyContainer.get<IAttributeToXcssMapper>(
-            TYPES.AttributeToXcssMapper,
-        );
 
         function getComponentSelectors(
             container1: IComponentsContainer,
@@ -51,7 +47,7 @@ const ComponentsContainer: React.FC<Props> = observer(
             }
             let selectors: XcssSelector[] = [];
             container1.componentInstances.forEach((c) => {
-                const componentSelector: XcssSelector | null = attributeToXcssMapper.GetXcss(c.initializationAttribute);
+                const componentSelector: XcssSelector | null = c.initializationAttribute.rootSelectorXcss;
                 if (componentSelector) {
                     componentSelector.root = rootSelector;
                     // componentSelector = XcssBuilder.concatSelectors(rootSelector, componentSelector);

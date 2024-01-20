@@ -5,7 +5,6 @@ import RootStore from 'entities/mst/RootStore';
 import './ProjectViewerHeader.sass';
 import { BreadcrumbType, ProjectTab, ProjectTabType } from 'entities/mst/UiStore';
 import CreatePageModal from 'components/Modals/CreatePageModal';
-import IAttributeToXcssMapper from 'services/IAttributeToXcssMapper';
 import { DependencyContainer } from 'inversify.config';
 import Selector from 'components/ProjectViewer/PageObjectEditor/InitializationAttributes/Selector';
 import ComponentInstance from 'entities/mst/ComponentInstance';
@@ -17,9 +16,6 @@ const Header: React.FC<Props> = observer(() => {
     const rootStore: RootStore = useRootStore();
     const { uiStore } = rootStore;
     const [createPageModalIsOpen, setCreatePageModalIsOpen] = React.useState(false);
-    const attributeToXcssMapper: IAttributeToXcssMapper = DependencyContainer.get<IAttributeToXcssMapper>(
-        TYPES.AttributeToXcssMapper,
-    );
 
     function goBackToProjectSelector() {
         uiStore.clearProject();
@@ -161,7 +157,7 @@ const Header: React.FC<Props> = observer(() => {
                         <span className="tab-name">{c.componentType.name}</span>
                         {c.initializationAttribute && (
                             <span className="root-selector-wrap">
-                                (<Selector selector={attributeToXcssMapper.GetXcss(c.initializationAttribute)} />)
+                                (<Selector selector={c.initializationAttribute.rootSelectorXcss} />)
                             </span>
                         )}
                     </div>
