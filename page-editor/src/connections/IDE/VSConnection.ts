@@ -8,6 +8,7 @@ import PageInstance from 'entities/mst/PageInstance';
 import WebSite from 'entities/mst/WebSite';
 import Reactor from 'utils/Reactor';
 import { generateId } from 'utils/StringUtils';
+import { BrowserMessageTypes } from './BrowserMessageTypes';
 import { IDEMessageTypes } from './IDEMessageTypes';
 
 export const EventTypes = {
@@ -62,6 +63,97 @@ export default class VSConnection implements IIdeConnection {
         return requestInfo;
     }
 
+    send(type: string, data: any) {
+        this.connection.send({
+            type,
+            data,
+        });
+    }
+
+    sendAsync(type: string, data: any) {
+        const asyncId = generateId();
+        this.connection.send({
+            type,
+            data,
+            asyncId,
+        });
+        return this.saveAsyncRequest(type, asyncId).promise;
+    }
+
+    openFileForClass(projectName: string, fullClassName: string) {
+        this.send(BrowserMessageTypes.OpenFile, {
+            projectName,
+            fullClassName,
+        });
+    }
+
+    createComponentType(projectName: string, name: string, parentType: string, baseType: string | null) {
+        this.send(BrowserMessageTypes.CreateComponentType, {
+            projectName,
+            name: name,
+            parentType: parentType,
+            baseType: baseType,
+        });
+    }
+
+    updateComponentInstance(projectName: string, componentInstance: ComponentInstance) {
+        this.send(BrowserMessageTypes.UpdateComponentInstance, {
+            projectName,
+            componentInstance,
+        });
+    }
+
+    addComponentInstance(projectName: string, componentInstance: ComponentInstance) {
+        this.send(BrowserMessageTypes.AddComponentInstance, {
+            projectName,
+            componentInstance,
+        });
+    }
+
+    deleteComponentInstance(projectName: string, componentInstance: ComponentInstance) {
+        this.send(BrowserMessageTypes.DeleteComponentInstance, {
+            projectName,
+            componentInstance,
+        });
+    }
+
+    updateWebSite(projectName: string, webSite: WebSite) {
+        this.send(BrowserMessageTypes.UpdateWebsite, {
+            projectName,
+            webSite,
+        });
+    }
+
+    updatePageInstance(projectName: string, pageInstance: PageInstance) {
+        this.send(BrowserMessageTypes.UpdatePageInstance, {
+            projectName,
+            pageInstance,
+        });
+    }
+
+    requestProjects() {
+        this.send(BrowserMessageTypes.GetProjectNames, null);
+    }
+
+    requestProjectData(projectName: string) {
+        this.send(BrowserMessageTypes.GetProject, { projectName });
+    }
+
+    async createWebsite(projectName: string, name: string, baseUrl: string): Promise<object> {
+        return this.sendAsync(BrowserMessageTypes.CreateWebsite, {
+            projectName,
+            name: name,
+            baseUrl: baseUrl,
+        });
+    }
+
+    async matchUrl(projectName: string, url: string): Promise<object> {
+        return this.sendAsync(BrowserMessageTypes.MatchUrl, {
+            projectName,
+            url,
+        });
+    }
+
     async createPageType(
         projectName: string,
         name: string,
@@ -69,92 +161,13 @@ export default class VSConnection implements IIdeConnection {
         baseType: string | null,
         absoluteUrl: string,
     ): Promise<object> {
-        const message = {
-            type: IDEMessageTypes.CreatePageType,
-            asyncId: generateId(),
+        return this.sendAsync(BrowserMessageTypes.CreatePageType, {
             projectName,
             name: name,
             baseType: baseType,
             website: website,
             absoluteUrl: absoluteUrl,
-        };
-        this.connection.send(message);
-        return this.saveAsyncRequest(message.type, message.asyncId).promise;
-    }
-
-    openFileForClass(projectName: string, fullClassName: string) {
-        const message = {
-            type: IDEMessageTypes.OpenFile,
-            projectName,
-            fullClassName,
-        };
-        this.connection.send(message);
-    }
-
-    createWebsite(projectName: string, name: string, baseUrl: string) {
-        const message = {
-            type: IDEMessageTypes.CreateWebsite,
-            asyncId: generateId(),
-            projectName,
-            name: name,
-            baseUrl: baseUrl,
-        };
-        this.connection.send(message);
-        return this.saveAsyncRequest(message.type, message.asyncId).promise;
-    }
-
-    createComponentType(projectName: string, name: string, parentType: string, baseType: string | null) {
-        const message = {
-            type: IDEMessageTypes.CreateComponentType,
-            projectName,
-            name: name,
-            parentType: parentType,
-            baseType: baseType,
-        };
-        this.connection.send(message);
-    }
-
-    updateComponentInstance(projectName: string, componentInstance: ComponentInstance) {
-        const message = {
-            type: IDEMessageTypes.UpdateComponentInstance,
-            projectName,
-            componentInstance,
-        };
-        this.connection.send(message);
-    }
-
-    addComponentInstance(projectName: string, componentInstance: ComponentInstance) {
-        this.connection.send({
-            type: IDEMessageTypes.AddComponentInstance,
-            projectName,
-            componentInstance,
         });
-    }
-
-    deleteComponentInstance(projectName: string, componentInstance: ComponentInstance) {
-        this.connection.send({
-            type: IDEMessageTypes.DeleteComponentInstance,
-            projectName,
-            componentInstance,
-        });
-    }
-
-    updateWebSite(projectName: string, webSite: WebSite) {
-        const message = {
-            type: IDEMessageTypes.UpdateWebsite,
-            projectName,
-            webSite,
-        };
-        this.connection.send(message);
-    }
-
-    updatePageInstance(projectName: string, pageInstance: PageInstance) {
-        const message = {
-            type: IDEMessageTypes.UpdatePageInstance,
-            projectName,
-            pageInstance,
-        };
-        this.connection.send(message);
     }
 
     onSocketOpened() {
@@ -166,17 +179,6 @@ export default class VSConnection implements IIdeConnection {
     onSocketClosed() {
         // TODO: move to service
         RootStore.uiStore.removeIdeConnection(this.type);
-    }
-
-    requestProjects() {
-        this.connection.send({ type: IDEMessageTypes.GetProjectNames });
-    }
-
-    requestProjectData(projectName: string) {
-        this.connection.send({
-            type: IDEMessageTypes.GetProject,
-            projectName,
-        });
     }
 
     onProjectsReceived(projectsList) {
@@ -210,17 +212,6 @@ export default class VSConnection implements IIdeConnection {
         return true;
     }
 
-    async matchUrl(projectName: string, url: string): Promise<object> {
-        const message = {
-            type: IDEMessageTypes.MatchUrl,
-            asyncId: generateId(),
-            projectName,
-            url,
-        };
-        this.connection.send(message);
-        return this.saveAsyncRequest(message.type, message.asyncId).promise;
-    }
-
     onMessage(message) {
         if (message.Type.endsWith(RESPONSE_SUFFIX)) {
             this.handleErrors(message);
@@ -237,6 +228,9 @@ export default class VSConnection implements IIdeConnection {
             case IDEMessageTypes.OpenFile:
                 console.log('page is opened:', message.className);
                 // return this.props.onSelectedPageChange(null, message.className);
+                break;
+            case IDEMessageTypes.UrlMatchResponse:
+                console.log('url match response:', message);
                 break;
             case 'update-component':
                 RootStore.projectStore.updateComponentType(message.componentType);
