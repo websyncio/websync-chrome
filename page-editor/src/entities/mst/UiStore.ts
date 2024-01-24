@@ -302,7 +302,8 @@ export const UiStoreModel = types
                     fieldName: s.name,
                     initializationAttribute: {
                         name: 'UI',
-                        parameters: [{ values: [s.selector] }],
+                        constructorArguments: [s.selector],
+                        namedArguments: {},
                     },
                 })),
             );

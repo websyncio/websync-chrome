@@ -45,18 +45,12 @@ export const ComponentInstanceModel = types
         //     const arr = self.id.split('.');
         //     return arr[arr.length - 1].trim();
         // },
-        // get rootXcss() {
-        //     if (self.initializationAttribute == null || !self.initializationAttribute.parameters.length) {
-        //         return '';
-        //     }
-        //     if (!self.initializationAttribute.parameters[0].values.length) {
-        //         throw new Error(
-        //             `Initialization attribute '${self.initializationAttribute.name}' has no values for parameter '${self.initializationAttribute.parameters[0].name}'`,
-        //         );
-        //     }
-
-        //     return self.initializationAttribute.parameters[0].values[0];
-        // },
+        get rootXcss() {
+            if (self.initializationAttribute == null || !self.initializationAttribute.constructorArguments.length) {
+                return '';
+            }
+            return self.initializationAttribute.constructorArguments[0].toString();
+        },
     }))
     .actions((self) => ({
         setComponentTypeId(newComponentTypeId) {
