@@ -20,6 +20,7 @@ interface Props {
     container: IComponentsContainer;
     componentInstance: ComponentInstanceModel;
     showPlaceholders: boolean;
+    isEditable: boolean;
     isSelected: boolean;
     initialCaretPosition: number | null;
     onDelete: () => void;
@@ -35,6 +36,7 @@ const TypeNameEditor: React.FC<Props> = observer(
         container,
         componentInstance,
         showPlaceholders,
+        isEditable,
         isSelected,
         initialCaretPosition,
         onDelete,
@@ -339,6 +341,10 @@ const TypeNameEditor: React.FC<Props> = observer(
         }
 
         function onTypeKeyDown(e) {
+            if (!isEditable) {
+                e.preventDefault();
+                return;
+            }
             const isLeftArrow = e.key == 'ArrowLeft';
             const isRightArrow = e.key == 'ArrowRight';
             const isDelete = e.key == 'Delete';
@@ -466,6 +472,10 @@ const TypeNameEditor: React.FC<Props> = observer(
         }
 
         function onNameKeyDown(e) {
+            if (!isEditable) {
+                e.preventDefault();
+                return;
+            }
             const isHomeKey = e.key == 'Home';
             const isEndKey = e.key == 'End';
             const isLeftArrow = e.key == 'ArrowLeft';

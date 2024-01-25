@@ -99,6 +99,7 @@ const BlankComponentInstance: React.FC<ComponentInstanceProps> = observer(
                     <TypeNameEditor
                         container={container}
                         componentInstance={componentInstance}
+                        isEditable={true}
                         isSelected={isSelected}
                         onSelectedStateChange={onSelectedStateChange}
                         showPlaceholders={true}

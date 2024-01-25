@@ -93,7 +93,8 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
         }
 
         function deleteComponentInstance() {
-            synchronizationService.deleteComponentInstance(componentInstance);
+            console.log('Deleting component instances not implemented');
+            // synchronizationService.deleteComponentInstance(componentInstance);
         }
 
         function onEditComponentType() {
@@ -118,6 +119,7 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                     <TypeNameEditor
                         container={container}
                         componentInstance={componentInstance}
+                        isEditable={false}
                         isSelected={isSelected}
                         showPlaceholders={false}
                         initialCaretPosition={initialCaretPosition}
@@ -131,7 +133,7 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                     &nbsp;
                     {componentInstance.initializationAttribute &&
                         initializationAttribute(componentInstance.initializationAttribute)}
-                    {isSelected && (
+                    {/* {isSelected && (
                         <span
                             className="action-button"
                             onMouseDown={(e) => {
@@ -142,7 +144,7 @@ const ComponentInstance: React.FC<ComponentInstanceProps> = observer(
                         >
                             Delete
                         </span>
-                    )}
+                    )} */}
                 </span>
             </div>
         );
