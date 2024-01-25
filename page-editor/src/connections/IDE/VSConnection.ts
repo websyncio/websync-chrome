@@ -225,6 +225,9 @@ export default class VSConnection implements IIdeConnection {
             case IDEMessageTypes.Project:
                 this.reactor.dispatchEvent(EventTypes.ProjectDataReceived, this.type, message.Data);
                 break;
+            case IDEMessageTypes.ProjectUpdated:
+                this.reactor.dispatchEvent(EventTypes.ProjectUpdated, message.Data);
+                return;
             case IDEMessageTypes.OpenFile:
                 console.log('page is opened:', message.className);
                 // return this.props.onSelectedPageChange(null, message.className);
@@ -240,9 +243,6 @@ export default class VSConnection implements IIdeConnection {
                 return;
             case 'update-website':
                 this.reactor.dispatchEvent(EventTypes.WebsiteUpdated, message.website);
-                return;
-            case 'update-project':
-                this.reactor.dispatchEvent(EventTypes.ProjectUpdated, message.project);
                 return;
             case 'project-opened':
                 RootStore.uiStore.addProject(this.type, message.projectName);
