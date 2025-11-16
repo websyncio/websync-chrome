@@ -89,9 +89,6 @@ export default Controller.extend({
 					type: components[i].get( 'componentType.isWebElement') ? 'web-element' : 'default',
 					children: childNodes
 				});
-				// TODO: remove this
-				// var component = this.get('store').peekRecord('component', componentId);
-				// component.set('fullRootSelector', fullRootSelector);
 			}
 		}
 		return nodes;
